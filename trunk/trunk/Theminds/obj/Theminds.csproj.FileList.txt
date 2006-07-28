@@ -1,0 +1,5 @@
+..\..\Theminds-bin\Theminds\Debug\Theminds.exe
+..\..\Theminds-bin\Theminds\Debug\Theminds.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Theminds.exe
+obj\Debug\Theminds.pdb
