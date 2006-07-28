@@ -1,5 +1,7 @@
 ..\..\Theminds-bin\Tabs\Debug\Tabs.dll
 ..\..\Theminds-bin\Tabs\Debug\Tabs.pdb
+..\..\bin\Tabs\Debug\Tabs.dll
+..\..\bin\Tabs\Debug\Tabs.pdb
 obj\Debug\ResolveAssemblyReference.cache
 obj\Debug\Tabs.dll
 obj\Debug\Tabs.pdb
