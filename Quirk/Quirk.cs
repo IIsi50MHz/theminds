@@ -24,19 +24,15 @@ namespace Theminds {
 		public delegate void LineDel(string line);
 		public event LineDel Line;
 
-		static Random random;
-		static Quirk() { random = new Random(); }
+		static Random randomAddressIndex = new Random();
 		
 		bool dnsResolved;
 		public Quirk(QuirkStart connectionInfo) {
 			this.Info = connectionInfo;
 
 			try {
-				/*IPAddress[] x = Dns.GetHostEntry(connectionInfo.serv).AddressList;				
-				int n = random.Next(0, x.Length);
-
-				this.Info.serv = x[n].ToString();
-				this.Info.hostName = Dns.GetHostEntry(this.Info.serv).HostName;*/
+				IPAddress[] x = Dns.GetHostEntry(connectionInfo.serv).AddressList;				
+				this.Info.serv = x[randomAddressIndex.Next(x.Length)].ToString();
 				dnsResolved = true;
 			}
 			catch (SocketException) {

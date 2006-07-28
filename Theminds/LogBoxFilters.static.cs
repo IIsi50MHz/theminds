@@ -19,10 +19,10 @@ namespace Theminds {
 			JPQT.Join = new string[] { "JOIN :", "--> {0} ({1}) has joined {2}", "--> You have joined {0}" };
 			
 			// Format: |:nick!crud part #channel :msg|
-			JPQT.Part = new string[] { "PART ", "<-- {0} ({1}) has left {2}{3}", "--> You have left {0}" };
+			JPQT.Part = new string[] { "PART ", "<-- {0} ({1}) has left {2}{3}", "<-- You have left {0}" };
 
 			// Format: |:nick!crud quit :msg|
-			JPQT.Quit = new string[] { "QUIT :", "<-- {0} ({1}) has quit ({3})", "--> You have quit {0} ({1})" };
+			JPQT.Quit = new string[] { "QUIT :", "<-- {0} ({1}) has quit{3}", "<-- You have quit {0} ({1})" };
 
 			mircRegex = new Bowel.MircRegex();
 			serverPrefixNumberRegex = new Bowel.ServerPrefixNumberRegex();
@@ -38,7 +38,7 @@ namespace Theminds {
 			logBox.Line += new LogBox.LineDel(hostName);
 			logBox.Line += new LogBox.LineDel(ServerPrefix);
 
-			logBox.Line += delegate(ref string line) {
+			logBox.Line += delegate(ref string line, ref string channel) {
 				// Strip mIRC colors.
 				if (line.Contains("\u0003")) line = mircRegex.Replace(line, "");
 			};
@@ -51,12 +51,12 @@ namespace Theminds {
 			logBox.SelfLine += new LogBox.LineDel(selfJoin);
 		}
 
-		public static void ServerPrefix(ref string line) {
+		public static void ServerPrefix(ref string line, ref string channel) {
 			string x = ":" + connection.Info.hostName;
 
 			if (false == line.StartsWith(x)) return;
 
-			// |line|: <server name> <command number> <optional. nick>
+			// Format: <server name> <command number> <optional. nick>
 			line = line.Substring(x.Length + 1);
 			line = serverPrefixNumberRegex.Replace(line, "");
 			if (line.StartsWith(connection.Info.nick)) {
@@ -65,13 +65,13 @@ namespace Theminds {
 			line = "[server] " + line;
 		}
 
-		static void hostName(ref string line) {
+		static void hostName(ref string line, ref string channel) {
 			if (line.StartsWith(":") == false) return;
 			connection.Info.hostName = line.Substring(1, line.IndexOf(' ') - 1);
 			logBox.Line -= new LogBox.LineDel(hostName);
 		}
 
-		static void initialPingPong(ref string line) {
+		static void initialPingPong(ref string line, ref string channel) {
 			if (line.Contains("Welcome")) { logBox.Line -= new LogBox.LineDel(initialPingPong); return; }
 			if (false == line.StartsWith("PING :")) { return; }
 
@@ -80,15 +80,16 @@ namespace Theminds {
 		}
 
 		// Format: |PRIVMSG #channel msg| or |:nick!crud PRIVMSG #channel :msg|
-		static void privmsg(ref string line) {
+		static void privmsg(ref string line, ref string channel) {
 			if (false == line.Contains(" ")) return;
 			bool selfMsg = line.StartsWith("PRIVMSG #");
 
-			string[] lineTokens = line.Split(new char[] { ' ' }, 4);
-			if ("PRIVMSG" != lineTokens[1] && selfMsg == false) return;
+			string[] lineTokens = line.Split(Page.Space, 4);
+
+			// Cannot match something like |NOTICE PRIVMSG ...|
+			if (("PRIVMSG" == lineTokens[1] && line.StartsWith(":")) == false && selfMsg == false) return;
 			
-			string channel = selfMsg ? lineTokens[1] : lineTokens[2];
-			Debug.WriteLine(channel, "privmsg channel finder");
+			channel = selfMsg ? lineTokens[1] : lineTokens[2];
 			
 			string nick, msg;
 			if (selfMsg) {
@@ -97,7 +98,9 @@ namespace Theminds {
 			}
 			else {
 				nick = lineTokens[0].Substring(1, line.IndexOf('!') - 1);
-				msg = lineTokens[3].Substring(line.IndexOf(':', 2) + 1);
+				Debug.WriteLine(line);
+				Debug.WriteLine(line.IndexOf(':', 2));
+				msg = lineTokens[3].Substring(1);
 			}			
 
 			// ACTION uses a colon or not, depending on the source.
@@ -111,6 +114,7 @@ namespace Theminds {
 			line = String.Format("<{0}> {1}", nick, msg);
 		}
 
+		// Not an event handler; a helper
 		static string identifyActions(string line) {
 			string msg = line.Trim().Split('\u0001')[1].Substring(7);
 			Debug.WriteLine(msg, "identifyActions msg");
@@ -119,50 +123,54 @@ namespace Theminds {
 
 		// This is not called by NewSelfFilter. Self-parts are only filtered
 		// through the server's response to the PART command.
-		static void joinPartQuit(ref string line) {
-			// this.privmsg must come before this (cf. event chain order).
-			// If it's been through that, then it's not a JPQ.
+		static void joinPartQuit(ref string line, ref string channel) {
+			// |privmsg| comes before this (cf. event chain order).
+			// If it's went through that, then it's not a JPQ.
 			if (line.StartsWith("<")) return;
 
-			string[] x;
-			if (line.Contains(JPQT.Join[0])) x = JPQT.Join;
-			else if (line.Contains(JPQT.Part[0])) x = JPQT.Part;
-			else if (line.Contains(JPQT.Quit[0])) x = JPQT.Quit;
+			// ASSIGN TEMPLATE.
+			string[] template;
+			if (line.Contains(JPQT.Join[0])) template = JPQT.Join;
+			else if (line.Contains(JPQT.Part[0])) template = JPQT.Part;
+			else if (line.Contains(JPQT.Quit[0])) {
+				template = JPQT.Quit; channel = "<>";
+			}
 			else return;
 
-			// Format: |:nick!IPcrud JOIN :#channel|
-			int exclaimPos = line.IndexOf('!');
-			string nick = line.Substring(1, exclaimPos - 1);
-			string ipcrud = line.Substring(exclaimPos + 1, line.IndexOf(' ') - exclaimPos);
+			// FIND NICK. Format: |:nick!IPcrud ...|
+			string[] tokens = line.Split(Page.Space, 5);
+			string[] nickTokens = tokens[0].Split('!');
+			string nick = nickTokens[0].Substring(1);
+			string ipcrud = nickTokens[1];
 
-			// Deal with part/quit messages.
-			string omega;
-			if (x[0] != JPQT.Join[0]) {
-				int omegaPos = line.IndexOf(':', 1);
+			// FIND MESSAGE.
+			int omegaPos = line.IndexOf(':', 1);
+			string argonaut = line.Substring(omegaPos + 1);
+			//		No parentheses by default so I can handle empty messages.
+			string omega = (omegaPos != -1) ? " (" + argonaut + ")" : "";
+			
+			// ASSIGN CHANNEL.
+			if (JPQT.Join[0] == template[0]) channel = argonaut;
+			else if (JPQT.Part[0] == template[0]) channel = tokens[2];
+			//		Quit's channel already assigned. Cf. up.
 
-				// Deal with empty part messages as well as
-				// the possibility precludes using parentheses in the
-				// JPQT.
-				omega = (omegaPos != -1) ? " (" + line.Substring(omegaPos + 1) + ")" : "";
-			}
-			else omega = null; // No message given.
-
-			// x[0] is the filter. x[1] is the template for others. x[2] is the template for user.
+			// PUT INTO TEMPLATE. [1] = for others; [2] = for user
 			if (nick != connection.Info.nick) {
-				line = String.Format(x[1], nick, ipcrud, form.CurrentChannel, omega);
+				line = String.Format(template[1], nick, ipcrud, form.CurrentChannel, omega);
+				return;
 			}
-			else {
-				line = String.Format(x[2], form.CurrentChannel, omega);
-			}
+			
+			line = String.Format(template[2], form.CurrentChannel, omega);
 		} // joinPartQuit
 
-		static void selfJoin(ref string line) {
+		static void selfJoin(ref string line, ref string channel) {
 			string x = "JOIN ";
 			if (false == line.StartsWith("JOIN ")) return;
 
 			// Format: |JOIN #channel,#channel,#channel|
 			string[] channels = line.Substring(x.Length).Split(',');
 			form.CurrentChannel = channels[channels.Length - 1];
+			channel = channels[channels.Length - 1];
 		}
 	}
 }

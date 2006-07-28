@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Theminds {
 	sealed class LogBox : RichTextBox {
-		public delegate void LineDel(ref string line);
+		public delegate void LineDel(ref string line, ref string channel);
 		public event LineDel Line;
 		public event LineDel SelfLine;
 
@@ -16,11 +16,15 @@ namespace Theminds {
 		// from the server, not the user -> color = true.
 		public void AddLine(string line) {
 			if (InvokeRequired) {
-				Line(ref line);
+				string channel = "";
+				Line(ref line, ref channel);
+				Debug.WriteLine(channel, "Channel");
 				BeginInvoke(new AddLineDel(addLineHelper), new object[] { line, false });
 			}
 			else {
-				SelfLine(ref line);
+				string channel = "";
+				SelfLine(ref line, ref channel);
+				Debug.WriteLine(channel, "Channel");
 				addLineHelper(line, true);
 			}
 		}

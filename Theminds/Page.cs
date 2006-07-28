@@ -8,6 +8,7 @@ using Aspirations;
 
 namespace Theminds {
 	sealed partial class Page : Form {
+		public static char[] Space = new char[] { ' ' };
 		Quirk connection;
 
 		// Testcase: Join a channel, try messaging.
