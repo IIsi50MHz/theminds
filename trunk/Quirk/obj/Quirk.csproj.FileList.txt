@@ -1,0 +1,5 @@
+..\..\Theminds-bin\Quirk\Debug\Quirk.dll
+..\..\Theminds-bin\Quirk\Debug\Quirk.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\Quirk.dll
+obj\Debug\Quirk.pdb
