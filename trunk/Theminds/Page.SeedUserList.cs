@@ -16,9 +16,11 @@ namespace Theminds {
 		}
 
 		// |userList| flickers if you just do a Clear() and lots of Add()s.
-		void filterWho(ref string line) {
+		// XXX: assign channel
+		void filterWho(ref string line, ref string channel) {
 			if (InvokeRequired) {
-				BeginInvoke(new LogBox.LineDel(filterWho), new object[] { line });
+				channel = line.Split(' ')[1];
+				this.BeginInvoke(new LogBox.LineDel(filterWho), new object[] { line, channel });
 				return;
 			}
 
@@ -30,16 +32,10 @@ namespace Theminds {
 				return;
 			}
 
-			LogBoxFilters.ServerPrefix(ref line);
+			LogBoxFilters.ServerPrefix(ref line, ref channel);
 
-			string lint = line.Substring(line.IndexOf(connection.Info.hostName) +
-				connection.Info.hostName.Length).Trim();
-
-			Debug.WriteLine("Before:" + lint, "/WHO line, before");
-			lint = lint.Substring(0, lint.IndexOf(' '));
-			Debug.WriteLine("After:" + lint, "/WHO line, after");
-
-			tmpUserListItems.Add(lint);
+			string[] tokens = line.Split(' ');
+			tmpUserListItems.Add(tokens[5]);
 		}
 	}
 }
