@@ -1,3 +1,4 @@
+// Compile with: csc.exe GenBowel.cs and then run the .exe file
 namespace Theminds {
 	using System;
 	using System.Reflection;
