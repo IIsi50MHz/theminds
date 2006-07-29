@@ -12,6 +12,8 @@
     <AssemblyName>Quirk</AssemblyName>
     <StartupObject>
     </StartupObject>
+	<OutDir>..\..\bin\Quirk\obj\</OutDir>
+	<IntermediateOutputPath>..\..\bin\Quirk\out\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
