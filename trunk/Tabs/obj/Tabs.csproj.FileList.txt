@@ -1,0 +1,5 @@
+..\..\bin\Tabs\obj\Tabs.dll
+..\..\bin\Tabs\obj\Tabs.pdb
+..\..\bin\Tabs\out\ResolveAssemblyReference.cache
+..\..\bin\Tabs\out\Tabs.dll
+..\..\bin\Tabs\out\Tabs.pdb
