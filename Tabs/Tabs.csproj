@@ -12,6 +12,8 @@
     <AssemblyName>Tabs</AssemblyName>
     <StartupObject>
     </StartupObject>
+	<OutDir>..\..\bin\Tabs\obj\</OutDir>
+	<IntermediateOutputPath>..\..\bin\Tabs\out\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

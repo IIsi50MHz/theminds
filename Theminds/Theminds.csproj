@@ -13,6 +13,8 @@
     <StartupObject>
     </StartupObject>
     <SignAssembly>false</SignAssembly>
+	<OutDir>..\..\bin\Theminds\obj\</OutDir>
+	<IntermediateOutputPath>..\..\bin\Theminds\out\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

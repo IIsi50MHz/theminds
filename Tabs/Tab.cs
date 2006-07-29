@@ -5,7 +5,7 @@ using System.Drawing;
 using System.Diagnostics;
 
 namespace Aspirations {
-	public class Tab : Button, ITab {
+	public sealed class Tab : Button, ITab {
 		public double Shrinkage {
 			get { return shrinkage; }
 			set {
@@ -20,6 +20,7 @@ namespace Aspirations {
 
 		// del: Add |this| to an object that will calculate its
 		//    autosized width.
+		// XXX: throw argumentexception if del == nul
 		public Tab(KissWidthDel del)
 			: base() {
 			this.AutoSize = true;
