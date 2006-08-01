@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 
@@ -22,7 +23,7 @@ namespace Theminds {
 			JPQT.Part = new string[] { "PART ", "<-- {0} ({1}) has left {2}{3}", "<-- You have left {0}" };
 
 			// Format: |:nick!crud quit :msg|
-			JPQT.Quit = new string[] { "QUIT :", "<-- {0} ({1}) has quit{3}", "<-- You have quit {0} ({1})" };
+			JPQT.Quit = new string[] { "QUIT :", "<-- {0} ({1}) has quit{3}", "<-- You have quit {0}{1}" };
 
 			mircRegex = new Bowel.MircRegex();
 			serverPrefixNumberRegex = new Bowel.ServerPrefixNumberRegex();
@@ -38,7 +39,7 @@ namespace Theminds {
 			logBox.Line += new LogBox.LineDel(hostName);
 			logBox.Line += new LogBox.LineDel(ServerPrefix);
 
-			logBox.Line += delegate(ref string line, ref string channel) {
+			logBox.Line += delegate(ref string line, ref string channel, ref Color color) {
 				// Strip mIRC colors.
 				if (line.Contains("\u0003")) line = mircRegex.Replace(line, "");
 			};
@@ -51,7 +52,7 @@ namespace Theminds {
 			logBox.SelfLine += new LogBox.LineDel(selfJoin);
 		}
 
-		public static void ServerPrefix(ref string line, ref string channel) {
+		public static void ServerPrefix(ref string line, ref string channel, ref Color color) {
 			string x = ":" + connection.Info.hostName;
 
 			if (false == line.StartsWith(x)) return;
@@ -65,28 +66,29 @@ namespace Theminds {
 			line = "[server] " + line;
 		}
 
-		static void hostName(ref string line, ref string channel) {
+		static void hostName(ref string line, ref string channel, ref Color color) {
 			if (line.StartsWith(":") == false) return;
 			connection.Info.hostName = line.Substring(1, line.IndexOf(' ') - 1);
 			logBox.Line -= new LogBox.LineDel(hostName);
 		}
 
-		static void initialPingPong(ref string line, ref string channel) {
-			if (line.Contains("Welcome")) { logBox.Line -= new LogBox.LineDel(initialPingPong); return; }
+		static void initialPingPong(ref string line, ref string channel, ref Color color) {
 			if (false == line.StartsWith("PING :")) { return; }
 
 			// "PING :" is six characters long.
 			connection.Message("PONG :" + line.Substring(6));
+
+			color = Color.Blue;
 		}
 
 		// Format: |PRIVMSG #channel msg| or |:nick!crud PRIVMSG #channel :msg|
-		static void privmsg(ref string line, ref string channel) {
+		static void privmsg(ref string line, ref string channel, ref Color color) {
 			if (false == line.Contains(" ")) return;
 			bool selfMsg = line.StartsWith("PRIVMSG #");
 
 			string[] lineTokens = line.Split(Page.Space, 4);
 
-			// Cannot match something like |NOTICE PRIVMSG ...|
+			// Prevents matching something like |NOTICE PRIVMSG ...|
 			if (("PRIVMSG" == lineTokens[1] && line.StartsWith(":")) == false && selfMsg == false) return;
 			
 			channel = selfMsg ? lineTokens[1] : lineTokens[2];
@@ -94,7 +96,8 @@ namespace Theminds {
 			string nick, msg;
 			if (selfMsg) {
 				nick = connection.Info.nick;
-				msg = lineTokens[2];
+				msg = line.Split(Page.Space, 3)[2];
+				color = Color.DarkRed;
 			}
 			else {
 				nick = lineTokens[0].Substring(1, line.IndexOf('!') - 1);
@@ -108,6 +111,7 @@ namespace Theminds {
 			if (msg.StartsWith(y)) {
 				msg = lineTokens[2] + " " + lineTokens[3];
 				line = String.Format("* {0} {1}", nick, identifyActions(msg));
+				color = Color.Green;
 				return;
 			}
 			
@@ -123,7 +127,7 @@ namespace Theminds {
 
 		// This is not called by NewSelfFilter. Self-parts are only filtered
 		// through the server's response to the PART command.
-		static void joinPartQuit(ref string line, ref string channel) {
+		static void joinPartQuit(ref string line, ref string channel, ref Color color) {
 			// |privmsg| comes before this (cf. event chain order).
 			// If it's went through that, then it's not a JPQ.
 			if (line.StartsWith("<")) return;
@@ -136,6 +140,7 @@ namespace Theminds {
 				template = JPQT.Quit; channel = "<>";
 			}
 			else return;
+			color = Color.Gray;
 
 			// FIND NICK. Format: |:nick!IPcrud ...|
 			string[] tokens = line.Split(Page.Space, 5);
@@ -163,9 +168,10 @@ namespace Theminds {
 			line = String.Format(template[2], form.CurrentChannel, omega);
 		} // joinPartQuit
 
-		static void selfJoin(ref string line, ref string channel) {
+		static void selfJoin(ref string line, ref string channel, ref Color color) {
 			string x = "JOIN ";
 			if (false == line.StartsWith("JOIN ")) return;
+			color = Color.Blue;
 
 			// Format: |JOIN #channel,#channel,#channel|
 			string[] channels = line.Substring(x.Length).Split(',');

@@ -16,26 +16,32 @@ namespace Theminds {
 		}
 
 		// |userList| flickers if you just do a Clear() and lots of Add()s.
-		// XXX: assign channel
-		void filterWho(ref string line, ref string channel) {
-			if (InvokeRequired) {
-				channel = line.Split(' ')[1];
-				this.BeginInvoke(new LogBox.LineDel(filterWho), new object[] { line, channel });
-				return;
-			}
-
-			if (line.Contains("End of /WHO")) {
-				userList.Items.Clear();
-				userList.Items.AddRange(tmpUserListItems.ToArray());
-				tmpUserListItems.Clear();
-				logBox.Line -= new LogBox.LineDel(filterWho);
-				return;
-			}
-
-			LogBoxFilters.ServerPrefix(ref line, ref channel);
-
+		void filterWho(ref string line, ref string channel, ref Color color) {
 			string[] tokens = line.Split(' ');
+			color = Color.Blue;
+			if (line.Contains("End of /WHO")) {
+				channel = tokens[1];
+				stopFilteringWho();
+				return;
+			}
+
+			LogBoxFilters.ServerPrefix(ref line, ref channel, ref color);
+
+			channel = tokens[1];
 			tmpUserListItems.Add(tokens[5]);
+		}
+
+		void stopFilteringWho() {
+			if (this.InvokeRequired) {
+				this.BeginInvoke((MethodInvoker) delegate {
+					stopFilteringWho();
+				});
+				return;
+			}
+			userList.Items.Clear();
+			userList.Items.AddRange(tmpUserListItems.ToArray());
+			tmpUserListItems.Clear();
+			logBox.Line -= new LogBox.LineDel(filterWho);
 		}
 	}
 }

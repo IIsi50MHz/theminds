@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace Theminds {
 	sealed class LogBox : RichTextBox {
-		public delegate void LineDel(ref string line, ref string channel);
+		public delegate void LineDel(ref string line, ref string channel, ref Color color);
 		public event LineDel Line;
 		public event LineDel SelfLine;
 
@@ -15,29 +15,29 @@ namespace Theminds {
 		// If it comes from a different thread, I know it's
 		// from the server, not the user -> color = true.
 		public void AddLine(string line) {
+			string channel = "";
+			Color color = Color.Black;
 			if (InvokeRequired) {
-				string channel = "";
-				Line(ref line, ref channel);
-				Debug.WriteLine(channel, "Channel");
-				BeginInvoke(new AddLineDel(addLineHelper), new object[] { line, false });
+				Line(ref line, ref channel, ref color);
+				BeginInvoke(new AddLineDel(addLineHelper), new object[] { line, color });
 			}
 			else {
-				string channel = "";
-				SelfLine(ref line, ref channel);
-				Debug.WriteLine(channel, "Channel");
-				addLineHelper(line, true);
+				color = Color.DarkRed;
+				SelfLine(ref line, ref channel, ref color);
+				addLineHelper(line, color);
 			}
+			Debug.WriteLine(channel, "Channel");
 		}
 
-		delegate void AddLineDel(string line, bool red);
-		void addLineHelper(string line, bool red) {
+		delegate void AddLineDel(string line, Color color);
+		void addLineHelper(string line, Color color) {
 			// Any changes to |log| unselects any text the user has selected.
 			int oldSelectStart = SelectionStart;
 			int oldSelectLength = SelectionLength;
-			if (red) {
+			if (Color.Black != color) {
 				Select(TextLength, 0);
 
-				this.SelectionColor = System.Drawing.Color.Red;
+				this.SelectionColor = color;
 				this.SelectedText = line + "\n";
 				this.SelectionColor = Color.Black;
 			}

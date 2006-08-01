@@ -92,9 +92,9 @@ namespace Theminds {
 			writer = new StreamWriter(stream);
 			writer.AutoFlush = true;
 
-			Timer pingTimer = new Timer((TimerCallback) delegate {
-				Message("PING :" + Info.serv);
-			}, null, 60000, 120000);
+			//Timer pingTimer = new Timer((TimerCallback) delegate {
+			//   Message("PING :" + Info.serv);
+			//}, null, 60000, 120000);
 
 			Message("NICK " + Info.nick + "\n" + Info.user);
 
@@ -110,7 +110,7 @@ namespace Theminds {
 				Line(line);
 			}
 
-			pingTimer.Dispose();
+			// pingTimer.Dispose();
 			writer.Close(); reader.Close();
 		} // connect()
 	}
