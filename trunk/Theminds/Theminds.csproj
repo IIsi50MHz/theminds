@@ -13,14 +13,14 @@
     <StartupObject>
     </StartupObject>
     <SignAssembly>false</SignAssembly>
-	<OutDir>..\..\bin\Theminds\obj\</OutDir>
-	<IntermediateOutputPath>..\..\bin\Theminds\out\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Theminds\Debug\</OutputPath>
+    <OutputPath>..\..\bin\Theminds\obj\</OutputPath>
+	<OutDir>..\..\bin\Theminds\obj\</OutDir>
+	<IntermediateOutputPath>..\..\bin\Theminds\out\</IntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
