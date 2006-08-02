@@ -44,7 +44,7 @@ namespace Theminds {
 				if (line.Contains("\u0003")) line = mircRegex.Replace(line, "");
 			};
 
-			logBox.Line += new LogBox.LineDel(initialPingPong);
+			logBox.Line += new LogBox.LineDel(ping);
 			logBox.Line += new LogBox.LineDel(privmsg);
 			logBox.Line += new LogBox.LineDel(joinPartQuit);
 
@@ -72,13 +72,28 @@ namespace Theminds {
 			logBox.Line -= new LogBox.LineDel(hostName);
 		}
 
-		static void initialPingPong(ref string line, ref string channel, ref Color color) {
-			if (false == line.StartsWith("PING :")) { return; }
+		static void ping(ref string line, ref string channel, ref Color color) {
+			if (false == line.StartsWith("PING :")) return;
 
-			// "PING :" is six characters long.
-			connection.Message("PONG :" + line.Substring(6));
-
+			pingMessage = line;
+			logBox.PostLine += new System.Windows.Forms.MethodInvoker(sendPong);
 			color = Color.Blue;
+		}
+
+		static string pingMessage;
+		static void sendPong() {
+			logBox.Line += new LogBox.LineDel(colorPong);
+			// Remove before Message or else recursion
+			logBox.PostLine -= new System.Windows.Forms.MethodInvoker(sendPong);
+
+			// PING : is six letters
+			connection.Message("PONG :" + pingMessage.Substring(6));
+		}
+
+		static void colorPong(ref string l, ref string chan, ref Color c) {
+			if (false == l.StartsWith("PONG :")) return;
+			c = Color.Blue;
+			logBox.Line -= new LogBox.LineDel(colorPong);
 		}
 
 		// Format: |PRIVMSG #channel msg| or |:nick!crud PRIVMSG #channel :msg|
@@ -151,13 +166,13 @@ namespace Theminds {
 			// FIND MESSAGE.
 			int omegaPos = line.IndexOf(':', 1);
 			string argonaut = line.Substring(omegaPos + 1);
-			//		No parentheses by default so I can handle empty messages.
+			//		No parentheses by default so I can handle empty part/quit messages.
 			string omega = (omegaPos != -1) ? " (" + argonaut + ")" : "";
 			
 			// ASSIGN CHANNEL.
 			if (JPQT.Join[0] == template[0]) channel = argonaut;
 			else if (JPQT.Part[0] == template[0]) channel = tokens[2];
-			//		Quit's channel already assigned. Cf. up.
+			//		Quit's channel already assigned to <>
 
 			// PUT INTO TEMPLATE. [1] = for others; [2] = for user
 			if (nick != connection.Info.nick) {

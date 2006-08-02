@@ -8,6 +8,12 @@ namespace Theminds {
 		public delegate void LineDel(ref string line, ref string channel, ref Color color);
 		public event LineDel Line;
 		public event LineDel SelfLine;
+		public event MethodInvoker PostLine;
+
+		public LogBox()
+			: base() {
+			PostLine += delegate { };
+		}
 
 		// http://www.dotnet247.com/247reference/msgs/55/279639.aspx
 		// http://www.dotnet4all.com/Dot-Net-Books/2004/08/how-to-auto-scroll-richtextbox-in.html
@@ -27,6 +33,7 @@ namespace Theminds {
 				addLineHelper(line, color);
 			}
 			Debug.WriteLine(channel, "Channel");
+			PostLine();
 		}
 
 		delegate void AddLineDel(string line, Color color);
