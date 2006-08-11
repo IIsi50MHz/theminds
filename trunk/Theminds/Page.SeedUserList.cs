@@ -9,10 +9,10 @@ namespace Theminds {
 		System.Collections.Generic.List<string> tmpUserListItems;
 
 		public void SeedUserList() {
-			if (CurrentChannel == null) return;
+			if (currentChannel == null) return;
 
-			logBox.Line += new LogBox.LineDel(filterWho);
-			connection.Message("WHO " + CurrentChannel);
+			this.Line += new LineDel(filterWho);
+			connection.Message("WHO " + currentChannel);
 		}
 
 		// |userList| flickers if you just do a Clear() and lots of Add()s.
@@ -41,7 +41,7 @@ namespace Theminds {
 			userList.Items.Clear();
 			userList.Items.AddRange(tmpUserListItems.ToArray());
 			tmpUserListItems.Clear();
-			logBox.Line -= new LogBox.LineDel(filterWho);
+			this.Line -= new LineDel(filterWho);
 		}
 	}
 }

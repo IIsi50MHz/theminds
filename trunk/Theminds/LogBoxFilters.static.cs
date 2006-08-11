@@ -30,26 +30,25 @@ namespace Theminds {
 		}
 
 		static Quirk connection;
-		static LogBox logBox;
-		static Page form;
+		static IBuffer buffer;
 		
-		public static void Init(Quirk c, LogBox l, Page f) {
-			logBox = l; connection = c; form = f;
+		public static void Init(Quirk c, IBuffer l) {
+			buffer = l; connection = c;
 			
-			logBox.Line += new LogBox.LineDel(hostName);
-			logBox.Line += new LogBox.LineDel(ServerPrefix);
+			buffer.Line += new LineDel(hostName);
+			buffer.Line += new LineDel(ServerPrefix);
 
-			logBox.Line += delegate(ref string line, ref string channel, ref Color color) {
+			buffer.Line += delegate(ref string line, ref string channel, ref Color color) {
 				// Strip mIRC colors.
 				if (line.Contains("\u0003")) line = mircRegex.Replace(line, "");
 			};
 
-			logBox.Line += new LogBox.LineDel(ping);
-			logBox.Line += new LogBox.LineDel(privmsg);
-			logBox.Line += new LogBox.LineDel(joinPartQuit);
+			buffer.Line += new LineDel(ping);
+			buffer.Line += new LineDel(privmsg);
+			buffer.Line += new LineDel(joinPartQuit);
 
-			logBox.SelfLine += new LogBox.LineDel(privmsg);
-			logBox.SelfLine += new LogBox.LineDel(selfJoin);
+			buffer.SelfLine += new LineDel(privmsg);
+			buffer.SelfLine += new LineDel(selfJoin);
 		}
 
 		public static void ServerPrefix(ref string line, ref string channel, ref Color color) {
@@ -69,22 +68,22 @@ namespace Theminds {
 		static void hostName(ref string line, ref string channel, ref Color color) {
 			if (line.StartsWith(":") == false) return;
 			connection.Info.hostName = line.Substring(1, line.IndexOf(' ') - 1);
-			logBox.Line -= new LogBox.LineDel(hostName);
+			buffer.Line -= new LineDel(hostName);
 		}
 
 		static void ping(ref string line, ref string channel, ref Color color) {
 			if (false == line.StartsWith("PING :")) return;
 
 			pingMessage = line;
-			logBox.PostLine += new System.Windows.Forms.MethodInvoker(sendPong);
+			buffer.PostLine += new System.Windows.Forms.MethodInvoker(sendPong);
 			color = Color.Blue;
 		}
 
 		static string pingMessage;
 		static void sendPong() {
-			logBox.Line += new LogBox.LineDel(colorPong);
+			buffer.Line += new LineDel(colorPong);
 			// Remove before Message or else recursion
-			logBox.PostLine -= new System.Windows.Forms.MethodInvoker(sendPong);
+			buffer.PostLine -= new System.Windows.Forms.MethodInvoker(sendPong);
 
 			// PING : is six letters
 			connection.Message("PONG :" + pingMessage.Substring(6));
@@ -93,7 +92,7 @@ namespace Theminds {
 		static void colorPong(ref string l, ref string chan, ref Color c) {
 			if (false == l.StartsWith("PONG :")) return;
 			c = Color.Blue;
-			logBox.Line -= new LogBox.LineDel(colorPong);
+			buffer.Line -= new LineDel(colorPong);
 		}
 
 		// Format: |PRIVMSG #channel msg| or |:nick!crud PRIVMSG #channel :msg|
@@ -116,8 +115,6 @@ namespace Theminds {
 			}
 			else {
 				nick = lineTokens[0].Substring(1, line.IndexOf('!') - 1);
-				Debug.WriteLine(line);
-				Debug.WriteLine(line.IndexOf(':', 2));
 				msg = lineTokens[3].Substring(1);
 			}			
 
@@ -136,7 +133,6 @@ namespace Theminds {
 		// Not an event handler; a helper
 		static string identifyActions(string line) {
 			string msg = line.Trim().Split('\u0001')[1].Substring(7);
-			Debug.WriteLine(msg, "identifyActions msg");
 			return msg;
 		}
 
@@ -176,11 +172,11 @@ namespace Theminds {
 
 			// PUT INTO TEMPLATE. [1] = for others; [2] = for user
 			if (nick != connection.Info.nick) {
-				line = String.Format(template[1], nick, ipcrud, form.CurrentChannel, omega);
+				line = String.Format(template[1], nick, ipcrud, buffer.CurrentChannel, omega);
 				return;
 			}
 			
-			line = String.Format(template[2], form.CurrentChannel, omega);
+			line = String.Format(template[2], buffer.CurrentChannel, omega);
 		} // joinPartQuit
 
 		static void selfJoin(ref string line, ref string channel, ref Color color) {
@@ -190,7 +186,7 @@ namespace Theminds {
 
 			// Format: |JOIN #channel,#channel,#channel|
 			string[] channels = line.Substring(x.Length).Split(',');
-			form.CurrentChannel = channels[channels.Length - 1];
+			buffer.CurrentChannel = channels[channels.Length - 1];
 			channel = channels[channels.Length - 1];
 		}
 	}
