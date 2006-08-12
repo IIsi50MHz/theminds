@@ -8,16 +8,13 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
-namespace Theminds {
-	public struct QuirkStart {
-		public string serv;
-		public string nick;
-		public string user;
-		public int port;
 
-		public string hostName;
-	}
-	
+[assembly: System.Runtime.InteropServices.ComVisible(false)]
+[assembly: System.Reflection.AssemblyVersionAttribute("0.1")]
+[assembly: System.CLSCompliant(true)]
+[assembly: System.Security.Permissions.SecurityPermission(
+  System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
+namespace Theminds {
 	// An IRC client class
 	public sealed partial class Quirk : IDisposable {
 		public QuirkStart Info;
@@ -27,8 +24,10 @@ namespace Theminds {
 		public delegate void LineDel(Quirk sender, string line);
 		public event LineDel Line;
 
-		static Random randomAddressIndex = new Random();
-		static int nextId = 0;
+		static Random rndAddressIndex = new Random();
+		
+		// Set to zero at runtime.
+		static int nextId;
 		
 		bool dnsResolved;
 		public int Id;
@@ -44,7 +43,7 @@ namespace Theminds {
 
 			try {
 				IPAddress[] x = Dns.GetHostEntry(connectionInfo.serv).AddressList;				
-				this.Info.serv = x[randomAddressIndex.Next(x.Length)].ToString();
+				this.Info.serv = x[rndAddressIndex.Next(x.Length)].ToString();
 				dnsResolved = true;
 			}
 			catch (SocketException) {

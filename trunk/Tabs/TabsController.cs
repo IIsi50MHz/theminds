@@ -5,6 +5,11 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
 
+[assembly: System.Runtime.InteropServices.ComVisible(false)]
+[assembly: System.Reflection.AssemblyVersionAttribute("0.1")]
+[assembly: System.CLSCompliant(true)]
+[assembly: System.Security.Permissions.SecurityPermission(
+  System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
 namespace Aspirations {
 	public delegate void TabDel(ITab t);
 	public delegate void IntDel(int i);
@@ -105,8 +110,12 @@ namespace Aspirations {
 				if (index < current || current >= tabs.Count) {
 					current -= 1;
 				}
+				this.right -= width;
 			}
-			this.right -= width;
+			else {
+				this.right = 0;
+				Add(); current = 0;
+			}
 
 			MoveTo(current);
 			Resize();
@@ -143,12 +152,9 @@ namespace Aspirations {
 		delegate void ChangeCurrentDelegate();
 		void c(ChangeCurrentDelegate del) {
 			parent.SuspendLayout();
-			if (tabs.Count != 0) {
-				tabs[current].ForeColor = Color.Black;
-				del(); // Here, current changes.
-				tabs[current].ForeColor = Color.Red;
-			}
-			else { Add(); }
+			tabs[current].ForeColor = Color.Black;
+			del(); // Here, current changes.
+			tabs[current].ForeColor = Color.Red;
 			parent.ResumeLayout();
 		}
 
