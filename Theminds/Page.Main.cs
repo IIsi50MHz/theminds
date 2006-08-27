@@ -13,6 +13,7 @@ namespace Theminds {
 			/*Application.ThreadException += delegate(object sender, System.Threading.ThreadExceptionEventArgs e) {
 				MessageBox.Show("Error!");
 			};*/
+			Application.EnableVisualStyles();
 			Application.Run(new Page());
 		}
 	}

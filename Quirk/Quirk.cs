@@ -55,11 +55,9 @@ namespace Theminds {
 		}
 
 		Thread connectThread;
-		bool started;
 		[Conditional("ENABLE_CONNECT")]
 		public void Start() {
 			if (false == dnsResolved) return;
-			started = true;
 			connectThread = new Thread(new ThreadStart(connect));
 			connectThread.IsBackground = true;
 			connectThread.Start();
@@ -75,16 +73,23 @@ namespace Theminds {
 		bool disposed;
 		public void Dispose() { Dispose(null); }
 		public void Dispose(string quitMsg) {
-			if (disposed || false == dnsResolved || false == started) return;
+			if (disposed || false == dnsResolved) return;
 
 			if (null == quitMsg) Message("QUIT");
 			else Message("QUIT " + quitMsg);
 
 			abortConnect = true;
-			connectThread.Join(1000);
+			connectThread.Join();
 
 			writer.Dispose();
 			disposed = true;
+
+			GC.SuppressFinalize(this);
+		}
+
+		~Quirk() {
+			throw new InvalidOperationException(
+				"Quirk's finalizer was called. Remember to dipose Quirk when you're finished with it.");
 		}
 
 		/**** Private members ****/
