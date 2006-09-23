@@ -73,23 +73,19 @@ namespace Theminds {
 		bool disposed;
 		public void Dispose() { Dispose(null); }
 		public void Dispose(string quitMsg) {
-			if (disposed || false == dnsResolved) return;
+			if (disposed) return;
+         if (null == connectThread) return;
 
-			if (null == quitMsg) Message("QUIT");
-			else Message("QUIT " + quitMsg);
+         if (null != writer) {
+            if (null == quitMsg) Message("QUIT");
+            else Message("QUIT " + quitMsg);
+         }
 
 			abortConnect = true;
 			connectThread.Join();
 
-			writer.Dispose();
-			disposed = true;
-
-			GC.SuppressFinalize(this);
-		}
-
-		~Quirk() {
-			throw new InvalidOperationException(
-				"Quirk's finalizer was called. Remember to dipose Quirk when you're finished with it.");
+			if (null != writer) writer.Dispose();
+         disposed = true;
 		}
 
 		/**** Private members ****/

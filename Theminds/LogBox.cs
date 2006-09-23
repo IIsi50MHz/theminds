@@ -4,8 +4,25 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace Theminds {
-	sealed class LogBox : RichTextBox {
+	public sealed class LogBox : RichTextBox {
 		public delegate void LineDel(ref string line, ref Color color);
+
+      public LogBox()
+         : base() {
+         NativeMethods.ParaFormat fmt = new NativeMethods.ParaFormat();
+            fmt.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(fmt);
+            fmt.dwMask = 0x00000100; // PFM_LINESPACING
+            fmt.dyLineSpacing = 20; // 20 = single-space, 40 = double-, &c
+            fmt.bLineSpacingRule = 5;
+         NativeMethods.SendMessage(this.Handle, 1095, (IntPtr)0, ref fmt);
+         
+         this.Font = new System.Drawing.Font("Calibri", 11);
+         this.WordWrap = true;
+         this.SelectionHangingIndent = 30;
+         this.ReadOnly = true;
+         this.TabStop = false;
+         this.Dock = DockStyle.Fill;
+      }
 
 		// http://www.dotnet247.com/247reference/msgs/55/279639.aspx
 		// http://www.dotnet4all.com/Dot-Net-Books/2004/08/how-to-auto-scroll-richtextbox-in.html
