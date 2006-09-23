@@ -3,3 +3,8 @@
 ..\..\bin\Theminds\obj\Theminds.exe
 ..\..\bin\Theminds\obj\Theminds.pdb
 ..\..\bin\Theminds\out\ResolveAssemblyReference.cache
+obj\Release\ResolveAssemblyReference.cache
+..\..\bin\Theminds\Release\Theminds.exe
+..\..\bin\Theminds\Release\Theminds.pdb
+obj\Release\Theminds.exe
+obj\Release\Theminds.pdb

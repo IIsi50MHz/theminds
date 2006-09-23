@@ -27,6 +27,8 @@ namespace Theminds {
 
 			mircRegex = new Bowel.MircRegex();
 			serverPrefixNumberRegex = new Bowel.ServerPrefixNumberRegex();
+
+         NewChannel += delegate { };
 		}
 
 		static Quirk connection;
@@ -179,6 +181,8 @@ namespace Theminds {
 			line = String.Format(template[2], buffer.CurrentChannel, omega);
 		} // joinPartQuit
 
+      public delegate void NewChannelDel(string channel);
+      public static event NewChannelDel NewChannel;
 		static void selfJoin(ref string line, ref string channel, ref Color color) {
 			string x = "JOIN ";
 			if (false == line.StartsWith("JOIN ")) return;
@@ -186,7 +190,9 @@ namespace Theminds {
 
 			// Format: |JOIN #channel,#channel,#channel|
 			string[] channels = line.Substring(x.Length).Split(',');
-			buffer.CurrentChannel = channels[channels.Length - 1];
+         NewChannel(channels[channels.Length - 1]);
+
+			//buffer.CurrentChannel = channels[channels.Length - 1];
 			channel = channels[channels.Length - 1];
 		}
 	}

@@ -39,7 +39,7 @@ namespace Aspirations {
 		// current: index in |tabs| of current tab
 		int right, current, realWidth;
 		public event TabDel NewTab;
-		public void Add(string label) {
+		public ITab Add(string label) {
 			if (tabs.Count > 0) {
 				tabs[current].ForeColor = Color.Black;
 			}
@@ -56,6 +56,8 @@ namespace Aspirations {
 
 			parent.FocusGrabber.Select();
 			Resize();
+
+         return x;
 		}
 
 		public void Add(string[] labels) {

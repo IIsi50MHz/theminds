@@ -4,6 +4,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Collections.Generic;
 using Aspirations;
 
 namespace Theminds {
@@ -11,13 +12,15 @@ namespace Theminds {
 		public static char[] Space = new char[] { ' ' };
 		Quirk connection;
 
+      string currentChannel;
 		public string CurrentChannel {
 			get { return currentChannel; }
 			set { currentChannel = value; }
 		}
 
 		// Testcase: Join a channel, try messaging.
-		public string currentChannel;
+      Dictionary<string, LogBox> logBoxes;
+      Dictionary<string, ITab> tabs;
 		public Page() {
 			SetUp(); // MainForm.SetUpForm.cs
 
@@ -39,6 +42,13 @@ namespace Theminds {
 
 			// For StartSeedingUserList()
 			tmpUserListItems = new System.Collections.Generic.List<string>();
+
+         logBoxes = new Dictionary<string, LogBox>(5);
+         tabs = new Dictionary<string, ITab>(5);
+
+         logBoxes["server1."] = logBox;
+         tabs["server1."] = tabber.Current;
+         LogBoxFilters.NewChannel += new LogBoxFilters.NewChannelDel(AddChannelTab);
 
 			connection.Start();
 		}

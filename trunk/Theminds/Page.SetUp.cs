@@ -12,6 +12,7 @@ namespace Theminds {
 		RichTextBox userNotice;
 		Panel userPanel;
 		Panel tabsPanel;
+      Panel logBoxPanel;
 		Splitter consoleInputSplitter;
 		Splitter consoleUsersSplitter;
 
@@ -26,6 +27,7 @@ namespace Theminds {
 			inputBox = new InputBox();
 			userNotice = new RichTextBox();
 			userPanel = new Panel();
+         logBoxPanel = new Panel();
 			consoleInputSplitter = new Splitter();
 			consoleUsersSplitter = new Splitter();
 
@@ -36,19 +38,10 @@ namespace Theminds {
 			inputBox.Height = inputBox.PreferredHeight;
 			inputBox.TabIndex = 0;
 
-			logBox.Dock = DockStyle.Fill;
-			logBox.Font = new System.Drawing.Font("Calibri", 11);
-			logBox.WordWrap = true;
-			logBox.SelectionHangingIndent = 30;
-			logBox.ReadOnly = true;
-			logBox.TabStop = false;
-			NativeMethods.ParaFormat fmt = new NativeMethods.ParaFormat();
-				fmt.cbSize = System.Runtime.InteropServices.Marshal.SizeOf(fmt);
-				fmt.dwMask = 0x00000100; // PFM_LINESPACING
-				fmt.dyLineSpacing = 20; // 20 = single-space, 40 = double-, &c
-				fmt.bLineSpacingRule = 5;
-			NativeMethods.SendMessage(logBox.Handle, 1095, (IntPtr) 0, ref fmt);
-
+         logBoxPanel.Controls.Add(logBox);
+			logBoxPanel.Dock = DockStyle.Fill;
+         logBoxPanel.BorderStyle = BorderStyle.None;
+         logBoxPanel.AutoSize = true;
 
 			/* The users, the notices, the panel, the myth */
 			userNotice.Dock = DockStyle.Top;
@@ -78,7 +71,7 @@ namespace Theminds {
 
 			// Order is critical
 			this.Controls.AddRange(new System.Windows.Forms.Control[] {
-				logBox, consoleUsersSplitter, userPanel , consoleInputSplitter,
+				logBoxPanel, consoleUsersSplitter, userPanel , consoleInputSplitter,
 				inputBox, tabsPanel});
 			this.ResumeLayout(); // this.suspendLayout() above
 		}
