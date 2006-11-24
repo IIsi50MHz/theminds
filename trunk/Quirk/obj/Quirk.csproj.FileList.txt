@@ -1,5 +1,0 @@
-..\..\bin\Quirk\obj\Quirk.dll
-..\..\bin\Quirk\obj\Quirk.pdb
-..\..\bin\Quirk\out\ResolveAssemblyReference.cache
-..\..\bin\Quirk\out\Quirk.dll
-..\..\bin\Quirk\out\Quirk.pdb
