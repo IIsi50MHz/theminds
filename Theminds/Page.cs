@@ -21,6 +21,7 @@ namespace Theminds {
 		// Testcase: Join a channel, try messaging.
       Dictionary<string, LogBox> logBoxes;
       Dictionary<string, ITab> tabs;
+      Dictionary<int, string> channelNames;
 		public Page() {
 			SetUp(); // MainForm.SetUpForm.cs
 
@@ -45,10 +46,15 @@ namespace Theminds {
 
          logBoxes = new Dictionary<string, LogBox>(5);
          tabs = new Dictionary<string, ITab>(5);
+         channelNames = new Dictionary<int,string>(5);
 
          logBoxes["server1."] = logBox;
          tabs["server1."] = tabber.Current;
+         channelNames[tabber.Current.GetHashCode()] = "server1.";
+
+         // Page.Buffering events.
          LogBoxFilters.NewChannel += new LogBoxFilters.NewChannelDel(AddChannelTab);
+         tabber.Moved += new TabDel(MoveChannelTab);
 
 			connection.Start();
 		}

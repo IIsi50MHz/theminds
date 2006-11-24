@@ -75,11 +75,13 @@ namespace Aspirations {
 
 		public void MoveToNext() {
 			c(delegate { current = (current + 1) % tabs.Count; });
+         Moved(this.Current);
 		}
 
 		public void MoveToPrev() {
 			// -1 % 4 = -1. To make it 3, add |.Count|.
 			c(delegate { current = (current - 1 + tabs.Count) % tabs.Count; });
+         Moved(this.Current);
 		}
 
 		public event IntDel Removed;
