@@ -6,6 +6,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using Aspirations;
 
 namespace Theminds {
 	sealed partial class Page : Form, IBuffer {
@@ -33,12 +34,26 @@ namespace Theminds {
 
       void AddChannelTab(string channel) {
          currentChannel = channel;
-         tabs["server1." + channel] = tabber.Add(channel);
+         string x = "server1." + channel;
+         tabs[x] = tabber.Add(channel);
+         channelNames[tabber.Current.GetHashCode()] = x;
+         
          LogBox l = new LogBox();
-         logBoxes["server1." + channel] = l;
-
+         logBoxes[x] = l;
          logBoxPanel.Controls.RemoveAt(0);
          logBoxPanel.Controls.Add(l);
+      }
+
+      // If no key exists, then that means we're moving
+      // to a /new/ tab, which means AddChannelTab will
+      // handle the logBoxPanel, not MoveChannelTab.
+      void MoveChannelTab(ITab t) {
+         int hash = t.GetHashCode();
+         if (!channelNames.ContainsKey(hash)) return;
+         
+         string name = channelNames[hash];
+         logBoxPanel.Controls.RemoveAt(0);
+         logBoxPanel.Controls.Add(logBoxes[name]);
       }
 
 		public event LineDel Line;
