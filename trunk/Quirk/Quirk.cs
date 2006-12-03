@@ -14,7 +14,7 @@ using System.Diagnostics;
 [assembly: System.CLSCompliant(true)]
 [assembly: System.Security.Permissions.SecurityPermission(
   System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
-namespace Theminds {
+namespace Aspirations {
 	// An IRC client class
 	public sealed partial class Quirk : IDisposable {
 		public QuirkStart Info;
