@@ -20,7 +20,6 @@ namespace Aspirations {
 
 		// del: Add |this| to an object that will calculate its
 		//    autosized width.
-		// XXX: throw argumentexception if del == nul
 		public Tab(KissWidthDel del)
 			: base() {
 			this.AutoSize = true;
@@ -31,10 +30,8 @@ namespace Aspirations {
 			this.Width = (int) (trueWidth * Shrinkage);
 		}
 
-		public Tab(KissWidthDel del, string text)
-			: this(del) {
-			this.Text = text;
-		}
+      public Tab(KissWidthDel del, string text)
+         : this(del) { this.Text = text; }
 
 		public int TrueWidth { get { return trueWidth; } }
 	}

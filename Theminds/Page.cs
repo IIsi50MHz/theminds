@@ -1,4 +1,4 @@
-#define ENABLE_CONNECT
+//#define ENABLE_CONNECT
 
 using System;
 using System.Drawing;
