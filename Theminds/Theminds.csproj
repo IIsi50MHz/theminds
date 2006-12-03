@@ -89,10 +89,10 @@
   <ItemGroup>
     <Compile Include="Filters\InputBoxFilters.static.cs">
     </Compile>
+    <Compile Include="Ideas.cs" />
     <Compile Include="InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Lion.cs" />
     <Compile Include="Filters\LogBoxFilters.JPQ.static.cs" />
     <Compile Include="Page.Buffering.cs">
       <SubType>Form</SubType>
@@ -124,4 +124,7 @@
   <ItemGroup>
     <Content Include="Plainclothes\lion.txt" />
   </ItemGroup>
+  <PropertyGroup>
+    <PostBuildEvent>copy /Y "$(ProjectDir)Plainclothes\lion.txt" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
 </Project>
