@@ -1,7 +1,7 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <LastOpenVersion>8.0.50215</LastOpenVersion>
-    <PublishUrlHistory>publish\</PublishUrlHistory>
+    <PublishUrlHistory>C:\Documents and Settings\Me\Desktop\|publish\</PublishUrlHistory>
     <InstallUrlHistory>
     </InstallUrlHistory>
     <SupportUrlHistory>
@@ -13,5 +13,6 @@
     <ApplicationRevision>0</ApplicationRevision>
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
+    <EnableSecurityDebugging>false</EnableSecurityDebugging>
   </PropertyGroup>
 </Project>

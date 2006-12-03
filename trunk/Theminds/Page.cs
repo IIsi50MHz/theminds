@@ -18,15 +18,16 @@ namespace Theminds {
 			set { currentChannel = value; }
 		}
 
+      public static Ideas Lion;
+
 		// Testcase: Join a channel, try messaging.
       Dictionary<string, LogBox> logBoxes;
       Dictionary<string, ITab> tabs;
       Dictionary<int, string> channelNames;
 		public Page() {
 			SetUp(); // MainForm.SetUpForm.cs
-
-			// Prevent empty event list exceptions
 			PostLine += delegate { };
+         Lion = new Ideas(@"lion.txt");
 
 			QuirkStart mozNet = new QuirkStart();
 				mozNet.nick = "Tongue"; mozNet.port = 6667;
@@ -35,18 +36,23 @@ namespace Theminds {
 			connection = new Quirk(mozNet);
 			connection.Line += new Quirk.LineDel(BufferLine);
 
-			// Converts server garbage to post-impressionist garbage
 			LogBoxFilters.Init(connection, this);
-
-			// For commands on rtbInput
+         JoinPartQuitFilter.Init(connection, this);
 			InputBoxFilters.Init(connection, inputBox, this);
+         InitBuffering();
 
 			// For StartSeedingUserList()
 			tmpUserListItems = new System.Collections.Generic.List<string>();
 
+         connection.Start();
+		}
+
+      /**** Construction workers ****/
+      void InitBuffering() {
+         // Page.Buffering
          logBoxes = new Dictionary<string, LogBox>(5);
          tabs = new Dictionary<string, ITab>(5);
-         channelNames = new Dictionary<int,string>(5);
+         channelNames = new Dictionary<int, string>(5);
 
          logBoxes["server1."] = logBox;
          tabs["server1."] = tabber.Current;
@@ -55,9 +61,7 @@ namespace Theminds {
          // Page.Buffering events.
          LogBoxFilters.NewChannel += new LogBoxFilters.NewChannelDel(AddChannelTab);
          tabber.Moved += new TabDel(MoveChannelTab);
-
-			connection.Start();
-		}
+      }
 
 		/**** Event handlers ****/
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {

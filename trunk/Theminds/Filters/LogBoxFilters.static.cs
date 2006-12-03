@@ -2,29 +2,14 @@ using System;
 using System.Drawing;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using Aspirations;
 
 namespace Theminds {
 	static class LogBoxFilters {
-		struct JPQT {
-			public static string[] Join;
-			public static string[] Part;
-			public static string[] Quit;
-		}
-
 		static Bowel.MircRegex mircRegex;
 		static Bowel.ServerPrefixNumberRegex serverPrefixNumberRegex;
 		static LogBoxFilters() {
-			// TODO: remove CurrentChannel from Parts once tabs are in.
-
-			// Format: |:nick!crud join :#channel|
-			JPQT.Join = new string[] { "JOIN :", "--> {0} ({1}) has joined {2}", "--> You have joined {0}" };
-			
-			// Format: |:nick!crud part #channel :msg|
-			JPQT.Part = new string[] { "PART ", "<-- {0} ({1}) has left {2}{3}", "<-- You have left {0}" };
-
-			// Format: |:nick!crud quit :msg|
-			JPQT.Quit = new string[] { "QUIT :", "<-- {0} ({1}) has quit{3}", "<-- You have quit {0}{1}" };
-
+			// TODO: remove CurrentChannel from Parts once tabs are in;
 			mircRegex = new Bowel.MircRegex();
 			serverPrefixNumberRegex = new Bowel.ServerPrefixNumberRegex();
 
@@ -32,8 +17,7 @@ namespace Theminds {
 		}
 
 		static Quirk connection;
-		static IBuffer buffer;
-		
+		static IBuffer buffer;		
 		public static void Init(Quirk c, IBuffer l) {
 			buffer = l; connection = c;
 			
@@ -47,7 +31,6 @@ namespace Theminds {
 
 			buffer.Line += new LineDel(ping);
 			buffer.Line += new LineDel(privmsg);
-			buffer.Line += new LineDel(joinPartQuit);
 
 			buffer.SelfLine += new LineDel(privmsg);
 			buffer.SelfLine += new LineDel(selfJoin);
@@ -137,49 +120,6 @@ namespace Theminds {
 			string msg = line.Trim().Split('\u0001')[1].Substring(7);
 			return msg;
 		}
-
-		// This is not called by NewSelfFilter. Self-parts are only filtered
-		// through the server's response to the PART command.
-		static void joinPartQuit(ref string line, ref string channel, ref Color color) {
-			// |privmsg| comes before this (cf. event chain order).
-			// If it's went through that, then it's not a JPQ.
-			if (line.StartsWith("<")) return;
-
-			// ASSIGN TEMPLATE.
-			string[] template;
-			if (line.Contains(JPQT.Join[0])) template = JPQT.Join;
-			else if (line.Contains(JPQT.Part[0])) template = JPQT.Part;
-			else if (line.Contains(JPQT.Quit[0])) {
-				template = JPQT.Quit; channel = "<>";
-			}
-			else return;
-			color = Color.Gray;
-
-			// FIND NICK. Format: |:nick!IPcrud ...|
-			string[] tokens = line.Split(Page.Space, 5);
-			string[] nickTokens = tokens[0].Split('!');
-			string nick = nickTokens[0].Substring(1);
-			string ipcrud = nickTokens[1];
-
-			// FIND MESSAGE.
-			int omegaPos = line.IndexOf(':', 1);
-			string argonaut = line.Substring(omegaPos + 1);
-			//		No parentheses by default so I can handle empty part/quit messages.
-			string omega = (omegaPos != -1) ? " (" + argonaut + ")" : "";
-			
-			// ASSIGN CHANNEL.
-			if (JPQT.Join[0] == template[0]) channel = argonaut;
-			else if (JPQT.Part[0] == template[0]) channel = tokens[2];
-			//		Quit's channel already assigned to <>
-
-			// PUT INTO TEMPLATE. [1] = for others; [2] = for user
-			if (nick != connection.Info.nick) {
-				line = String.Format(template[1], nick, ipcrud, buffer.CurrentChannel, omega);
-				return;
-			}
-			
-			line = String.Format(template[2], buffer.CurrentChannel, omega);
-		} // joinPartQuit
 
       public delegate void NewChannelDel(string channel);
       public static event NewChannelDel NewChannel;
