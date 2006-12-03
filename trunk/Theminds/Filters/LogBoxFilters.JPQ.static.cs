@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using Aspirations;
 
-namespace Theminds{
+namespace Theminds {
    static class JoinPartQuitFilter {
       static Quirk connection;
       static IBuffer buffer;
@@ -22,7 +22,7 @@ namespace Theminds{
 
          string template = deductTemplate(line);
          if (null == template) return;
-         
+
          // Now and only now can I assign color.
          color = Color.Gray;
 
@@ -45,7 +45,7 @@ namespace Theminds{
 
          // PUT INTO TEMPLATE.
          if (nick != connection.Info.nick) {
-            line = String.Format(lion.Get(template, "others"), 
+            line = String.Format(lion.Get(template, "others"),
                nick, ipcrud, buffer.CurrentChannel, omega);
             return;
          }
@@ -55,13 +55,8 @@ namespace Theminds{
       }
 
       static string deductTemplate(string line) {
-         string template = null;
-         if (lion.TestContains(line, "join")) template = "join";
-         else if (lion.TestContains(line, "part")) template = "part";
-         else if (lion.TestContains(line, "quit")) {
-            template = "quit";
-         }
-         return template;
+         return lion.TestContains(line,
+             new string[] { "join", "part", "quit" });
       }
    }
 }

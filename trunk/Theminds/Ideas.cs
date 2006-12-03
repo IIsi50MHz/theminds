@@ -18,6 +18,13 @@ namespace Theminds {
          return haystack.Contains(Get(id));
       }
 
+      public string TestContains(string haystack, string[] ids) {
+         foreach (string id in ids) {
+            if (TestContains(haystack, id)) return id;
+         }
+         return null;
+      }
+
       public Ideas(string file) {
          dict = new Dictionary<string, string>(20);
          using (TextReader t = new StreamReader(file)) {
