@@ -13,14 +13,30 @@
     <StartupObject>
     </StartupObject>
     <SignAssembly>false</SignAssembly>
+    <ManifestCertificateThumbprint>F18A2F8C69DC36E319FFEAB81BC7F8AF231BB443</ManifestCertificateThumbprint>
+    <ManifestKeyFile>Theminds_TemporaryKey.pfx</ManifestKeyFile>
+    <GenerateManifests>true</GenerateManifests>
+    <SignManifests>true</SignManifests>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Documents and Settings\Me\Desktop\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <AutorunEnabled>true</AutorunEnabled>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\Theminds\obj\</OutputPath>
-	<OutDir>..\..\bin\Theminds\obj\</OutDir>
-	<IntermediateOutputPath>..\..\bin\Theminds\out\</IntermediateOutputPath>
+    <OutputPath>..\..\bin\Theminds\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,7 +44,7 @@
     </NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Theminds\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -36,6 +52,7 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>
     </NoWarn>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -75,6 +92,8 @@
     <Compile Include="InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Lion.cs" />
+    <Compile Include="LogBoxFilters.JPQ.static.cs" />
     <Compile Include="Page.Buffering.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,5 +113,12 @@
       <Project>{B9E2EA9B-3A95-4008-B833-FA21D302865E}</Project>
       <Name>Tabs</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
 </Project>
