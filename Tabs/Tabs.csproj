@@ -12,8 +12,8 @@
     <AssemblyName>Tabs</AssemblyName>
     <StartupObject>
     </StartupObject>
-	<OutDir>..\..\bin\Tabs\obj\</OutDir>
-	<IntermediateOutputPath>..\..\bin\Tabs\out\</IntermediateOutputPath>
+    <OutDir>..\..\bin\Tabs\obj\</OutDir>
+    <IntermediateOutputPath>..\..\bin\Tabs\out\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -34,6 +34,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>default</LangVersion>
     <NoStdLib>false</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
