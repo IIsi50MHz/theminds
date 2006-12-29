@@ -76,12 +76,14 @@ namespace Theminds {
 
       protected override void OnKeyDown(KeyEventArgs e) {
          if (false == e.Control) goto noControl;
+         e.SuppressKeyPress = true;
          switch (e.KeyCode) {
             case Keys.PageUp: tabber.MoveToPrev(); break;
             case Keys.PageDown: tabber.MoveToNext(); break;
             case Keys.T: tabber.Add(); break;
             case Keys.W: tabber.RemoveCurrent(); break;
             case Keys.Q: this.Close(); break;
+            default: e.SuppressKeyPress = false; break;
          }
 
       noControl:

@@ -16,10 +16,13 @@ namespace Theminds {
 		public event StopPressesDel StopPresses;
 
       protected override void OnKeyDown(KeyEventArgs e) {
-         e.SuppressKeyPress = true;
-         if (Keys.Escape == e.KeyCode) Text = null;
+         if (Keys.Escape == e.KeyCode) {
+            Text = null; e.SuppressKeyPress = true;
+            return;
+         } 
          if (Keys.Enter != e.KeyCode) return;
 
+         
          bool shouldStop = false;
          StopPresses(ref shouldStop);
          if (shouldStop) return;
