@@ -55,8 +55,8 @@ namespace Aspirations {
 		}
 
 		Thread connectThread;
-		[Conditional("ENABLE_CONNECT")]
 		public void Start() {
+         if (connectThread != null) return;
 			if (false == dnsResolved) return;
 			connectThread = new Thread(new ThreadStart(connect));
 			connectThread.IsBackground = true;
