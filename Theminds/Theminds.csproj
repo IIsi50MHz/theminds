@@ -76,7 +76,6 @@
     </Compile>
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Page.Main.cs">
-      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -102,6 +101,9 @@
     </Compile>
     <Compile Include="Page.TabsParent.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Tests\InputBoxTests.cs">
+      <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
