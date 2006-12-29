@@ -75,8 +75,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="App.cs">
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LogBox.cs">
@@ -84,6 +82,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App.cs" />
     <Compile Include="Filters\InputBoxFilters.cs">
     </Compile>
     <Compile Include="Filters\LogBoxFilters.cs" />
