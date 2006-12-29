@@ -21,6 +21,7 @@ namespace Theminds {
             return;
          } 
          if (Keys.Enter != e.KeyCode) return;
+         e.SuppressKeyPress = true;
          
          bool shouldStop = false;
          StopPresses(ref shouldStop);
