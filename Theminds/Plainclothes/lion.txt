@@ -1,14 +1,14 @@
-Format: |:nick!crud join :#channel|
+"join.format"	"|:nick!ip join :#chan|"
 "join.test"		"JOIN :"
 "join.others"	"--> {0} ({1}) has joined {2}"
 "join.you"		"--> You have joined {0}"
 
-Format: |:nick!crud part #channel :msg|
+"part.format"	"|:nick!ip part #chan :msg|"
 "part.test"		"PART "
 "part.others"	"<-- {0} ({1}) has left {2}{3}"
 "part.you"		"<-- You have left {0}{1}"
 
-Format: |:nick!crud quit :msg|
+"quit.format"	"|:nick!ip quit :msg|"
 "quit.test"		"QUIT :"
 "quit.others"	"<-- {0} ({1}) has quit{3}"
 "quit.you"		"<-- You have quit {0}{1}"
