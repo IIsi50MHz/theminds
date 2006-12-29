@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace Theminds {
-	sealed class InputBox : TextBox {
+	class InputBox : TextBox {
 		public delegate void CommandDel(string cmd, string arg);
 		public delegate void MessageDel(string message);
 
@@ -21,23 +21,27 @@ namespace Theminds {
             return;
          } 
          if (Keys.Enter != e.KeyCode) return;
-
          
          bool shouldStop = false;
          StopPresses(ref shouldStop);
          if (shouldStop) return;
 
          if (Text.StartsWith("/")) {
-            int y = Text.IndexOf(' ');
-
-            // Check for parameters.
-            string command = (-1 != y) ? Text.Substring(1, y - 1) : Text.Substring(1);
-            string arg = (-1 != y) ? Text.Substring(y + 1) : "";
-
+            string[] s = this.ParseText();
+            string command = s[0]; string arg = s[1];
             Command(command, arg);
          }
          else if (Text.Length > 0) Message(Text);
          base.OnKeyDown(e);
+      }
+
+      protected string[] ParseText() {
+         int firstSpace = Text.IndexOf(' ');
+         string command = (-1 != firstSpace) ?
+            Text.Substring(1, firstSpace - 1) : Text.Substring(1);
+         string arg = (-1 != firstSpace) ?
+            Text.Substring(firstSpace + 1) : "";
+         return new string[] { command, arg };
       }
 	}
 }
