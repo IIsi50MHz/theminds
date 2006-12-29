@@ -5,9 +5,7 @@ using System.Collections.Generic;
 
 namespace Theminds {
    class Ideas {
-      public string Get(string id) {
-         return dict[id];
-      }
+      public string Get(string id) { return dict[id]; }
 
       public string Get(string id, string id2) {
          return Get(id + "." + id2);

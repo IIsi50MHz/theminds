@@ -6,7 +6,7 @@ Format: |:nick!crud join :#channel|
 Format: |:nick!crud part #channel :msg|
 "part.test"		"PART "
 "part.others"	"<-- {0} ({1}) has left {2}{3}"
-"part.you"		"<-- You have left {0}"
+"part.you"		"<-- You have left {0}{1}"
 
 Format: |:nick!crud quit :msg|
 "quit.test"		"QUIT :"
