@@ -21,9 +21,7 @@ namespace Theminds {
       // Testcase: Join a channel, try messaging.
       // TODO: handle tab close viv parting a channel.
       // TODO: set up a preference system to remove hardcoded lion.txt
-      // TODO: fix button and user list font face
       // TODO: depressed button state?
-      // TODO: disable beep
       Dictionary<string, LogBox> logBoxes;
       Dictionary<string, ITab> tabs;
       Dictionary<int, string> channelNames;

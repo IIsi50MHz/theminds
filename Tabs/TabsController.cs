@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Diagnostics;
 
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
-[assembly: System.Reflection.AssemblyVersionAttribute("0.1")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.1")]
 [assembly: System.CLSCompliant(true)]
 [assembly: System.Security.Permissions.SecurityPermission(
   System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
@@ -18,9 +18,9 @@ namespace Aspirations {
 
       ITabsParent parent;
       string defaultLabel;
-      public TabsController(ITabsParent p, string s) {
+      public TabsController(ITabsParent p, string label) {
          this.parent = p;
-         this.defaultLabel = s;
+         this.defaultLabel = label;
          this.NewTab += new TabDel(OnNewTab);
          this.Moved += delegate { };
          this.Removed += delegate { };

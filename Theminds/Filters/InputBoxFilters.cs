@@ -8,7 +8,7 @@ namespace Theminds {
 	static class InputBoxFilters {
 		public static void Init(Quirk connection, InputBox inputBox, Page form) {
 			inputBox.StopPresses += delegate(ref bool shouldStop) {
-				if (connection == null) shouldStop = true;
+				if (!connection.Started) shouldStop = true;
 			};
 
 			// TODO: Split messages up according to MaxLength
