@@ -5,15 +5,13 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B9E2EA9B-3A95-4008-B833-FA21D302865E}</ProjectGuid>
+    <ProjectGuid>{783532EE-FF4C-412A-A1CA-FF8B6A7F958F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tabs</RootNamespace>
     <AssemblyName>Tabs</AssemblyName>
     <StartupObject>
     </StartupObject>
-    <OutDir>..\..\bin\Tabs\obj\</OutDir>
-    <IntermediateOutputPath>..\..\bin\Tabs\out\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -25,16 +23,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\bin\Tabs\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <LangVersion>default</LangVersion>
-    <NoStdLib>false</NoStdLib>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -50,10 +44,10 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITabs.all.cs" />
     <Compile Include="Tab.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TabsController.cs" />
-    <Compile Include="ITabs.all.cs" />
   </ItemGroup>
 </Project>
