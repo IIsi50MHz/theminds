@@ -52,6 +52,7 @@ namespace Theminds {
 			userList.Dock = DockStyle.Fill;
 			userList.Width = 200;
 			userList.TabIndex = 1;
+         userList.Font = SystemFonts.MessageBoxFont;
 
 			userPanel.Controls.Add(userList);
 			userPanel.Controls.Add(userNotice);
@@ -65,7 +66,7 @@ namespace Theminds {
 			tabsPanel.Dock = DockStyle.Bottom;
 			tabsPanel.AutoSize = true;
 
-			tabber = new TabsController(this, "(New)");
+			tabber = new TabsController(this, "(new)");
 			tabber.NewTab += new TabDel(tabber.MoveTo);
 			tabber.Init();
 
