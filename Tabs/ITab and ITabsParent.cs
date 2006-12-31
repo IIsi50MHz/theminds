@@ -21,11 +21,5 @@ namespace Aspirations {
       int GetHashCode();
       void BecomeOld();
       void BecomeNew();
-
-      System.Drawing.Color ForeColor { get; set;}
-      System.Drawing.Font Font { get; set;}
-
-      event System.Windows.Forms.MouseEventHandler MouseDown;
-
    }
 }

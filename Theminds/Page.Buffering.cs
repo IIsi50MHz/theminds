@@ -10,6 +10,17 @@ using Aspirations;
 
 namespace Theminds {
    sealed partial class Page : Form, IBuffer {
+      struct TabId {
+         public Quirk Connection;
+         public string Channel;
+
+         public TabId(Quirk c, string channel) {
+            this.Connection = c;
+            this.Channel = channel;
+         }
+         public TabId(Quirk c) : this(c, "") { }
+      }
+
       delegate void AddLineDel(string line, Color color);
 
       // If it comes from a different thread, then the line is
@@ -17,15 +28,16 @@ namespace Theminds {
       // (SelfLine event).
       void bufferLine(Quirk sender, string line) {
          string channel = ""; Color color = Color.Black;
+         TabId tId = new TabId(connection);
          if (InvokeRequired) {
-            Line(ref line, ref channel, ref color);
-            LogBox l = logBoxes["server1." + channel];
+            Line(ref line, ref tId.Channel, ref color);
+            LogBox l = logBoxes[tId];
             BeginInvoke(new AddLineDel(l.AddLine), new object[] { line, color });
          }
          else {
             color = Color.DarkRed;
-            SelfLine(ref line, ref channel, ref color);
-            LogBox l = logBoxes["server1." + channel];
+            SelfLine(ref line, ref tId.Channel, ref color);
+            LogBox l = logBoxes[tId];
             l.AddLine(line, color);
          }
          Debug.WriteLine(channel, "Channel (via FunnelLine)");
@@ -34,25 +46,23 @@ namespace Theminds {
 
       void addChannelTab(string channel) {
          currentChannel = channel;
-         string x = "server1." + channel;
-         tabs[x] = tabber.Add(channel);
-         channelNames[tabber.Current.GetHashCode()] = x;
+         TabId tId = new TabId(connection, channel);
+         tabs[tId] = tabber.Add(channel);
+         channelNames[tabber.Current] = tId;
 
          LogBox l = new LogBox();
-         logBoxes[x] = l;
+         logBoxes[tId] = l;
 
          switchLogBox(l);
       }
 
-      // If no key exists, then that means we're moving
-      // to a /new/ tab, which means AddChannelTab will
-      // handle the logBoxPanel, not MoveChannelTab.
+      // If no key exists, `t` is a new tab.
+      // AddChannelTab will handle instead.
       void moveChannelTab(ITab t) {
-         int hash = t.GetHashCode();
-         if (!channelNames.ContainsKey(hash)) return;
+         if (!channelNames.ContainsKey(t)) return;
 
-         string name = channelNames[hash];
-         switchLogBox(logBoxes[name]);
+         TabId tId = channelNames[t];
+         switchLogBox(logBoxes[tId]);
       }
 
       void switchLogBox(Control c) {
