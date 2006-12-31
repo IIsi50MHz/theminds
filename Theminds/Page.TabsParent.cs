@@ -5,21 +5,29 @@ using System.Diagnostics;
 using Aspirations;
 
 namespace Theminds {
-	sealed partial class Page : Form, ITabsParent {
-		public void AddTab(Control c) { tabsPanel.Controls.Add(c); }
-		public void RemoveTab(Control c) { tabsPanel.Controls.Remove(c); }
-		public ITab CreateTab(string label) {
-			return new Tab(delegate(Control c) {
-				this.tabsPanel.Controls.Add(c);
-			}, label);
-		}
+   sealed partial class Page : Form, ITabsParent {
+      public void AddTab(Control c) { tabsPanel.Controls.Add(c); }
+      public void RemoveTab(Control c) { tabsPanel.Controls.Remove(c); }
+      public ITab CreateTab(string label) {
+         Tab t = new Tab(AddTab, label);
+         t.MouseDown += new MouseEventHandler(tab_Click);
+         return t;
+      }
 
-		public int TabsWidth {
-			get { return tabsPanel.Width; }
-		}
+      void tab_Click(object sender, MouseEventArgs e) {
+         ITab tab = (ITab)sender;
+         if (MouseButtons.Middle == e.Button) {
+            tabber.Remove(tab); return;
+         }
+         tabber.MoveTo(tab);
+      }
 
-		public Control FocusGrabber {
-			get { return inputBox; }
-		}
-	}
+      public int TabsWidth {
+         get { return tabsPanel.Width; }
+      }
+
+      public Control FocusGrabber {
+         get { return inputBox; }
+      }
+   }
 }

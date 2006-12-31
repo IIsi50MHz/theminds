@@ -16,10 +16,10 @@ namespace Aspirations {
          }
       }
 
-
       // del: Add |this| to an object that will calculate its
       //    autosized width (a Form).
       int trueWidth;
+      public int TrueWidth { get { return trueWidth; } }
       public Tab(KissWidthDel del)
          : base() {
          this.AutoSize = true;
@@ -33,6 +33,19 @@ namespace Aspirations {
       public Tab(KissWidthDel del, string text)
          : this(del) { this.Text = text; }
 
-      public int TrueWidth { get { return trueWidth; } }
+      public void BecomeOld() {
+         this.ForeColor = Color.LightGray;
+         this.Font = new Font(this.Font, FontStyle.Regular);
+      }
+
+      public void BecomeNew() {
+         this.ForeColor = Color.Purple;
+         this.Font = new Font(this.Font, FontStyle.Bold);
+      }
+
+      protected override void OnPaint(PaintEventArgs pevent) {
+         base.OnPaint(pevent);
+         // http://msdn2.microsoft.com/en-us/library/system.windows.forms.buttonrenderer.aspx
+      }
    }
 }
