@@ -18,15 +18,11 @@ namespace Theminds {
 
       public static Ideas Lion;
 
-      // Testcase: Join a channel, try messaging.
       // TODO: handle tab close viv parting a channel.
       // TODO: set up a preference system to remove hardcoded lion.txt
       // TODO: depressed button state?
-      Dictionary<string, LogBox> logBoxes;
-      Dictionary<string, ITab> tabs;
-      Dictionary<int, string> channelNames;
       public Page() {
-         SetUp(); // MainForm.SetUpForm.cs
+         this.SetUp(); // MainForm.SetUpForm.cs
          PostLine += delegate { };
          Lion = new Ideas(@"lion.txt");
 
@@ -43,24 +39,29 @@ namespace Theminds {
          InitBuffering();
 
          // For StartSeedingUserList()
-         tmpUserListItems = new System.Collections.Generic.List<string>();
+         tmpUserListItems = new List<string>();
 
-         //connection.Start();
+         connection.Start();
       }
 
       /**** Construction workers ****/
+      Dictionary<TabId, LogBox> logBoxes;
+      Dictionary<TabId, ITab> tabs;
+      Dictionary<ITab, TabId> channelNames;
       void InitBuffering() {
          // Page.Buffering
-         logBoxes = new Dictionary<string, LogBox>(5);
-         tabs = new Dictionary<string, ITab>(5);
-         channelNames = new Dictionary<int, string>(5);
+         logBoxes = new Dictionary<TabId, LogBox>(5);
+         tabs = new Dictionary<TabId, ITab>(5);
+         channelNames = new Dictionary<ITab, TabId>(5);
 
-         logBoxes["server1."] = logBox;
-         tabs["server1."] = tabber.Current;
-         channelNames[tabber.Current.GetHashCode()] = "server1.";
+         TabId tId = new TabId(connection);
+         logBoxes[tId] = logBox;
+         tabs[tId] = tabber.Current;
+         channelNames[tabber.Current] = tId;
 
          // Page.Buffering events.
-         LogBoxFilters.NewChannel += new LogBoxFilters.NewChannelDel(addChannelTab);
+         LogBoxFilters.NewChannel +=
+            new LogBoxFilters.NewChannelDel(addChannelTab);
          tabber.Moved += new TabDel(moveChannelTab);
       }
 
@@ -87,6 +88,8 @@ namespace Theminds {
       }
 
       /**** Static members ****/
-      public static void Alert(object alert) { MessageBox.Show(alert.ToString()); }
+      public static void Alert(object alert) {
+         MessageBox.Show(alert.ToString());
+      }
    }
 }
