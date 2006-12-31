@@ -56,6 +56,7 @@ namespace Theminds {
       }
 
       void switchLogBox(Control c) {
+         if (c == logBoxPanel.Controls[0]) return;
          this.SuspendLayout();
          logBoxPanel.Controls.RemoveAt(0);
          logBoxPanel.Controls.Add(c);

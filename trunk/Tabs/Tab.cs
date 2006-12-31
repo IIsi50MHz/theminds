@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
+using System.Windows.Forms.VisualStyles;
 
 namespace Aspirations {
    public sealed class Tab : Button, ITab {
@@ -28,24 +29,28 @@ namespace Aspirations {
 
          this.Width = (int)(trueWidth * Shrinkage);
          this.Font = SystemFonts.MessageBoxFont;
+         this.BecomeNew();
       }
 
       public Tab(KissWidthDel del, string text)
          : this(del) { this.Text = text; }
 
+      bool depressed;
       public void BecomeOld() {
          this.ForeColor = Color.LightGray;
-         this.Font = new Font(this.Font, FontStyle.Regular);
+         depressed = false;
       }
 
       public void BecomeNew() {
          this.ForeColor = Color.Purple;
-         this.Font = new Font(this.Font, FontStyle.Bold);
+         depressed = true;
       }
 
       protected override void OnPaint(PaintEventArgs pevent) {
          base.OnPaint(pevent);
-         // http://msdn2.microsoft.com/en-us/library/system.windows.forms.buttonrenderer.aspx
+         if(!depressed) return;
+         ButtonRenderer.DrawButton(pevent.Graphics, this.ClientRectangle,
+            this.Text, this.Font, false, PushButtonState.Pressed);
       }
    }
 }
