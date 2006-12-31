@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Drawing;
 using System.Diagnostics;
 
@@ -40,9 +38,7 @@ namespace Aspirations {
       int right, current, realWidth;
       public event TabDel NewTab;
       public ITab Add(string label) {
-         if (tabs.Count > 0) {
-            tabs[current].ForeColor = Color.Black;
-         }
+         if (tabs.Count > 0) tabs[current].BecomeOld();
 
          // Math trick. This is before we add it, so it's
          // lastIndex + 1, or Count.
@@ -55,7 +51,7 @@ namespace Aspirations {
          this.realWidth += x.TrueWidth;
 
          parent.FocusGrabber.Select();
-         Resize();
+         resize();
 
          return x;
       }
@@ -88,8 +84,8 @@ namespace Aspirations {
       public void RemoveCurrent() { Remove(current); }
       public void Remove(int index) {
          if (tabs.Count < current + 1) {
-            Debug.WriteLine("Trying to remove tab at index " + index, "TabsController Remove()");
-            throw new InvalidOperationException("Removing a tab that does not exist. Make sure to call Init.");
+            throw new InvalidOperationException(
+               "Removing a tab that does not exist. Make sure to call Init.");
          }
          ITab x = tabs[index];
          int hashCode = x.GetHashCode();
@@ -98,13 +94,10 @@ namespace Aspirations {
          this.realWidth -= x.TrueWidth;
 
          parent.SuspendLayout();
-         parent.RemoveTab((Control)x);
+         parent.RemoveTab((System.Windows.Forms.Control)x);
          tabs.Remove(x);
 
-         int z = tabs.Count;
-         for (int i = index; i < z; i++) {
-            tabs[i].Left -= width;
-         }
+         foreach(ITab t in tabs) { t.Left -= width; }
 
          // Stop when true:
          // * Close last, current one -> go to the new last tab.
@@ -122,21 +115,21 @@ namespace Aspirations {
          }
 
          MoveTo(current);
-         Resize();
+         resize();
          Removed(hashCode);
          parent.ResumeLayout();
       }
+      public void Remove(ITab t) { Remove(tabs.IndexOf(t)); }
 
       /**** Protected members ****/
       protected void OnNewTab(ITab t) {
          t.Left = right;
-         t.MouseDown += new MouseEventHandler(Tab_Click);
          tabs.Add(t);
       }
 
       /**** Private members ****/
       // Magic over; tabs are all added/removed already
-      void Resize() {
+      void resize() {
          int maxWidth = parent.TabsWidth;
          int realTotalWidth = 0;
          foreach (ITab tab in tabs) {
@@ -153,22 +146,13 @@ namespace Aspirations {
          }
       }
 
-      delegate void ChangeCurrentDelegate();
-      void c(ChangeCurrentDelegate del) {
+      delegate void ChangeCurrentDel();
+      void c(ChangeCurrentDel del) {
          parent.SuspendLayout();
-         tabs[current].ForeColor = Color.Black;
+         tabs[current].BecomeOld();
          del(); // Here, current changes.
-         tabs[current].ForeColor = Color.Red;
+         tabs[current].BecomeNew();
          parent.ResumeLayout();
-      }
-
-      void Tab_Click(object s, MouseEventArgs e) {
-         ITab sender = (ITab)s;
-         if (MouseButtons.Middle == e.Button) {
-            Remove(tabs.IndexOf(sender));
-            return;
-         }
-         MoveTo(sender);
       }
    } // class TabsController
 } // namespace

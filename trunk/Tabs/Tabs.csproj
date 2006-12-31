@@ -44,7 +44,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ITabs.all.cs" />
+    <Compile Include="ITabs and ITabsParent.cs" />
     <Compile Include="Tab.cs">
       <SubType>Component</SubType>
     </Compile>

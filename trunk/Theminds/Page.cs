@@ -35,7 +35,7 @@ namespace Theminds {
          mozNet.serv = "irc.mozilla.org";
          mozNet.user = "USER cryptoliter2 8 * :Hi";
          connection = new Quirk(mozNet);
-         connection.Line += new Quirk.LineDel(BufferLine);
+         connection.Line += new Quirk.LineDel(bufferLine);
 
          LogBoxFilters.Init(connection, this);
          JoinPartQuitFilter.Init(connection, this);
@@ -45,7 +45,7 @@ namespace Theminds {
          // For StartSeedingUserList()
          tmpUserListItems = new System.Collections.Generic.List<string>();
 
-         connection.Start();
+         //connection.Start();
       }
 
       /**** Construction workers ****/
@@ -60,8 +60,8 @@ namespace Theminds {
          channelNames[tabber.Current.GetHashCode()] = "server1.";
 
          // Page.Buffering events.
-         LogBoxFilters.NewChannel += new LogBoxFilters.NewChannelDel(AddChannelTab);
-         tabber.Moved += new TabDel(MoveChannelTab);
+         LogBoxFilters.NewChannel += new LogBoxFilters.NewChannelDel(addChannelTab);
+         tabber.Moved += new TabDel(moveChannelTab);
       }
 
       /**** Event handlers ****/
