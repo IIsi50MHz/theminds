@@ -40,7 +40,6 @@ namespace Theminds {
             LogBox l = logBoxes[tId];
             l.AddLine(line, color);
          }
-         Debug.WriteLine(channel, "Channel (via FunnelLine)");
          PostLine();
       }
 

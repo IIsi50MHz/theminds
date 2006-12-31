@@ -27,7 +27,6 @@ namespace Theminds {
 
       static void Test() {
          Debug.Indent();
-         Debug.WriteLine("---- Tests begin now.");
          new ThemindsTests.InputBox();
       }
    }
