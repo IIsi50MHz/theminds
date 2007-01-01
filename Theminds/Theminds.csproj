@@ -39,9 +39,11 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="AppControls.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="AppStart.cs" />
     <Compile Include="Buffering.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Construct and override.cs">
       <SubType>Form</SubType>

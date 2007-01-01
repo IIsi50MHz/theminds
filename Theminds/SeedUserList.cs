@@ -11,7 +11,7 @@ namespace Theminds {
 		public void SeedUserList() {
 			if (currentChannel == null) return;
 
-			this.Line += new LineDel(filterWho);
+			Buffer.Line += new LineDel(filterWho);
 			connection.Message("WHO " + currentChannel);
 		}
 
@@ -41,7 +41,7 @@ namespace Theminds {
 			userList.Items.Clear();
 			userList.Items.AddRange(tmpUserListItems.ToArray());
 			tmpUserListItems.Clear();
-			this.Line -= new LineDel(filterWho);
+			Buffer.Line -= new LineDel(filterWho);
 		}
 	}
 }

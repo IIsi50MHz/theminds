@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Aspirations;
 
 namespace Theminds {
-   sealed partial class App : Form, IBuffer {
+   public sealed partial class App : Form {
       public static char[] Space = new char[] { ' ' };
       Quirk connection;
 
@@ -21,9 +21,9 @@ namespace Theminds {
       // TODO: handle tab close viv parting a channel.
       // TODO: set up a preference system to remove hardcoded lion.txt
       // TODO: depressed button state?
+      public Buffer Buffer;
       public App() {
          this.SetUp(); // MainForm.SetUpForm.cs
-         PostLine += delegate { };
          Lion = new Ideas(@"lion.txt");
 
          QuirkStart mozNet = new QuirkStart();
@@ -31,38 +31,18 @@ namespace Theminds {
          mozNet.serv = "irc.mozilla.org";
          mozNet.user = "USER cryptoliter2 8 * :Hi";
          connection = new Quirk(mozNet);
-         connection.Line += new Quirk.LineDel(bufferLine);
+         connection.NewLine += new Quirk.NewLineDel(
+            delegate(Quirk q, string s) { Buffer.Add(s); });
 
-         LogBoxFilters.Init(connection, this);
-         JoinPartQuitFilter.Init(connection, this);
+         this.Buffer = new Buffer(this);
+         LogBoxFilters.Init(connection, Buffer);
+         JoinPartQuitFilter.Init(connection, Buffer);
          InputBoxFilters.Init(connection, inputBox, this);
-         InitBuffering();
 
          // For StartSeedingUserList()
          tmpUserListItems = new List<string>();
 
          connection.Start();
-      }
-
-      /**** Construction workers ****/
-      Dictionary<TabId, LogBox> logBoxes;
-      Dictionary<TabId, ITab> tabs;
-      Dictionary<ITab, TabId> channelNames;
-      void InitBuffering() {
-         // Page.Buffering
-         logBoxes = new Dictionary<TabId, LogBox>(5);
-         tabs = new Dictionary<TabId, ITab>(5);
-         channelNames = new Dictionary<ITab, TabId>(5);
-
-         TabId tId = new TabId(connection);
-         logBoxes[tId] = logBox;
-         tabs[tId] = tabber.Current;
-         channelNames[tabber.Current] = tId;
-
-         // Page.Buffering events.
-         LogBoxFilters.NewChannel +=
-            new LogBoxFilters.NewChannelDel(addChannelTab);
-         tabber.Moved += new TabDel(moveChannelTab);
       }
 
       /**** Event handlers ****/

@@ -13,10 +13,6 @@ namespace Theminds {
    static class AppStart {
       [System.STAThread]
       static void Main() {
-         // http://www.codeproject.com/dotnet/unhandledexceptions.asp
-         /*Application.ThreadException += delegate(object sender, System.Threading.ThreadExceptionEventArgs e) {
-            MessageBox.Show("Error!");
-         };*/
 #if ENABLE_TEST
          Test();
 #else
