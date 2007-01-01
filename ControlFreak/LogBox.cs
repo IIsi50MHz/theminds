@@ -3,8 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace Theminds {
-	public sealed class LogBox : RichTextBox {
+namespace Aspirations {
+	public class LogBox : RichTextBox {
 		public delegate void LineDel(ref string line, ref Color color);
 
       public LogBox()

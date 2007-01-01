@@ -3,8 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 
-namespace Theminds {
-	class InputBox : TextBox {
+namespace Aspirations {
+	public class InputBox : TextBox {
 		public delegate void CommandDel(string cmd, string arg);
 		public delegate void MessageDel(string message);
 
