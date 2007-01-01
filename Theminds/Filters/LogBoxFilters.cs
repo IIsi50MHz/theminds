@@ -85,7 +85,7 @@ namespace Theminds {
 			if (false == line.Contains(" ")) return;
 			bool selfMsg = line.StartsWith("PRIVMSG #");
 
-			string[] lineTokens = line.Split(Page.Space, 4);
+			string[] lineTokens = line.Split(App.Space, 4);
 
 			// Prevents matching something like |NOTICE PRIVMSG ...|
 			if (("PRIVMSG" == lineTokens[1] && line.StartsWith(":")) == false && selfMsg == false) return;
@@ -95,7 +95,7 @@ namespace Theminds {
 			string nick, msg;
 			if (selfMsg) {
 				nick = connection.Info.nick;
-				msg = line.Split(Page.Space, 3)[2];
+				msg = line.Split(App.Space, 3)[2];
 				color = Color.DarkRed;
 			}
 			else {

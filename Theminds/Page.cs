@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Aspirations;
 
 namespace Theminds {
-   sealed partial class Page : Form, IBuffer {
+   sealed partial class App : Form, IBuffer {
       public static char[] Space = new char[] { ' ' };
       Quirk connection;
 
@@ -21,7 +21,7 @@ namespace Theminds {
       // TODO: handle tab close viv parting a channel.
       // TODO: set up a preference system to remove hardcoded lion.txt
       // TODO: depressed button state?
-      public Page() {
+      public App() {
          this.SetUp(); // MainForm.SetUpForm.cs
          PostLine += delegate { };
          Lion = new Ideas(@"lion.txt");

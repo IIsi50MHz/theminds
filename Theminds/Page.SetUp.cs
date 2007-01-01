@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Aspirations;
 
 namespace Theminds {
-   sealed partial class Page : Form {
+   sealed partial class App : Form {
       LogBox logBox;
       InputBox inputBox;
       ListBox userList;
