@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using Aspirations;
 
 namespace Theminds {
-   sealed partial class App : Form {
+   sealed partial class App : Form, IAppControls {
       LogBox logBox;
       InputBox inputBox;
       ListBox userList;
@@ -16,7 +16,7 @@ namespace Theminds {
       Splitter consoleInputSplitter;
       Splitter consoleUsersSplitter;
 
-      TabsController tabber;
+      Tabber tabber;
       void SetUp() {
          this.WindowState = FormWindowState.Maximized;
          this.KeyPreview = true;
@@ -66,7 +66,7 @@ namespace Theminds {
          tabsPanel.Dock = DockStyle.Bottom;
          tabsPanel.AutoSize = true;
 
-         tabber = new TabsController(this, "(new)");
+         tabber = new Tabber(this, "(new)");
          tabber.NewTab += new TabDel(tabber.MoveTo);
          tabber.Init();
 

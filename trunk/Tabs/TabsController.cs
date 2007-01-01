@@ -11,12 +11,12 @@ using System.Diagnostics;
 namespace Aspirations {
    public delegate void TabDel(ITab t);
    public delegate void IntDel(int i);
-   public class TabsController {
+   public class Tabber {
       List<ITab> tabs;
 
       ITabsParent parent;
       string defaultLabel;
-      public TabsController(ITabsParent p, string label) {
+      public Tabber(ITabsParent p, string label) {
          this.parent = p;
          this.defaultLabel = label;
          this.NewTab += new TabDel(OnNewTab);

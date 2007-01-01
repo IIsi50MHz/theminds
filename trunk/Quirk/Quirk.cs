@@ -21,8 +21,8 @@ namespace Aspirations {
 
       // Everytime Connection has a new line, we send it to this event.
       // NOT LogBox's NewLine. This merely glues Connection and LogBox.
-      public delegate void LineDel(Quirk sender, string line);
-      public event LineDel Line;
+      public delegate void NewLineDel(Quirk sender, string line);
+      public event NewLineDel NewLine;
 
       static Random rndAddressIndex = new Random();
 
@@ -36,7 +36,7 @@ namespace Aspirations {
             dnsResolved = true;
          }
          catch (SocketException) {
-            Line(this, String.Format(
+            NewLine(this, String.Format(
                "Could not resolve {0} ({1}).", connectionInfo.serv, connectionInfo.hostName));
             dnsResolved = false;
             // TODO: throw exception for caller to catch.
@@ -56,7 +56,7 @@ namespace Aspirations {
 
       public void Message(string line) {
          string unlined = line;
-         Line(this, line);
+         NewLine(this, line);
          writer.WriteLine(unlined);
       }
 
@@ -87,7 +87,7 @@ namespace Aspirations {
             stream = new TcpClient(Info.serv, Info.port).GetStream();
          }
          catch (SocketException) {
-            Line(this, "Could not connect to \"" + Info.serv + "\".");
+            NewLine(this, "Could not connect to \"" + Info.serv + "\".");
             return;
          }
          StreamReader reader = new StreamReader(stream);
@@ -99,11 +99,11 @@ namespace Aspirations {
          while (!abortConnect) {
             try { line = reader.ReadLine(); }
             // TODO: what is WSAConnection error?
-            catch (IOException e) { Line(this, e.ToString()); break; }
-            catch (OutOfMemoryException e) { Line(this, e.ToString()); break; }
+            catch (IOException e) { NewLine(this, e.ToString()); break; }
+            catch (OutOfMemoryException e) { NewLine(this, e.ToString()); break; }
 
             if (line == null || line.Length <= 1) continue;
-            Line(this, line);
+            NewLine(this, line);
          }
          writer.Close(); reader.Close();
       } // connect()

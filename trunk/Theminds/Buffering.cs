@@ -6,33 +6,63 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Collections.Generic;
 using Aspirations;
 
 namespace Theminds {
-   sealed partial class App : Form, IBuffer {
-      struct TabId {
-         public Quirk Connection;
-         public string Channel;
+   public struct TabId {
+      public Quirk Connection;
+      public string Channel;
 
-         public TabId(Quirk c, string channel) {
-            this.Connection = c;
-            this.Channel = channel;
-         }
-         public TabId(Quirk c) : this(c, "") { }
+      public TabId(Quirk c, string channel) {
+         this.Connection = c;
+         this.Channel = channel;
+      }
+      public TabId(Quirk c) : this(c, "") { }
+   }
+
+   public class Buffer : IBuffer {
+      delegate void AddLineDel(string line, Color color);
+
+      IAppControls app;
+      Dictionary<TabId, LogBox> logBoxes;
+      Dictionary<TabId, ITab> tabs;
+      Dictionary<ITab, TabId> channelNames;
+      public Buffer(IAppControls app) {
+         this.app = app;
+         logBoxes = new Dictionary<TabId, LogBox>(5);
+         tabs = new Dictionary<TabId, ITab>(5);
+         channelNames = new Dictionary<ITab, TabId>(5);
+
+         PostLine += delegate { };
+         Line += delegate { };c
+         SelfLine += delegate { };
+
+         TabId tId = new TabId(app.Connection);
+         logBoxes[tId] = app.LogBox;
+         tabs[tId] = app.Tabber.Current;
+         channelNames[app.Tabber.Current] = tId;
+
+         // Page.Buffering events.
+         LogBoxFilters.NewChannel +=
+            new LogBoxFilters.NewChannelDel(addChannelTab);
+         app.Tabber.Moved += new TabDel(moveChannelTab);
       }
 
-      delegate void AddLineDel(string line, Color color);
+      public string CurrentChannel {
+         get { return app.CurrentChannel; }
+      }
 
       // If it comes from a different thread, then the line is
       // from the server (Line event). Otherwise, it's from the user
       // (SelfLine event).
-      void bufferLine(Quirk sender, string line) {
-         string channel = ""; Color color = Color.Black;
-         TabId tId = new TabId(connection);
-         if (InvokeRequired) {
+      public void Add(string line) {
+         Color color = Color.Black;
+         TabId tId = new TabId(app.Connection);
+         if (app.InvokeRequired) {
             Line(ref line, ref tId.Channel, ref color);
             LogBox l = logBoxes[tId];
-            BeginInvoke(new AddLineDel(l.AddLine), new object[] { line, color });
+            app.BeginInvoke(new AddLineDel(l.AddLine), line, color);
          }
          else {
             color = Color.DarkRed;
@@ -44,15 +74,15 @@ namespace Theminds {
       }
 
       void addChannelTab(string channel) {
-         currentChannel = channel;
-         TabId tId = new TabId(connection, channel);
-         tabs[tId] = tabber.Add(channel);
-         channelNames[tabber.Current] = tId;
+         app.CurrentChannel = channel;
+         TabId tId = new TabId(app.Connection, channel);
+         tabs[tId] = app.Tabber.Add(channel);
+         channelNames[app.Tabber.Current] = tId;
 
          LogBox l = new LogBox();
          logBoxes[tId] = l;
 
-         switchLogBox(l);
+         app.SwitchLogBox(l);
       }
 
       // If no key exists, `t` is a new tab.
@@ -61,15 +91,7 @@ namespace Theminds {
          if (!channelNames.ContainsKey(t)) return;
 
          TabId tId = channelNames[t];
-         switchLogBox(logBoxes[tId]);
-      }
-
-      void switchLogBox(Control c) {
-         if (c == logBoxPanel.Controls[0]) return;
-         this.SuspendLayout();
-         logBoxPanel.Controls.RemoveAt(0);
-         logBoxPanel.Controls.Add(c);
-         this.ResumeLayout();
+         app.SwitchLogBox(logBoxes[tId]);
       }
 
       public event LineDel Line;
@@ -83,6 +105,6 @@ namespace Theminds {
       event LineDel SelfLine;
       event MethodInvoker PostLine;
 
-      string CurrentChannel { get; set;}
+      string CurrentChannel { get; }
    }
 }
