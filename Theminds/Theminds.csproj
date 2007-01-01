@@ -40,22 +40,22 @@
   -->
   <ItemGroup>
     <Compile Include="AppStart.cs" />
+    <Compile Include="Buffering.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Construct and override.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
-    <Compile Include="Page.Buffering.cs">
+    <Compile Include="SeedUserList.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Page.cs">
+    <Compile Include="SetUpForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Page.SeedUserList.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Page.SetUp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Page.TabsParent.cs">
+    <Compile Include="TabsParent.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tests\InputBoxTests.cs">
