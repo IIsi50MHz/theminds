@@ -43,14 +43,6 @@
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
-    <Compile Include="Ideas.cs" />
-    <Compile Include="InputBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="LogBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="NativeMethods.cs" />
     <Compile Include="Page.Buffering.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,7 +59,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tests\InputBoxTests.cs">
-      <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +77,10 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ControlFreak\ControlFreak.csproj">
+      <Project>{0CB8F09D-E1A2-4695-BAFF-18E17151BE11}</Project>
+      <Name>ControlFreak</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Quirk\Quirk.csproj">
       <Project>{38B595B3-1466-4D51-9EB2-CD2A095A6ACE}</Project>
       <Name>Quirk</Name>

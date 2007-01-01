@@ -2,9 +2,10 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using Theminds;
+using Aspirations;
 
 namespace ThemindsTests {
-   class InputBox : Theminds.InputBox {
+   class InputBox : Aspirations.InputBox {
       public void TestParseText() {
          this.Text = "/cmd";
          string[] a = base.ParseText();
