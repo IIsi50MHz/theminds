@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assembly.cs" />
-    <Compile Include="Ideas.cs" />
     <Compile Include="InputBox.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -43,14 +43,16 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AppStart.cs" />
-    <Compile Include="Buffering.cs">
-    </Compile>
+    <Compile Include="Buffer.cs" />
     <Compile Include="Construct and override.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
+    <Compile Include="Ideas.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SeedUserList.cs">
       <SubType>Form</SubType>
     </Compile>
