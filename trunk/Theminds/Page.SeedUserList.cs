@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace Theminds {
-	sealed partial class Page : Form, Aspirations.ITabsParent {
+	sealed partial class App : Form, Aspirations.ITabsParent {
 		delegate void ClearUserListDel();
 		System.Collections.Generic.List<string> tmpUserListItems;
 

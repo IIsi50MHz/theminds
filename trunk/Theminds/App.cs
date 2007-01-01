@@ -10,7 +10,7 @@ using ThemindsTests;
   System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
 [assembly: System.CLSCompliant(true)]
 namespace Theminds {
-   static class App {
+   static class AppStart {
       [System.STAThread]
       static void Main() {
          // http://www.codeproject.com/dotnet/unhandledexceptions.asp
@@ -21,7 +21,7 @@ namespace Theminds {
          Test();
 #else
          Application.EnableVisualStyles();
-         Application.Run(new Page());
+         Application.Run(new App());
 #endif
       }
 

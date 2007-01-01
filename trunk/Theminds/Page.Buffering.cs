@@ -9,7 +9,7 @@ using System.Diagnostics;
 using Aspirations;
 
 namespace Theminds {
-   sealed partial class Page : Form, IBuffer {
+   sealed partial class App : Form, IBuffer {
       struct TabId {
          public Quirk Connection;
          public string Channel;

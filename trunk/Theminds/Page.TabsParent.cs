@@ -5,7 +5,7 @@ using System.Diagnostics;
 using Aspirations;
 
 namespace Theminds {
-   sealed partial class Page : Form, ITabsParent {
+   sealed partial class App : Form, ITabsParent {
       public void AddTab(Control c) { tabsPanel.Controls.Add(c); }
       public void RemoveTab(Control c) { tabsPanel.Controls.Remove(c); }
       public ITab CreateTab(string label) {

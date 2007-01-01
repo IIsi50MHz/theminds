@@ -39,7 +39,7 @@
   </Target>
   -->
   <ItemGroup>
-    <Compile Include="App.cs" />
+    <Compile Include="AppStart.cs" />
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
@@ -59,6 +59,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tests\InputBoxTests.cs">
+      <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

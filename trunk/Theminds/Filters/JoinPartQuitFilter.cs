@@ -10,7 +10,7 @@ namespace Theminds {
       public static void Init(Quirk c, IBuffer l) {
          buffer = l; connection = c;
          buffer.Line += new LineDel(OnLine);
-         lion = Page.Lion;
+         lion = App.Lion;
       }
 
       static void OnLine(ref string line, ref string channel, ref Color color) {
@@ -21,7 +21,7 @@ namespace Theminds {
          if (null == template) return;         
          color = Color.Gray;
 
-         string[] tokens = line.Split(Page.Space, 5);
+         string[] tokens = line.Split(App.Space, 5);
          findNickAndIp(tokens[0]);
 
          channel = tokens[2];

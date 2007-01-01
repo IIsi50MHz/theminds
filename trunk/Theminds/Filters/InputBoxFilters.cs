@@ -6,7 +6,7 @@ using Aspirations;
 
 namespace Theminds {
 	static class InputBoxFilters {
-		public static void Init(Quirk connection, InputBox inputBox, Page form) {
+		public static void Init(Quirk connection, InputBox inputBox, App form) {
 			inputBox.StopPresses += delegate(ref bool shouldStop) {
 				if (!connection.Started) shouldStop = true;
 			};
