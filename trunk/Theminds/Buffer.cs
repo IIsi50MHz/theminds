@@ -35,7 +35,7 @@ namespace Theminds {
          channelNames = new Dictionary<ITab, TabId>(5);
 
          PostLine += delegate { };
-         Line += delegate { };c
+         Line += delegate { };
          SelfLine += delegate { };
 
          TabId tId = new TabId(app.Connection);

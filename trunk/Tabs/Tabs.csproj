@@ -48,7 +48,6 @@
     <Compile Include="Tab.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TabsController.cs">
-    </Compile>
+    <Compile Include="Tabber.cs" />
   </ItemGroup>
 </Project>
