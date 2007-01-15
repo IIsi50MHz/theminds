@@ -7,7 +7,7 @@ namespace Theminds {
    sealed partial class App : Form, IAppControls {
       LogBox logBox;
       InputBox inputBox;
-      ListBox userList;
+      UserList userList;
 
       RichTextBox userNotice;
       Panel userPanel;
@@ -17,13 +17,13 @@ namespace Theminds {
       Splitter consoleUsersSplitter;
 
       Tabber tabber;
-      void SetUp() {
+      void SetUpForm() {
          this.WindowState = FormWindowState.Maximized;
          this.KeyPreview = true;
          this.SuspendLayout();
 
          logBox = new LogBox();
-         userList = new ListBox();
+         userList = new UserList();
          inputBox = new InputBox();
          userNotice = new RichTextBox();
          userPanel = new Panel();

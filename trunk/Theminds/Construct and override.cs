@@ -20,10 +20,9 @@ namespace Theminds {
 
       // TODO: handle tab close viv parting a channel.
       // TODO: set up a preference system to remove hardcoded lion.txt
-      // TODO: depressed button state?
-      public Buffer Buffer;
+      Buffer buffer;
       public App() {
-         this.SetUp(); // MainForm.SetUpForm.cs
+         this.SetUpForm(); // MainForm.SetUpForm.cs
          Lion = new Ideas(@"lion.txt");
 
          QuirkStart mozNet = new QuirkStart();
@@ -34,19 +33,18 @@ namespace Theminds {
          connection.NewLine += new Quirk.NewLineDel(
             delegate(Quirk q, string s) { Buffer.Add(s); });
 
-         this.Buffer = new Buffer(this);
+         this.buffer = new Buffer(this);
          LogBoxFilters.Init(connection, Buffer);
          JoinPartQuitFilter.Init(connection, Buffer);
-         InputBoxFilters.Init(connection, inputBox, this);
-
-         // For StartSeedingUserList()
-         tmpUserListItems = new List<string>();
+         InputBoxFilters.Init(this);
+         WhoFilter.Init(this);
 
          connection.Start();
       }
 
       /**** Event handlers ****/
-      protected override void OnClosing(System.ComponentModel.CancelEventArgs e) {
+      protected override void OnClosing(
+         System.ComponentModel.CancelEventArgs e) {
          connection.Dispose();
          base.OnClosing(e);
       }

@@ -52,5 +52,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="NativeMethods.cs" />
+    <Compile Include="UserList.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
 </Project>
