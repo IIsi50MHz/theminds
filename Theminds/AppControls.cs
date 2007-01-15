@@ -8,6 +8,9 @@ namespace Theminds {
       LogBox LogBox { get; }
       Tabber Tabber { get; }
       Quirk Connection { get;}
+      Buffer Buffer { get;}
+      UserList UserList { get;}
+      InputBox InputBox { get;}
       string CurrentChannel { get; set;}
       bool InvokeRequired { get;}
 
@@ -26,6 +29,18 @@ namespace Theminds {
 
       public Quirk Connection {
          get { return this.connection; }
+      }
+
+      public UserList UserList {
+         get { return this.userList; }
+      }
+
+      public InputBox InputBox {
+         get { return this.inputBox; }
+      }
+
+      public Buffer Buffer {
+         get { return buffer; }
       }
 
       public void SwitchLogBox(Control c) {

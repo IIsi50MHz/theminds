@@ -50,11 +50,9 @@
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
+    <Compile Include="Filters\WhoFilter.cs" />
     <Compile Include="Ideas.cs">
       <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SeedUserList.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="SetUpForm.cs">
       <SubType>Form</SubType>
