@@ -34,7 +34,7 @@ namespace Theminds {
             delegate(Quirk q, string s) { Buffer.Add(s); });
 
          this.buffer = new Buffer(this);
-         LogBoxFilters.Init(connection, Buffer);
+         LogBoxFilters.Init(this);
          JoinPartQuitFilter.Init(connection, Buffer);
          InputBoxFilters.Init(this);
          WhoFilter.Init(this);

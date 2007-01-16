@@ -18,7 +18,18 @@ namespace Theminds {
          this.Connection = c;
          this.Channel = channel;
       }
-      public TabId(Quirk c) : this(c, "") { }
+      public TabId(Quirk c) : this(c, null) { }
+   }
+
+   public struct BufferData {
+      public Color Color;
+      public string Channel;
+      public string Line;
+      public BufferData(string line) {
+         this.Line = line;
+         this.Color = Color.Black;
+         this.Channel = null;
+      }
    }
 
    public class Buffer : IBuffer {
@@ -57,18 +68,19 @@ namespace Theminds {
       // from the server (Line event). Otherwise, it's from the user
       // (SelfLine event).
       public void Add(string line) {
-         Color color = Color.Black;
          TabId tId = new TabId(app.Connection);
+         BufferData dc = new BufferData(line);
          if (app.InvokeRequired) {
-            Line(ref line, ref tId.Channel, ref color);
+            Line(ref dc); tId.Channel = dc.Channel;
             LogBox l = logBoxes[tId];
-            app.BeginInvoke(new AddLineDel(l.AddLine), line, color);
+            app.BeginInvoke(new AddLineDel(l.AddLine),
+               dc.Line, dc.Color);
          }
          else {
-            color = Color.DarkRed;
-            SelfLine(ref line, ref tId.Channel, ref color);
+            dc.Color = Color.DarkRed;
+            SelfLine(ref dc); tId.Channel = dc.Channel;
             LogBox l = logBoxes[tId];
-            l.AddLine(line, color);
+            l.AddLine(dc.Line, dc.Color);
          }
          PostLine();
       }
@@ -99,7 +111,7 @@ namespace Theminds {
       public event MethodInvoker PostLine;
    }
 
-   public delegate void LineDel(ref string line, ref string channel, ref Color color);
+   public delegate void LineDel(ref BufferData dc);
    public interface IBuffer {
       event LineDel Line;
       event LineDel SelfLine;

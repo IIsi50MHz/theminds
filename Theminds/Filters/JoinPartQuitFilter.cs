@@ -13,21 +13,22 @@ namespace Theminds {
          lion = App.Lion;
       }
 
-      static void OnLine(ref string line, ref string channel, ref Color color) {
+      static void OnLine(ref BufferData dc) {
          // |LogBoxFilters.privmsg| eats this before me.
          // If it added a <, then I know this is not a JPQ.
+         string line = dc.Line;
          if (line.StartsWith("<")) return;
          string template = deductTemplate(line);
          if (null == template) return;         
-         color = Color.Gray;
+         dc.Color = Color.Gray;
 
          string[] tokens = line.Split(App.Space, 5);
          findNickAndIp(tokens[0]);
 
-         channel = tokens[2];
-         line = formLine(template, findReason(line));
-         if ("join" == template) channel = channel.Substring(1);
-         if ("quit" == template) channel = "";
+         dc.Channel = tokens[2];
+         dc.Line = formLine(template, findReason(line));
+         if ("join" == template) dc.Channel = dc.Channel.Substring(1);
+         if ("quit" == template) dc.Channel = "";
       }
 
       static string nick, ip;

@@ -19,17 +19,17 @@ namespace Theminds {
       }
 
       // |userList| flickers if you just do a Clear() and lots of Add()s.
-      static void filter(ref string line, ref string channel, ref Color color) {
-         string[] tokens = line.Split(' ');
-         color = Color.Blue;
-         if (line.Contains("End of /WHO")) {
-            channel = tokens[1];
+      static void filter(ref BufferData dc) {
+         string[] tokens = dc.Line.Split(' ');
+         dc.Color = Color.Blue;
+         if (dc.Line.Contains("End of /WHO")) {
+            dc.Channel = tokens[1];
             stop(); return;
          }
 
-         LogBoxFilters.ServerPrefix(ref line, ref channel, ref color);
+         LogBoxFilters.ServerPrefix(ref dc);
 
-         channel = tokens[1];
+         dc.Channel = tokens[1];
          parent.UserList.Push(tokens[5]);
       }
 
