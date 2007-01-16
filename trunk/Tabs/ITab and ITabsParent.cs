@@ -5,10 +5,10 @@ namespace Aspirations {
       ITab CreateTab(string label);
 
       int TabsWidth { get; }
-      System.Windows.Forms.Control FocusGrabber { get; }
 
       void SuspendLayout();
       void ResumeLayout();
+      void GrabFocus();
    }
 
    public delegate void KissWidthDel(System.Windows.Forms.Control b);

@@ -50,7 +50,7 @@ namespace Aspirations {
          this.right += x.Width;
          this.realWidth += x.TrueWidth;
 
-         parent.FocusGrabber.Select();
+         parent.GrabFocus();
          resize();
 
          return x;
@@ -64,7 +64,7 @@ namespace Aspirations {
       public event TabDel Moved;
       public void MoveTo(ITab tab) {
          int index = tabs.IndexOf(tab);
-         c(delegate { current = index; parent.FocusGrabber.Select(); });
+         c(delegate { current = index; parent.GrabFocus(); });
          this.Moved(tab);
       }
       public void MoveTo(int index) { MoveTo(tabs[index]); }

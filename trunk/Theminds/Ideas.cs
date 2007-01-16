@@ -1,7 +1,7 @@
 using System.IO;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Theminds {
    public class Ideas {
@@ -24,7 +24,7 @@ namespace Theminds {
       }
 
       public Ideas(string file) {
-         dict = new Dictionary<string, string>(20);
+         dict = new StringDictionary();
          using (TextReader t = new StreamReader(file)) {
             string line;
             while ((line = t.ReadLine()) != null) parseLine(line);
@@ -32,7 +32,7 @@ namespace Theminds {
       }
 
       /**** Private members ****/
-      Dictionary<string, string> dict;
+      StringDictionary dict;
       void parseLine(string line) {
          if (!line.StartsWith("\"")) return;
 

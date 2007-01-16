@@ -6,7 +6,13 @@ using Aspirations;
 
 namespace Theminds {
    sealed partial class App : Form, ITabsParent {
-      public void AddTab(Control c) { tabsPanel.Controls.Add(c); }
+      public void AddTab(Control c) {
+         if (InvokeRequired) {
+            BeginInvoke((MethodInvoker) delegate { AddTab(c); });
+            return;
+         }
+         tabsPanel.Controls.Add(c);
+      }
       public void RemoveTab(Control c) { tabsPanel.Controls.Remove(c); }
       public ITab CreateTab(string label) {
          Tab t = new Tab(AddTab, label);
@@ -26,8 +32,8 @@ namespace Theminds {
          get { return tabsPanel.Width; }
       }
 
-      public Control FocusGrabber {
-         get { return inputBox; }
+      public void GrabFocus() {
+         inputBox.Select();
       }
    }
 }
