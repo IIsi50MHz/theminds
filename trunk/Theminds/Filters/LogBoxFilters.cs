@@ -13,31 +13,22 @@ namespace Theminds {
          // TODO: remove CurrentChannel from Parts once tabs are in;
          mircRegex = new Bowel.MircRegex();
          serverPrefixNumberRegex = new Bowel.ServerPrefixNumberRegex();
-
-         NewChannel += delegate { };
       }
 
       static Quirk quirk;
-      static IBuffer buffer;
-      static IAppControls app;
+      static Buffer buffer;
       public static void Init(IAppControls app) {
          buffer = app.Buffer; quirk = app.Connection;
-         LogBoxFilters.app = app;
 
          buffer.Line += new LineDel(hostName);
          buffer.Line += new LineDel(ServerPrefix);
-
+         buffer.Line += new LineDel(ping);
+         buffer.SelfLine += new LineDel(selfJoin);
          buffer.Line += delegate(ref BufferData dc) {
             // Strip mIRC colors.
             string line = dc.Line;
             if (line.Contains("\u0003")) line = mircRegex.Replace(line, "");
          };
-
-         buffer.Line += new LineDel(ping);
-         buffer.Line += new LineDel(privmsg);
-
-         buffer.SelfLine += new LineDel(privmsg);
-         buffer.SelfLine += new LineDel(selfJoin);
       }
 
       public static void ServerPrefix(ref BufferData dc) {
@@ -87,52 +78,6 @@ namespace Theminds {
          buffer.Line -= new LineDel(colorPong);
       }
 
-      // Format: |PRIVMSG #channel msg| or |:nick!ip PRIVMSG #channel :msg|
-      static void privmsg(ref BufferData dc) {
-         string line = dc.Line;
-         if (!line.Contains(" ")) return;
-         bool fromSelf = line.StartsWith("PRIVMSG #");
-         string[] tokens = line.Split(App.Space, 4);
-
-         // Prevents matching something like |NOTICE PRIVMSG ...|
-         bool fromOther = ("PRIVMSG" == tokens[1] && line.StartsWith(":"));
-         if (!(fromOther || fromSelf)) return;
-
-         dc.Channel = fromSelf ? tokens[1] : tokens[2];
-         if (dc.Channel == quirk.Info.nick) {
-            newIntimateFriend(ref dc); return;
-         }
-
-         string nick, msg;
-         if (fromSelf) {
-            nick = quirk.Info.nick;
-            msg = line.Split(App.Space, 3)[2];
-            dc.Color = Color.DarkRed;
-         }
-         else {
-            nick = tokens[0].Substring(1, line.IndexOf('!') - 1);
-            msg = tokens[3].Substring(1);
-         }
-
-         // ACTION uses a colon or not, depending on the source.
-         string y = fromSelf ? ":\u0001ACTION" : "\u0001ACTION";
-         if (!msg.StartsWith(y)) {
-            dc.Line = String.Format("<{0}> {1}", nick, msg);
-            return;
-         }
-         msg = tokens[2] + " " + tokens[3];
-         dc.Line = String.Format("* {0} {1}", nick, identifyActions(msg));
-         dc.Color = Color.Green;
-      }
-
-      // Not an event handler; a helper
-      static string identifyActions(string line) {
-         string msg = line.Trim().Split('\u0001')[1].Substring(7);
-         return msg;
-      }
-
-      public delegate void NewChannelDel(string channel);
-      public static event NewChannelDel NewChannel;
       static void selfJoin(ref BufferData dc) {
          string x = "JOIN "; string line = dc.Line;
          if (false == line.StartsWith("JOIN ")) return;
@@ -140,22 +85,9 @@ namespace Theminds {
 
          // Format: |JOIN #channel,#channel,#channel|
          string[] channels = line.Substring(x.Length).Split(',');
-         NewChannel(channels[channels.Length - 1]);
+         buffer.AddChannel(channels[channels.Length - 1]);
 
          dc.Channel = channels[channels.Length - 1];
-      }
-
-      static void newIntimateFriend(ref BufferData dc) {
-         string line = dc.Line;
-         string[] tokens = line.Split(App.Space, 4);
-         string nick = tokens[0].Substring(1).Substring(0,
-            tokens[0].IndexOf('!'));
-         string msg = tokens[3].Substring(0);
-         app.BeginInvoke((MethodInvoker)delegate {
-            NewChannel(nick);
-         });
-         dc.Channel = nick;
-         dc.Line = string.Format("<{0}> {1}", nick, msg);
       }
    }
 }

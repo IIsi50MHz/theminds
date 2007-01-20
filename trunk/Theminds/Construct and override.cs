@@ -38,6 +38,7 @@ namespace Theminds {
          JoinPartQuitFilter.Init(connection, Buffer);
          InputBoxFilters.Init(this);
          WhoFilter.Init(this);
+         PrivmsgFilter.Init(this);
 
          connection.Start();
       }

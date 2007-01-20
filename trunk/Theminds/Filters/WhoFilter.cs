@@ -22,24 +22,22 @@ namespace Theminds {
       static void filter(ref BufferData dc) {
          string[] tokens = dc.Line.Split(' ');
          dc.Color = Color.Blue;
-         if (dc.Line.Contains("End of /WHO")) {
-            dc.Channel = tokens[1];
-            stop(); return;
-         }
-
-         LogBoxFilters.ServerPrefix(ref dc);
-
          dc.Channel = tokens[1];
-         parent.UserList.Push(tokens[5]);
+
+         if (dc.Line.Contains("End of /WHO")) stop();
+         else {
+            LogBoxFilters.ServerPrefix(ref dc);
+            parent.UserList.Push(tokens[5]);
+         }
       }
 
       static void stop() {
-         if (parent.InvokeRequired) {
+         if (parent.InvokeRequired)
             parent.BeginInvoke(new MethodInvoker(stop));
-            return;
+         else {
+            parent.UserList.Flush();
+            parent.Buffer.Line -= new LineDel(filter);
          }
-         parent.UserList.Flush();
-         parent.Buffer.Line -= new LineDel(filter);
       }
    }
 }
