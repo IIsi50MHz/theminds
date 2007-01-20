@@ -15,6 +15,7 @@ namespace Theminds {
       bool InvokeRequired { get;}
 
       IAsyncResult BeginInvoke(Delegate d, params object[] args);
+      object Invoke(Delegate d, params object[] args);
       void SwitchLogBox(Control c);
    }
 

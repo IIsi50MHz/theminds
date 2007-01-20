@@ -50,6 +50,7 @@
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
+    <Compile Include="Filters\PrivmsgFilter.cs" />
     <Compile Include="Filters\WhoFilter.cs" />
     <Compile Include="Ideas.cs">
       <SubType>Code</SubType>

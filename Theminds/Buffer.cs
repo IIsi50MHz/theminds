@@ -55,8 +55,7 @@ namespace Theminds {
          channelNames[app.Tabber.Current] = tId;
 
          // Page.Buffering events.
-         LogBoxFilters.NewChannel +=
-            new LogBoxFilters.NewChannelDel(addChannelTab);
+         NewChannel += delegate {};
          app.Tabber.Moved += new TabDel(moveChannelTab);
       }
 
@@ -83,6 +82,13 @@ namespace Theminds {
             l.AddLine(dc.Line, dc.Color);
          }
          PostLine();
+      }
+
+      public delegate void NewChannelDel(string channel);
+      public static event NewChannelDel NewChannel;
+      public void AddChannel(string name) {
+         addChannelTab(name);
+         NewChannel(name);
       }
 
       void addChannelTab(string channel) {
