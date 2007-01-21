@@ -32,14 +32,14 @@ namespace Aspirations {
 
          try {
             IPAddress[] x = Dns.
-               GetHostEntry(Info.serv).AddressList;
-            this.Info.serv = 
+               GetHostEntry(Info.Server).AddressList;
+            this.Info.Server = 
                x[rndAddressIndex.Next(x.Length)].ToString();
             dnsResolved = true;
          }
          catch (SocketException) {
             NewLine(String.Format(
-               "Could not resolve {0}.", Info.serv));
+               "Could not resolve {0}.", Info.Server));
             dnsResolved = false;
          }
       }
@@ -85,24 +85,23 @@ namespace Aspirations {
       void connect() {
          Stream stream;
          try {
-            stream = new TcpClient(Info.serv, Info.port).GetStream();
+            stream = new TcpClient(Info.Server, Info.Port).GetStream();
          }
          catch (SocketException) {
-            NewLine("Could not connect to \"" + Info.serv + "\".");
+            NewLine("Could not connect to \"" + Info.Server + "\".");
             return;
          }
          reader = new StreamReader(stream);
          writer = new StreamWriter(stream);
+         writer.AutoFlush = true;
 
-         Message("NICK {0}\n{1}", Info.nick, Info.user);
+         Message("NICK {0}\n{1}", Info.Nick, Info.User);
          while (!disposed) pump();
          writer.Dispose(); reader.Dispose();
       }
 
       // TODO: what is WSAConnection error?
       void pump() {
-         writer.Flush();
-
          string line = null;
          try { line = reader.ReadLine(); }
          catch (IOException e) { handleException(e); }

@@ -40,7 +40,7 @@ namespace Theminds.Filters {
 
       string formLine(string template, string reason) {
          if ("join" == template) reason = "";
-         if (nick == quirk.Info.nick) {
+         if (nick == quirk.Info.Nick) {
             return String.Format(lion.Get(template, "you"),
                app.CurrentChannel, reason);
          }

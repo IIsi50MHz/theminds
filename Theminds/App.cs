@@ -2,14 +2,12 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
-using System.Collections.Generic;
 using System.Reflection;
 using Aspirations;
 
 namespace Theminds {
    public sealed partial class App : Form {
       public static char[] Space = new char[] { ' ' };
-      Quirk connection;
 
       string currentChannel;
       public string CurrentChannel {
@@ -20,30 +18,30 @@ namespace Theminds {
       public static Ideas Lion = new Ideas(@"lion.txt");
 
       // TODO: handle tab close viv parting a channel.
-      // TODO: set up a preference system to remove hardcoded lion.txt
       Buffer buffer;
+      Quirk quirk;
       public App() {
          this.SetUpForm(); // MainForm.SetUpForm.cs
 
          QuirkStart mozNet = new QuirkStart();
-         mozNet.nick = "Tongue"; mozNet.port = 6667;
-         mozNet.serv = "irc.mozilla.org";
-         mozNet.user = "USER cryptoliter2 8 * :Hi";
-         connection = new Quirk(mozNet);
+         mozNet.Nick = "Tongue"; mozNet.Port = 6667;
+         mozNet.Server = "irc.mozilla.org";
+         mozNet.User = "USER cryptoliter2 8 * :Hi";
+         quirk = new Quirk(mozNet);
 
          this.buffer = new Buffer(this);
-         connection.NewLine += new Quirk.NewLineDel(Buffer.Add);
+         quirk.NewLine += new Quirk.NewLineDel(Buffer.Add);
          App.LoadAttributeLovers(
             typeof(DesiresAppControlsAttribute), this);
 
-         connection.Start();
+         quirk.Start();
       }
 
 
       /**** Event handlers ****/
       protected override void OnClosing(
          System.ComponentModel.CancelEventArgs e) {
-         connection.Dispose();
+         quirk.Dispose();
          base.OnClosing(e);
       }
 

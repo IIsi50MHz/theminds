@@ -12,3 +12,6 @@
 "quit.test"		"QUIT :"
 "quit.others"	"<-- {0} ({1}) has quit{3}"
 "quit.you"		"<-- You have quit {0}{1}"
+
+"speech.all"	"<{0}> {1}"
+"action.all"	"* {0} {1}"

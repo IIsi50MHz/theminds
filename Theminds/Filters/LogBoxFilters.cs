@@ -31,15 +31,15 @@ namespace Theminds.Filters {
 
       public void ServerPrefix(ref BufferData dc) {
          string line = dc.Line;
-         string x = ":" + quirk.Info.hostName;
+         string x = ":" + quirk.Info.HostName;
 
          if (false == line.StartsWith(x)) return;
 
          // Format: <server name> <command number> <optional. nick>
          line = line.Substring(x.Length + 1);
          line = serverPrefixNumberRegex.Replace(line, "");
-         if (line.StartsWith(quirk.Info.nick)) {
-            line = line.Substring(quirk.Info.nick.Length + 1);
+         if (line.StartsWith(quirk.Info.Nick)) {
+            line = line.Substring(quirk.Info.Nick.Length + 1);
          }
          line = "[server] " + line;
          dc.Line = line;
@@ -48,7 +48,7 @@ namespace Theminds.Filters {
       void hostName(ref BufferData dc) {
          string line = dc.Line;
          if (line.StartsWith(":") == false) return;
-         quirk.Info.hostName = line.Substring(1, line.IndexOf(' ') - 1);
+         quirk.Info.HostName = line.Substring(1, line.IndexOf(' ') - 1);
          buffer.Line -= new LineDel(hostName);
       }
 
