@@ -31,23 +31,23 @@ namespace Aspirations {
          this.Info = connectionInfo;
 
          try {
-            IPAddress[] x = Dns.GetHostEntry(connectionInfo.serv).AddressList;
-            this.Info.serv = x[rndAddressIndex.Next(x.Length)].ToString();
+            IPAddress[] x = Dns.
+               GetHostEntry(connectionInfo.serv).AddressList;
+            this.Info.serv = 
+               x[rndAddressIndex.Next(x.Length)].ToString();
             dnsResolved = true;
          }
          catch (SocketException) {
             NewLine(this, String.Format(
-               "Could not resolve {0} ({1}).", connectionInfo.serv, connectionInfo.hostName));
+               "Could not resolve {0}.", connectionInfo.serv));
             dnsResolved = false;
-            // TODO: throw exception for caller to catch.
          }
       }
 
       Thread connectThread;
       public bool Started = false;
       public void Start() {
-         if (this.Started) return;
-         if (false == dnsResolved) return;
+         if (this.Started || !dnsResolved) return;
          connectThread = new Thread(new ThreadStart(connect));
          connectThread.IsBackground = true;
          connectThread.Start();
@@ -61,7 +61,7 @@ namespace Aspirations {
       }
 
       // IDisposable
-      bool disposed;
+      bool disposed = false;
       public void Dispose() { Dispose(null); }
       public void Dispose(string quitMsg) {
          if (disposed) return;
@@ -72,15 +72,12 @@ namespace Aspirations {
             else Message("QUIT " + quitMsg);
          }
 
-         abortConnect = true;
-         connectThread.Join();
-
-         if (null != writer) writer.Dispose();
          disposed = true;
       }
 
       /**** Private members ****/
-      volatile bool abortConnect; StreamWriter writer;
+      StreamWriter writer;
+      StreamReader reader;
       void connect() {
          Stream stream;
          try {
@@ -90,22 +87,30 @@ namespace Aspirations {
             NewLine(this, "Could not connect to \"" + Info.serv + "\".");
             return;
          }
-         StreamReader reader = new StreamReader(stream);
+         reader = new StreamReader(stream);
          writer = new StreamWriter(stream);
-         writer.AutoFlush = true;
 
          Message("NICK " + Info.nick + "\n" + Info.user);
-         string line; abortConnect = false;
-         while (!abortConnect) {
-            try { line = reader.ReadLine(); }
-            // TODO: what is WSAConnection error?
-            catch (IOException e) { NewLine(this, e.ToString()); break; }
-            catch (OutOfMemoryException e) { NewLine(this, e.ToString()); break; }
+         while (!disposed) pump();
+         writer.Dispose(); reader.Dispose();
+      }
 
-            if (line == null || line.Length <= 1) continue;
-            NewLine(this, line);
-         }
-         writer.Close(); reader.Close();
-      } // connect()
+      // TODO: what is WSAConnection error?
+      void pump() {
+         writer.Flush();
+
+         string line = null;
+         try { line = reader.ReadLine(); }
+         catch (IOException e) { handleException(e); }
+         catch (OutOfMemoryException e) { handleException(e); }
+
+         if (line == null) return;
+         NewLine(this, line);
+      }
+
+      void handleException(Exception e) {
+         NewLine(this, e.ToString());
+         this.Dispose();
+      }
    }
 }
