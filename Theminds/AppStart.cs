@@ -2,7 +2,7 @@
 
 using System.Diagnostics;
 using System.Windows.Forms;
-using ThemindsTests;
+using Theminds.Tests;
 
 [assembly: System.Reflection.AssemblyVersionAttribute("1.1")]
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
@@ -23,7 +23,7 @@ namespace Theminds {
 
       static void Test() {
          Debug.Indent();
-         new ThemindsTests.InputBox();
+         App.LoadAttributeLovers(typeof(DesiresTestingAttribute));
       }
    }
 }

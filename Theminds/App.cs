@@ -34,7 +34,8 @@ namespace Theminds {
             delegate(Quirk q, string s) { Buffer.Add(s); });
 
          this.buffer = new Buffer(this);
-         this.loadFilters();
+         App.LoadAttributeLovers(
+            typeof(DesiresAppControlsAttribute), this);
 
          connection.Start();
       }
@@ -68,13 +69,14 @@ namespace Theminds {
          MessageBox.Show(alert.ToString());
       }
 
-      void loadFilters() {
+      public static void LoadAttributeLovers(Type attribute, 
+         params object[] args) {
          Type[] types = Assembly.GetExecutingAssembly().GetTypes();
-         Type x = typeof(DesiresAppControlsAttribute);
          foreach (Type type in types) {
-            object[] lola = type.GetCustomAttributes(x, false);
-            if (lola.Length < 1) continue;
-            Activator.CreateInstance(type, this);
+            object[] oneNightStands = 
+               type.GetCustomAttributes(attribute, false);
+            if (oneNightStands.Length < 1) continue;
+            Activator.CreateInstance(type, args);
          }
       }
    }
