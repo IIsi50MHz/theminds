@@ -1,5 +1,7 @@
-  * /me, for egotistical actions
-  * /j #channel, for joining associations
-  * /raw, for super-raw meat; I mean raw commands!
-  * /q, for quitting this train wreck
-  * /w, for seeing who's in a channel (Jesus, no?)
+(x) means it's mandatory. {x} means it's not.
+
+  * */me (message)*, for egotistical actions
+  * */j #channel*, for joining associations
+  * */raw*, for super-raw meat; I mean raw commands!
+  * */q {message}*, for quitting this train wreck
+  * */w*, for seeing who's in a channel (Jesus, no?)
