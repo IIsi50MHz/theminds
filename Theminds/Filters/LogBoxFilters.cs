@@ -4,17 +4,14 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Aspirations;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
+using Bowel;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
    class LogBoxFilters {
-      static Bowel.MircRegex mircRegex;
-      static Bowel.ServerPrefixNumberRegex serverPrefixNumberRegex;
-      static LogBoxFilters() {
-         // TODO: remove CurrentChannel from Parts once tabs are in;
-         mircRegex = new Bowel.MircRegex();
-         serverPrefixNumberRegex = new Bowel.ServerPrefixNumberRegex();
-      }
+      MircRegex mircRegex = new MircRegex();
+      ServerPrefixNumberRegex serverPrefixNumberRegex
+         = new ServerPrefixNumberRegex();
 
       Quirk quirk;
       Buffer buffer;

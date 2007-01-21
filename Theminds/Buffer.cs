@@ -54,10 +54,6 @@ namespace Theminds {
          app.Tabber.Moved += new TabDel(moveChannelTab);
       }
 
-      public string CurrentChannel {
-         get { return app.CurrentChannel; }
-      }
-
       // If it comes from a different thread, then the line is
       // from the server (Line event). Otherwise, it's from the user
       // (SelfLine event).

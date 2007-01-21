@@ -19,9 +19,8 @@ namespace Theminds.Filters {
          // TODO: Split messages up according to MaxLength
          inputBox.Command += delegate(string cmd, string msg) {
             if ("me" != cmd) return;
-            connection.Message(String.Format(
-               "PRIVMSG {0} :\u0001ACTION {1}\u0001",
-               form.CurrentChannel, msg));
+            connection.Message("PRIVMSG {0} :\u0001ACTION {1}\u0001",
+               form.CurrentChannel, msg);
          };
 
          inputBox.Message += delegate(string message) {
