@@ -2,13 +2,15 @@ using System;
 using System.Drawing;
 using Aspirations;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
+using S = System.String;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
    class PrivmsgFilter {
       IAppControls app;
-      Quirk quirk;
-      Buffer buffer;
+      Quirk quirk; Buffer buffer;
+      Ideas lion = App.Lion;
+      string speechAll, actionAll;
       public PrivmsgFilter(IAppControls app) {
          this.app = app;
          this.quirk = app.Connection;
@@ -16,6 +18,9 @@ namespace Theminds.Filters {
 
          buffer.Line += new LineDel(filter);
          buffer.SelfLine += new LineDel(filter);
+
+         speechAll = lion.Get("speech.all");
+         actionAll = lion.Get("action.all");
       }
 
       // Format: |PRIVMSG #channel msg| or |:nick!ip PRIVMSG #channel :msg|
@@ -32,7 +37,7 @@ namespace Theminds.Filters {
             if (!isValid(line, tokens)) return;
 
             dc.Channel = fromSelf ? tokens[1] : tokens[2];
-            if (dc.Channel == quirk.Info.nick)
+            if (dc.Channel == quirk.Info.Nick)
                newIntimateFriend(line, tokens);
             else {
                newPrivmsg(line, tokens);
@@ -46,22 +51,21 @@ namespace Theminds.Filters {
       void newPrivmsg(string line, string[] tokens) {
          string nick, msg;
          if (fromSelf) {
-            nick = quirk.Info.nick;
+            nick = quirk.Info.Nick;
             msg = line.Split(App.Space, 3)[2];
-            dc.Color = Color.DarkRed;
          }
          else {
-            nick = tokens[0].Substring(1, line.IndexOf('!') - 1);
-            msg = tokens[3].Substring(1);
+            nick = nickFinder(tokens[0]);
+            msg = msgFinder(tokens[3]);
          }
 
          // ACTION uses a colon or not, depending on the source.
          string y = fromSelf ? ":\u0001ACTION" : "\u0001ACTION";
          if (!msg.StartsWith(y))
-            dc.Line = String.Format("<{0}> {1}", nick, msg);
+            dc.Line = S.Format(speechAll, nick, msg);
          else {
             msg = tokens[2] + " " + tokens[3];
-            dc.Line = String.Format("* {0} {1}", nick,
+            dc.Line = S.Format(actionAll, nick,
                identifyActions(msg));
             dc.Color = Color.Green;
          }
@@ -82,11 +86,17 @@ namespace Theminds.Filters {
       }
 
       void newIntimateFriend(string line, string[] tokens) {
-         string nick = tokens[0].Substring(1).Substring(0,
-            tokens[0].IndexOf('!') - 1);
-         string msg = tokens[3].Substring(1);
+         string nick = nickFinder(tokens[0]);
+         string msg = msgFinder(tokens[3]);
          dc.Channel = nick;
-         dc.Line = string.Format("<{0}> {1}", nick, msg);
+         dc.Line = S.Format(speechAll, nick, msg);
+      }
+
+      string nickFinder(string token) {
+         return token.Substring(1, token.IndexOf('!') - 1);
+      }
+      string msgFinder(string token) {
+         return token.Substring(1);
       }
    }
 }

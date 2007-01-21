@@ -29,7 +29,7 @@ namespace Theminds {
       }
 
       public Quirk Connection {
-         get { return this.connection; }
+         get { return this.quirk; }
       }
 
       public UserList UserList {
