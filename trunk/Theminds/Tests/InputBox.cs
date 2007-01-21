@@ -4,7 +4,8 @@ using System.Reflection;
 using Theminds;
 using Aspirations;
 
-namespace ThemindsTests {
+namespace Theminds.Tests {
+   [DesiresTesting]
    class InputBox : Aspirations.InputBox {
       public void TestParseText() {
          this.Text = "/cmd";

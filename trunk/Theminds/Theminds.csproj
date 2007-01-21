@@ -39,14 +39,15 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="App.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="AppControls.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AppStart.cs" />
+    <Compile Include="Attributes.cs" />
     <Compile Include="Buffer.cs" />
-    <Compile Include="Construct and override.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
@@ -55,14 +56,13 @@
     <Compile Include="Ideas.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DesiresAppControlsAttribute.cs" />
     <Compile Include="SetUpForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="TabsParent.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Tests\InputBoxTests.cs">
+    <Compile Include="Tests\InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
   </ItemGroup>
