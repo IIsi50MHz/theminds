@@ -34,8 +34,11 @@ namespace Theminds.Filters {
             dc.Channel = fromSelf ? tokens[1] : tokens[2];
             if (dc.Channel == quirk.Info.nick)
                newIntimateFriend(line, tokens);
-            else
+            else {
                newPrivmsg(line, tokens);
+               if (!dc.Channel.StartsWith("#"))
+                  dc.NeedsNewTab = false;
+            }
             bufferData = dc;
          }
       }
