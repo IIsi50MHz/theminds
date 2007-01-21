@@ -30,10 +30,9 @@ namespace Theminds {
          mozNet.serv = "irc.mozilla.org";
          mozNet.user = "USER cryptoliter2 8 * :Hi";
          connection = new Quirk(mozNet);
-         connection.NewLine += new Quirk.NewLineDel(
-            delegate(Quirk q, string s) { Buffer.Add(s); });
 
          this.buffer = new Buffer(this);
+         connection.NewLine += new Quirk.NewLineDel(Buffer.Add);
          App.LoadAttributeLovers(
             typeof(DesiresAppControlsAttribute), this);
 

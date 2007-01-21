@@ -21,7 +21,7 @@ namespace Aspirations {
 
       // Everytime Connection has a new line, we send it to this event.
       // NOT LogBox's NewLine. This merely glues Connection and LogBox.
-      public delegate void NewLineDel(Quirk sender, string line);
+      public delegate void NewLineDel(string line);
       public event NewLineDel NewLine;
 
       static Random rndAddressIndex = new Random();
@@ -32,14 +32,14 @@ namespace Aspirations {
 
          try {
             IPAddress[] x = Dns.
-               GetHostEntry(connectionInfo.serv).AddressList;
+               GetHostEntry(Info.serv).AddressList;
             this.Info.serv = 
                x[rndAddressIndex.Next(x.Length)].ToString();
             dnsResolved = true;
          }
          catch (SocketException) {
-            NewLine(this, String.Format(
-               "Could not resolve {0}.", connectionInfo.serv));
+            NewLine(String.Format(
+               "Could not resolve {0}.", Info.serv));
             dnsResolved = false;
          }
       }
@@ -56,8 +56,12 @@ namespace Aspirations {
 
       public void Message(string line) {
          string unlined = line;
-         NewLine(this, line);
+         NewLine(line);
          writer.WriteLine(unlined);
+      }
+
+      public void Message(string line, params object[] args) {
+         Message(String.Format(line, args));
       }
 
       // IDisposable
@@ -84,13 +88,13 @@ namespace Aspirations {
             stream = new TcpClient(Info.serv, Info.port).GetStream();
          }
          catch (SocketException) {
-            NewLine(this, "Could not connect to \"" + Info.serv + "\".");
+            NewLine("Could not connect to \"" + Info.serv + "\".");
             return;
          }
          reader = new StreamReader(stream);
          writer = new StreamWriter(stream);
 
-         Message("NICK " + Info.nick + "\n" + Info.user);
+         Message("NICK {0}\n{1}", Info.nick, Info.user);
          while (!disposed) pump();
          writer.Dispose(); reader.Dispose();
       }
@@ -105,11 +109,11 @@ namespace Aspirations {
          catch (OutOfMemoryException e) { handleException(e); }
 
          if (line == null) return;
-         NewLine(this, line);
+         NewLine(line);
       }
 
       void handleException(Exception e) {
-         NewLine(this, e.ToString());
+         NewLine(e.ToString());
          this.Dispose();
       }
    }

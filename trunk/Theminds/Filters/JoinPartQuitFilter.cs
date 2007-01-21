@@ -5,12 +5,12 @@ using Aspirations;
 namespace Theminds.Filters {
    [DesiresAppControls]
    class JoinPartQuitFilter {
-      static Quirk quirk;
-      static Buffer buffer;
-      static Ideas lion = App.Lion;
+      Quirk quirk;
+      IAppControls app;
+      Ideas lion = App.Lion;
       public JoinPartQuitFilter(IAppControls app) {
-         buffer = app.Buffer; quirk = app.Connection;
-         buffer.Line += new LineDel(OnLine);
+         this.app = app; quirk = app.Connection;
+         app.Buffer.Line += new LineDel(OnLine);
       }
 
       void OnLine(ref BufferData dc) {
@@ -42,10 +42,10 @@ namespace Theminds.Filters {
          if ("join" == template) reason = "";
          if (nick == quirk.Info.nick) {
             return String.Format(lion.Get(template, "you"),
-               buffer.CurrentChannel, reason);
+               app.CurrentChannel, reason);
          }
          return String.Format(lion.Get(template, "others"),
-             nick, ip, buffer.CurrentChannel, reason);
+             nick, ip, app.CurrentChannel, reason);
       }
 
       string findReason(string line) {
