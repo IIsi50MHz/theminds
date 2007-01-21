@@ -2,23 +2,23 @@ using System;
 using System.Drawing;
 using Aspirations;
 
-namespace Theminds {
-   static class JoinPartQuitFilter {
-      static Quirk connection;
+namespace Theminds.Filters {
+   [DesiresAppControls]
+   class JoinPartQuitFilter {
+      static Quirk quirk;
       static IBuffer buffer;
-      static Ideas lion;
-      public static void Init(Quirk c, IBuffer l) {
-         buffer = l; connection = c;
+      static Ideas lion = App.Lion;
+      public JoinPartQuitFilter(IAppControls app) {
+         buffer = app.Buffer; quirk = app.Connection;
          buffer.Line += new LineDel(OnLine);
-         lion = App.Lion;
       }
 
-      static void OnLine(ref BufferData dc) {
+      void OnLine(ref BufferData dc) {
          // |LogBoxFilters.privmsg| eats this before me.
          // If it added a <, then I know this is not a JPQ.
          string line = dc.Line;
          if (line.StartsWith("<")) return;
-         string template = deductTemplate(line);
+         string template = deduceTemplate(line);
          if (null == template) return;         
          dc.Color = Color.Gray;
 
@@ -31,16 +31,16 @@ namespace Theminds {
          if ("quit" == template) dc.Channel = "";
       }
 
-      static string nick, ip;
-      static void findNickAndIp(string token) {
+      string nick, ip;
+      void findNickAndIp(string token) {
          string[] nickTokens = token.Split('!');
          nick = nickTokens[0].Substring(1);
          ip = nickTokens[1];
       }
 
-      static string formLine(string template, string reason) {
+      string formLine(string template, string reason) {
          if ("join" == template) reason = "";
-         if (nick == connection.Info.nick) {
+         if (nick == quirk.Info.nick) {
             return String.Format(lion.Get(template, "you"),
                buffer.CurrentChannel, reason);
          }
@@ -48,7 +48,7 @@ namespace Theminds {
              nick, ip, buffer.CurrentChannel, reason);
       }
 
-      static string findReason(string line) {
+      string findReason(string line) {
          int omegaPos = line.IndexOf(':', 1);
          string argonaut = line.Substring(omegaPos + 1);
          //	No parentheses for empty part/quit messages.
@@ -56,7 +56,7 @@ namespace Theminds {
          return reason;
       }
 
-      static string deductTemplate(string line) {
+      string deduceTemplate(string line) {
          return lion.TestContains(line,
              new string[] { "join", "part", "quit" });
       }

@@ -4,10 +4,11 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using Aspirations;
 
-namespace Theminds {
-   static class InputBoxFilters {
+namespace Theminds.Filters {
+   [DesiresAppControls]
+   class InputBoxFilters {
       public static event MethodInvoker Who = delegate { };
-      public static void Init(IAppControls form) {
+      public InputBoxFilters(IAppControls form) {
          InputBox inputBox = form.InputBox;
          Quirk connection = form.Connection;
 

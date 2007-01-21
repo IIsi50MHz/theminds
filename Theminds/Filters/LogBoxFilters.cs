@@ -5,8 +5,9 @@ using System.Text.RegularExpressions;
 using Aspirations;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
-namespace Theminds {
-   static class LogBoxFilters {
+namespace Theminds.Filters {
+   [DesiresAppControls]
+   class LogBoxFilters {
       static Bowel.MircRegex mircRegex;
       static Bowel.ServerPrefixNumberRegex serverPrefixNumberRegex;
       static LogBoxFilters() {
@@ -15,9 +16,9 @@ namespace Theminds {
          serverPrefixNumberRegex = new Bowel.ServerPrefixNumberRegex();
       }
 
-      static Quirk quirk;
-      static Buffer buffer;
-      public static void Init(IAppControls app) {
+      Quirk quirk;
+      Buffer buffer;
+      public LogBoxFilters(IAppControls app) {
          buffer = app.Buffer; quirk = app.Connection;
 
          buffer.Line += new LineDel(hostName);
@@ -31,7 +32,7 @@ namespace Theminds {
          };
       }
 
-      public static void ServerPrefix(ref BufferData dc) {
+      public void ServerPrefix(ref BufferData dc) {
          string line = dc.Line;
          string x = ":" + quirk.Info.hostName;
 
@@ -47,14 +48,14 @@ namespace Theminds {
          dc.Line = line;
       }
 
-      static void hostName(ref BufferData dc) {
+      void hostName(ref BufferData dc) {
          string line = dc.Line;
          if (line.StartsWith(":") == false) return;
          quirk.Info.hostName = line.Substring(1, line.IndexOf(' ') - 1);
          buffer.Line -= new LineDel(hostName);
       }
 
-      static void ping(ref BufferData dc) {
+      void ping(ref BufferData dc) {
          if (false == dc.Line.StartsWith("PING :")) return;
 
          pingMessage = dc.Line;
@@ -62,8 +63,8 @@ namespace Theminds {
          dc.Color = Color.Blue;
       }
 
-      static string pingMessage;
-      static void sendPong() {
+      string pingMessage;
+      void sendPong() {
          buffer.Line += new LineDel(colorPong);
          // Remove before Message or else recursion
          buffer.PostLine -= new MethodInvoker(sendPong);
@@ -72,13 +73,13 @@ namespace Theminds {
          quirk.Message("PONG :" + pingMessage.Substring(6));
       }
 
-      static void colorPong(ref BufferData dc) {
+      void colorPong(ref BufferData dc) {
          if (false == dc.Line.StartsWith("PONG :")) return;
          dc.Color = Color.Blue;
          buffer.Line -= new LineDel(colorPong);
       }
 
-      static void selfJoin(ref BufferData dc) {
+      void selfJoin(ref BufferData dc) {
          string x = "JOIN "; string line = dc.Line;
          if (false == line.StartsWith("JOIN ")) return;
          dc.Color = Color.Blue;

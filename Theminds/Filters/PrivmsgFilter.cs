@@ -3,24 +3,25 @@ using System.Drawing;
 using Aspirations;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
-namespace Theminds {
-   static class PrivmsgFilter {
-      static IAppControls app;
-      static Quirk quirk;
-      static Buffer buffer;
-      public static void Init(IAppControls app) {
-         PrivmsgFilter.app = app;
-         PrivmsgFilter.quirk = app.Connection;
-         PrivmsgFilter.buffer = app.Buffer;
+namespace Theminds.Filters {
+   [DesiresAppControls]
+   class PrivmsgFilter {
+      IAppControls app;
+      Quirk quirk;
+      Buffer buffer;
+      public PrivmsgFilter(IAppControls app) {
+         this.app = app;
+         this.quirk = app.Connection;
+         this.buffer = app.Buffer;
 
          buffer.Line += new LineDel(filter);
          buffer.SelfLine += new LineDel(filter);
       }
 
       // Format: |PRIVMSG #channel msg| or |:nick!ip PRIVMSG #channel :msg|
-      static BufferData dc;
-      static string thisLock = "ants";
-      static void filter(ref BufferData bufferData) {
+      BufferData dc;
+      string thisLock = "ants";
+      void filter(ref BufferData bufferData) {
          lock (thisLock) {
             dc = bufferData;
             string line = dc.Line;
@@ -39,7 +40,7 @@ namespace Theminds {
          }
       }
 
-      static void newPrivmsg(string line, string[] tokens) {
+      void newPrivmsg(string line, string[] tokens) {
          string nick, msg;
          if (fromSelf) {
             nick = quirk.Info.nick;
@@ -63,8 +64,8 @@ namespace Theminds {
          }
       }
 
-      static bool fromSelf;
-      static bool isValid(string line, string[] tokens) {
+      bool fromSelf;
+      bool isValid(string line, string[] tokens) {
          fromSelf = line.StartsWith("PRIVMSG #");
          // Prevents matching something like |NOTICE PRIVMSG ...|
          bool fromOther = ("PRIVMSG" == tokens[1] && line.StartsWith(":"));
@@ -73,11 +74,11 @@ namespace Theminds {
       }
 
       // Not an event handler; a helper
-      static string identifyActions(string line) {
+      string identifyActions(string line) {
          return line.Trim().Split('\u0001')[1].Substring(7);
       }
 
-      static void newIntimateFriend(string line, string[] tokens) {
+      void newIntimateFriend(string line, string[] tokens) {
          string nick = tokens[0].Substring(1).Substring(0,
             tokens[0].IndexOf('!') - 1);
          string msg = tokens[3].Substring(1);

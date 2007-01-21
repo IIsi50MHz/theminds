@@ -55,6 +55,7 @@
     <Compile Include="Ideas.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DesiresAppControlsAttribute.cs" />
     <Compile Include="SetUpForm.cs">
       <SubType>Form</SubType>
     </Compile>
