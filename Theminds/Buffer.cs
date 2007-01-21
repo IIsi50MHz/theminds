@@ -25,16 +25,16 @@ namespace Theminds {
       public Color Color;
       public string Channel;
       public string Line;
+      public bool NeedsNewTab;
       public BufferData(string line) {
          this.Line = line;
          this.Color = Color.Black;
          this.Channel = null;
+         this.NeedsNewTab = true;
       }
    }
 
    public class Buffer {
-      delegate void AddLineDel(string line, Color color);
-
       IAppControls app;
       Dictionary<TabId, LogBox> logBoxes;
       Dictionary<TabId, ITab> tabs;
@@ -61,35 +61,40 @@ namespace Theminds {
       // If it comes from a different thread, then the line is
       // from the server (Line event). Otherwise, it's from the user
       // (SelfLine event).
+      delegate void AddLineDel(string line, Color color);
       public void Add(string line) {
          TabId tId = new TabId(app.Connection);
          BufferData dc = new BufferData(line);
-         if (app.InvokeRequired) {
-            Line(ref dc); tId.Channel = dc.Channel;
-            handleNewChannel(tId);
-            LogBox l = logBoxes[tId];
-            app.BeginInvoke(new AddLineDel(l.AddLine),
-               dc.Line, dc.Color);
-         }
+         
+         if (app.InvokeRequired) Line(ref dc);
          else {
             dc.Color = Color.DarkRed;
-            SelfLine(ref dc); tId.Channel = dc.Channel;
-            handleNewChannel(tId);
-            LogBox l = logBoxes[tId];
-            l.AddLine(dc.Line, dc.Color);
+            SelfLine(ref dc);
          }
+
+         tId.Channel = dc.Channel;
+         handleNewTab(ref tId, dc.NeedsNewTab);
+         LogBox l = logBoxes[tId];
+         app.Invoke(new AddLineDel(l.AddLine), 
+            dc.Line, dc.Color);
          PostLine();
       }
 
       public delegate void NewChannelDel(string channel);
       public static event NewChannelDel NewChannel
          = delegate { };
-      void handleNewChannel(TabId tId) {
+      void handleNewTab(ref TabId tId, bool needsNewTab) {
          if (logBoxes.ContainsKey(tId)) return;
-         app.Invoke((MethodInvoker) delegate {
-            addChannelTab(tId.Channel);
-            NewChannel(tId.Channel);
-         });
+         if (!needsNewTab) {
+            tId.Channel = app.CurrentChannel;
+         }
+         else {
+            TabId tId2 = tId;
+            app.Invoke((MethodInvoker)delegate {
+               addChannelTab(tId2.Channel);
+               NewChannel(tId2.Channel);
+            });
+         }
       }
 
       void addChannelTab(string channel) {
