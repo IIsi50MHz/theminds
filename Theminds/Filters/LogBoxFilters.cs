@@ -86,8 +86,6 @@ namespace Theminds.Filters {
 
          // Format: |JOIN #channel,#channel,#channel|
          string[] channels = line.Substring(x.Length).Split(',');
-         buffer.AddChannel(channels[channels.Length - 1]);
-
          dc.Channel = channels[channels.Length - 1];
       }
    }

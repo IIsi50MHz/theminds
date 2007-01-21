@@ -6,7 +6,7 @@ namespace Theminds.Filters {
    [DesiresAppControls]
    class JoinPartQuitFilter {
       static Quirk quirk;
-      static IBuffer buffer;
+      static Buffer buffer;
       static Ideas lion = App.Lion;
       public JoinPartQuitFilter(IAppControls app) {
          buffer = app.Buffer; quirk = app.Connection;
