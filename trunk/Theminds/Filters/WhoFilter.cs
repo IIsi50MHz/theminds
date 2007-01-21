@@ -9,7 +9,13 @@ namespace Theminds.Filters {
       IAppControls app;
       public WhoFilter(IAppControls parent) {
          InputBoxFilters.Who += new MethodInvoker(start);
+         parent.Buffer.SelfLine += new LineDel(whoMessageFilter);
          this.app = parent;
+      }
+
+      void whoMessageFilter(ref BufferData dc) {
+         if (!dc.Line.StartsWith("WHO ")) return;
+         dc.Channel = app.CurrentChannel;
       }
 
       void start() {
