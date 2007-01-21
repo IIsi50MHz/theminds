@@ -32,7 +32,7 @@ namespace Theminds {
       }
    }
 
-   public class Buffer : IBuffer {
+   public class Buffer {
       delegate void AddLineDel(string line, Color color);
 
       IAppControls app;
@@ -45,17 +45,12 @@ namespace Theminds {
          tabs = new Dictionary<TabId, ITab>(5);
          channelNames = new Dictionary<ITab, TabId>(5);
 
-         PostLine += delegate { };
-         Line += delegate { };
-         SelfLine += delegate { };
-
          TabId tId = new TabId(app.Connection);
          logBoxes[tId] = app.LogBox;
          tabs[tId] = app.Tabber.Current;
          channelNames[app.Tabber.Current] = tId;
 
          // Page.Buffering events.
-         NewChannel += delegate {};
          app.Tabber.Moved += new TabDel(moveChannelTab);
       }
 
@@ -71,6 +66,7 @@ namespace Theminds {
          BufferData dc = new BufferData(line);
          if (app.InvokeRequired) {
             Line(ref dc); tId.Channel = dc.Channel;
+            handleNewChannel(tId);
             LogBox l = logBoxes[tId];
             app.BeginInvoke(new AddLineDel(l.AddLine),
                dc.Line, dc.Color);
@@ -78,6 +74,7 @@ namespace Theminds {
          else {
             dc.Color = Color.DarkRed;
             SelfLine(ref dc); tId.Channel = dc.Channel;
+            handleNewChannel(tId);
             LogBox l = logBoxes[tId];
             l.AddLine(dc.Line, dc.Color);
          }
@@ -85,10 +82,14 @@ namespace Theminds {
       }
 
       public delegate void NewChannelDel(string channel);
-      public static event NewChannelDel NewChannel;
-      public void AddChannel(string name) {
-         addChannelTab(name);
-         NewChannel(name);
+      public static event NewChannelDel NewChannel
+         = delegate { };
+      void handleNewChannel(TabId tId) {
+         if (logBoxes.ContainsKey(tId)) return;
+         app.Invoke((MethodInvoker) delegate {
+            addChannelTab(tId.Channel);
+            NewChannel(tId.Channel);
+         });
       }
 
       void addChannelTab(string channel) {
@@ -112,17 +113,10 @@ namespace Theminds {
          app.SwitchLogBox(logBoxes[tId]);
       }
 
-      public event LineDel Line;
-      public event LineDel SelfLine;
-      public event MethodInvoker PostLine;
+      public event LineDel Line = delegate { };
+      public event LineDel SelfLine = delegate { };
+      public event MethodInvoker PostLine = delegate { };
    }
 
    public delegate void LineDel(ref BufferData dc);
-   public interface IBuffer {
-      event LineDel Line;
-      event LineDel SelfLine;
-      event MethodInvoker PostLine;
-
-      string CurrentChannel { get; }
-   }
 }

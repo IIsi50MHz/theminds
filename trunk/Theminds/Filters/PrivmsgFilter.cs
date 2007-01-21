@@ -66,7 +66,7 @@ namespace Theminds.Filters {
 
       bool fromSelf;
       bool isValid(string line, string[] tokens) {
-         fromSelf = line.StartsWith("PRIVMSG #");
+         fromSelf = line.StartsWith("PRIVMSG ");
          // Prevents matching something like |NOTICE PRIVMSG ...|
          bool fromOther = ("PRIVMSG" == tokens[1] && line.StartsWith(":"));
          if (fromOther || fromSelf) return true;
@@ -82,9 +82,6 @@ namespace Theminds.Filters {
          string nick = tokens[0].Substring(1).Substring(0,
             tokens[0].IndexOf('!') - 1);
          string msg = tokens[3].Substring(1);
-         app.Invoke((MethodInvoker)delegate {
-            buffer.AddChannel(nick);
-         });
          dc.Channel = nick;
          dc.Line = string.Format("<{0}> {1}", nick, msg);
       }
