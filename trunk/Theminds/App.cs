@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Reflection;
 using Aspirations;
 
 namespace Theminds {
@@ -16,14 +17,13 @@ namespace Theminds {
          set { currentChannel = value; }
       }
 
-      public static Ideas Lion;
+      public static Ideas Lion = new Ideas(@"lion.txt");
 
       // TODO: handle tab close viv parting a channel.
       // TODO: set up a preference system to remove hardcoded lion.txt
       Buffer buffer;
       public App() {
          this.SetUpForm(); // MainForm.SetUpForm.cs
-         Lion = new Ideas(@"lion.txt");
 
          QuirkStart mozNet = new QuirkStart();
          mozNet.nick = "Tongue"; mozNet.port = 6667;
@@ -34,14 +34,11 @@ namespace Theminds {
             delegate(Quirk q, string s) { Buffer.Add(s); });
 
          this.buffer = new Buffer(this);
-         LogBoxFilters.Init(this);
-         JoinPartQuitFilter.Init(connection, Buffer);
-         InputBoxFilters.Init(this);
-         WhoFilter.Init(this);
-         PrivmsgFilter.Init(this);
+         this.loadFilters();
 
          connection.Start();
       }
+
 
       /**** Event handlers ****/
       protected override void OnClosing(
@@ -69,6 +66,16 @@ namespace Theminds {
       /**** Static members ****/
       public static void Alert(object alert) {
          MessageBox.Show(alert.ToString());
+      }
+
+      void loadFilters() {
+         Type[] types = Assembly.GetExecutingAssembly().GetTypes();
+         Type x = typeof(DesiresAppControlsAttribute);
+         foreach (Type type in types) {
+            object[] lola = type.GetCustomAttributes(x, false);
+            if (lola.Length < 1) continue;
+            Activator.CreateInstance(type, this);
+         }
       }
    }
 }
