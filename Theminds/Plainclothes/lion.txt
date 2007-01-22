@@ -15,3 +15,6 @@
 
 "speech.all"	"<{0}> {1}"
 "action.all"	"* {0} {1}"
+
+"query.intro"		"{1}Welcome to a new conversation, a new world with {0}."
+"query.intro.nonce"	"[queryFilterConjunction]"

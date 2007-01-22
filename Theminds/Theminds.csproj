@@ -52,6 +52,7 @@
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
     <Compile Include="Filters\PrivmsgFilter.cs" />
+    <Compile Include="Filters\QueryFilter.cs" />
     <Compile Include="Filters\WhoFilter.cs" />
     <Compile Include="Ideas.cs">
       <SubType>Code</SubType>

@@ -30,7 +30,7 @@ namespace Theminds {
          quirk = new Quirk(mozNet);
 
          this.buffer = new Buffer(this);
-         quirk.NewLine += new Quirk.NewLineDel(Buffer.Add);
+         quirk.NewLine += new Quirk.NewLineDel(Buffer.AddLine);
          App.LoadAttributeLovers(
             typeof(DesiresAppControlsAttribute), this);
 

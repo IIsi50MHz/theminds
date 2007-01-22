@@ -58,10 +58,11 @@ namespace Theminds {
       // from the server (Line event). Otherwise, it's from the user
       // (SelfLine event).
       delegate void AddLineDel(string line, Color color);
-      public void Add(string line) {
+      public void AddLine(string line) {
          TabId tId = new TabId(app.Connection);
          BufferData dc = new BufferData(line);
-         
+
+         PreLine(ref dc);
          if (app.InvokeRequired) Line(ref dc);
          else {
             dc.Color = Color.DarkRed;
@@ -114,6 +115,7 @@ namespace Theminds {
          app.SwitchLogBox(logBoxes[tId]);
       }
 
+      public event LineDel PreLine = delegate { };
       public event LineDel Line = delegate { };
       public event LineDel SelfLine = delegate { };
       public event MethodInvoker PostLine = delegate { };
