@@ -5,20 +5,21 @@ using Aspirations;
 namespace Theminds.Filters {
    [DesiresAppControls]
    class JoinPartQuitFilter {
-      Quirk quirk;
-      IAppControls app;
+      Quirk quirk; IAppControls app;
       Ideas lion = App.Lion;
       public JoinPartQuitFilter(IAppControls app) {
          this.app = app; quirk = app.Connection;
          app.Buffer.Line += new LineDel(filter);
       }
 
+      string serverTruckTest = App.Lion.Get("all.server.test");
       void filter(ref BufferData dc) {
          // |LogBoxFilters.privmsg| eats this before me.
          // If it added a <, then I know this is not a JPQ.
          string line = dc.Line;
-         if (line.StartsWith("[server]")) return;
+         if (line.StartsWith(serverTruckTest)) return;
          if (line.StartsWith("<")) return;
+         
          string template = deduceTemplate(line);
          if (null == template) return;         
          dc.Color = Color.Gray;
@@ -28,7 +29,8 @@ namespace Theminds.Filters {
 
          dc.Channel = tokens[2];
          dc.Line = formLine(template, findReason(line));
-         if ("join" == template) dc.Channel = dc.Channel.Substring(1);
+         if ("join" == template)
+            dc.Channel = dc.Channel.Substring(1);
          if ("quit" == template) dc.Channel = "";
       }
 
@@ -53,8 +55,7 @@ namespace Theminds.Filters {
          int omegaPos = line.IndexOf(':', 1);
          string argonaut = line.Substring(omegaPos + 1);
          //	No parentheses for empty part/quit messages.
-         string reason = (omegaPos != -1) ? " (" + argonaut + ")" : "";
-         return reason;
+         return (omegaPos != -1) ? " (" + argonaut + ")" : "";
       }
 
       string deduceTemplate(string line) {
