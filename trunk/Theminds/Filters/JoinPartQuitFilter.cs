@@ -10,13 +10,14 @@ namespace Theminds.Filters {
       Ideas lion = App.Lion;
       public JoinPartQuitFilter(IAppControls app) {
          this.app = app; quirk = app.Connection;
-         app.Buffer.Line += new LineDel(OnLine);
+         app.Buffer.Line += new LineDel(filter);
       }
 
-      void OnLine(ref BufferData dc) {
+      void filter(ref BufferData dc) {
          // |LogBoxFilters.privmsg| eats this before me.
          // If it added a <, then I know this is not a JPQ.
          string line = dc.Line;
+         if (line.StartsWith("[server]")) return;
          if (line.StartsWith("<")) return;
          string template = deduceTemplate(line);
          if (null == template) return;         

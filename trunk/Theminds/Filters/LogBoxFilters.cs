@@ -18,8 +18,9 @@ namespace Theminds.Filters {
       public LogBoxFilters(IAppControls app) {
          buffer = app.Buffer; quirk = app.Connection;
 
-         buffer.Line += new LineDel(hostName);
-         buffer.Line += new LineDel(ServerPrefix);
+         buffer.PreLine += new LineDel(hostName);
+         buffer.PreLine += new LineDel(serverPrefix);
+         
          buffer.Line += new LineDel(ping);
          buffer.SelfLine += new LineDel(selfJoin);
          buffer.Line += delegate(ref BufferData dc) {
@@ -29,7 +30,7 @@ namespace Theminds.Filters {
          };
       }
 
-      public void ServerPrefix(ref BufferData dc) {
+      void serverPrefix(ref BufferData dc) {
          string line = dc.Line;
          string x = ":" + quirk.Info.HostName;
 

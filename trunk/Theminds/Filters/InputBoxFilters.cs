@@ -1,8 +1,8 @@
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Diagnostics;
 using Aspirations;
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
@@ -39,6 +39,6 @@ namespace Theminds.Filters {
                case "w": Who(); break;
             }
          };
-      } // Init
+      }
    }
 }
