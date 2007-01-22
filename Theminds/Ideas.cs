@@ -11,16 +11,20 @@ namespace Theminds {
          return Get(id + "." + id2);
       }
 
-      public bool TestContains(string haystack, string id) {
+      public delegate bool TestDel(string s);
+      public bool Test(string id, TestDel d) {
          id += ".test";
-         return haystack.Contains(Get(id));
+         return d(Get(id));
+      }
+      public string Test(string[] ids, TestDel d) {
+         foreach (string id in ids) {
+            if (Test(id, d)) return id;
+         }
+         return null;
       }
 
       public string TestContains(string haystack, string[] ids) {
-         foreach (string id in ids) {
-            if (TestContains(haystack, id)) return id;
-         }
-         return null;
+         return Test(ids, new TestDel(haystack.Contains));
       }
 
       public Ideas(string file) {

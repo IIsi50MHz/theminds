@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using Aspirations;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
+using S = System.String;
 using Bowel;
 
 namespace Theminds.Filters {
@@ -30,6 +31,7 @@ namespace Theminds.Filters {
          };
       }
 
+      string serverTruck = App.Lion.Get("all.server");
       void serverPrefix(ref BufferData dc) {
          string line = dc.Line;
          string x = ":" + quirk.Info.HostName;
@@ -42,7 +44,7 @@ namespace Theminds.Filters {
          if (line.StartsWith(quirk.Info.Nick)) {
             line = line.Substring(quirk.Info.Nick.Length + 1);
          }
-         line = "[server] " + line;
+         line = S.Format(serverTruck, line);
          dc.Line = line;
       }
 
@@ -50,7 +52,7 @@ namespace Theminds.Filters {
          string line = dc.Line;
          if (line.StartsWith(":") == false) return;
          quirk.Info.HostName = line.Substring(1, line.IndexOf(' ') - 1);
-         buffer.Line -= new LineDel(hostName);
+         buffer.PreLine -= new LineDel(hostName);
       }
 
       void ping(ref BufferData dc) {
