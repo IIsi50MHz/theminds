@@ -13,6 +13,7 @@ namespace Theminds {
          }
          tabsPanel.Controls.Add(c);
       }
+
       public void RemoveTab(Control c) { tabsPanel.Controls.Remove(c); }
       public ITab CreateTab(string label) {
          Tab t = new Tab(AddTab, label);

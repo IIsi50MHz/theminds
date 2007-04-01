@@ -51,7 +51,7 @@ namespace Theminds {
          channelNames[app.Tabber.Current] = tId;
 
          // Page.Buffering events.
-         app.Tabber.Moved += new TabDel(moveChannelTab);
+         app.Tabber.Moved += new TabDel(moveTab);
       }
 
       // If it comes from a different thread, then the line is
@@ -88,13 +88,13 @@ namespace Theminds {
          else {
             TabId tId2 = tId;
             app.Invoke((MethodInvoker)delegate {
-               addChannelTab(tId2.Channel);
+               AddTab(tId2.Channel);
                NewChannel(tId2.Channel);
             });
          }
       }
 
-      void addChannelTab(string channel) {
+      public void AddTab(string channel) {
          app.CurrentChannel = channel;
          TabId tId = new TabId(app.Connection, channel);
          tabs[tId] = app.Tabber.Add(channel);
@@ -108,7 +108,7 @@ namespace Theminds {
 
       // If no key exists, `t` is a new tab.
       // AddChannelTab will handle instead.
-      void moveChannelTab(ITab t) {
+      void moveTab(ITab t) {
          if (!channelNames.ContainsKey(t)) return;
 
          TabId tId = channelNames[t];
