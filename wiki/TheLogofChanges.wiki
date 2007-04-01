@@ -1,4 +1,6 @@
-#labels Featured
+#summary Time flies into a wall.
+#labels Featured,docs
+
 ==The One Lovers==
   * [http://theminds.googlecode.com/files/Theminds-1.1.zip 1.1: Structural mostly.] Faster quits! Faster quits between two lovers!
   * 1.2: /query, how we've missed you so.
