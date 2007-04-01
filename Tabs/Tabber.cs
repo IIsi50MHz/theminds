@@ -13,7 +13,6 @@ namespace Aspirations {
    public delegate void IntDel(int i);
    public class Tabber {
       List<ITab> tabs;
-
       ITabsParent parent;
       string defaultLabel;
       public Tabber(ITabsParent p, string label) {
@@ -75,7 +74,7 @@ namespace Aspirations {
       }
 
       public void MoveToPrev() {
-         // -1 % 4 = -1. To make it 3, add |.Count|.
+         // Adding tabs.Count prevents negative numbers.
          c(delegate { current = (current - 1 + tabs.Count) % tabs.Count; });
          Moved(this.Current);
       }
@@ -85,7 +84,7 @@ namespace Aspirations {
       public void Remove(int index) {
          if (tabs.Count < current + 1) {
             throw new InvalidOperationException(
-               "Removing a tab that does not exist. Make sure to call Init.");
+               "I am removing a tab that does not exist. Make sure to call Init.");
          }
          ITab x = tabs[index];
          int width = x.Width;
@@ -97,23 +96,9 @@ namespace Aspirations {
          // * Our collection
          parent.RemoveTab((System.Windows.Forms.Control)x);
          tabs.Remove(x);
-
-         tabs.ForEach(delegate(ITab tab) { t.Left -= width; });
-         // Stop when true:
-         // * Close last, current one -> go to the new last tab.
-         // * Close tab after current tab -> stay, no changes.
-         // * Close tab before current tab -> update number.
-         if (tabs.Count > 0) {
-            if (index < current || current >= tabs.Count) {
-               current -= 1;
-            }
-            this.right -= width;
-         }
-         else {
-            this.right = 0;
-            Add(); current = 0;
-         }
-
+         tabs.ForEach(delegate(ITab t) { t.Left -= width; });
+         
+         removeHelperForCounters(index, width);
          MoveTo(current); resize();
          // On the ITab's lifetime:
          //  It should die out after this event call unless
@@ -155,6 +140,23 @@ namespace Aspirations {
          del(); // Here, current changes.
          tabs[current].BecomeNew();
          parent.ResumeLayout();
+      }
+
+      void removeHelperForCounters(int index, int width) {
+         // Stop when true:
+         // * Close last, current one -> go to the new last tab.
+         // * Close tab after current tab -> stay, no changes.
+         // * Close tab before current tab -> update number.
+         if (tabs.Count > 0) {
+            if (index < current || current >= tabs.Count) {
+               current -= 1;
+            }
+            this.right -= width;
+         }
+         else {
+            this.right = 0;
+            Add(); current = 0;
+         }
       }
    } // class TabsController
 } // namespace

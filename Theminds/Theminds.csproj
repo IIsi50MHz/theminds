@@ -66,6 +66,7 @@
     <Compile Include="Tests\InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TwoWayDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Plainclothes\lion.txt" />
