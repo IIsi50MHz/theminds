@@ -61,6 +61,11 @@ namespace Theminds {
          base.OnKeyDown(e);
       }
 
+      protected override void OnMouseWheel(MouseEventArgs e) {
+         logBox.Select();
+         base.OnMouseWheel(e);
+      }
+
       /**** Static members ****/
       public static void Alert(object alert) {
          MessageBox.Show(alert.ToString());
