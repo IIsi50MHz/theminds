@@ -100,7 +100,6 @@ namespace Aspirations {
          writer.Dispose(); reader.Dispose();
       }
 
-      // TODO: what is WSAConnection error?
       void pump() {
          string line = null;
          try { line = reader.ReadLine(); }

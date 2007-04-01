@@ -17,7 +17,6 @@ namespace Theminds {
 
       public static Ideas Lion = new Ideas(@"lion.txt");
 
-      // TODO: handle tab close viv parting a channel.
       Buffer buffer;
       Quirk quirk;
       public App() {
