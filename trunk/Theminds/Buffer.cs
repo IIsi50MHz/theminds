@@ -18,7 +18,6 @@ namespace Theminds {
          this.Connection = c;
          this.Channel = channel;
       }
-      public TabId(Quirk c) : this(c, null) { }
    }
 
    public struct BufferData {
@@ -36,22 +35,22 @@ namespace Theminds {
 
    public class Buffer {
       IAppControls app;
-      Dictionary<TabId, LogBox> logBoxes;
-      Dictionary<TabId, ITab> tabs;
-      Dictionary<ITab, TabId> channelNames;
+      Dictionary<ITab, LogBox> logBoxes;
+
+      // These two are the inverses of each other. Sweet, I know.
+      //  We need the inverse for AddLine.
+      TwoWayDictionary<ITab, TabId> proust;
       public Buffer(IAppControls app) {
          this.app = app;
-         logBoxes = new Dictionary<TabId, LogBox>(5);
-         tabs = new Dictionary<TabId, ITab>(5);
-         channelNames = new Dictionary<ITab, TabId>(5);
+         logBoxes = new Dictionary<ITab, LogBox>(5);
+         proust = new TwoWayDictionary<ITab, TabId>(5);
 
-         TabId tId = new TabId(app.Connection);
-         logBoxes[tId] = app.LogBox;
-         tabs[tId] = app.Tabber.Current;
-         channelNames[app.Tabber.Current] = tId;
+         TabId tId = new TabId(app.Connection, null);
+         logBoxes[app.Tabber.Current] = app.LogBox;
+         proust[app.Tabber.Current] = tId;
 
          // Page.Buffering events.
-         app.Tabber.Moved += new TabDel(moveTab);
+         app.Tabber.Moved += new TabDel(MoveToTab);
       }
 
       // If it comes from a different thread, then the line is
@@ -59,60 +58,65 @@ namespace Theminds {
       // (SelfLine event).
       delegate void AddLineDel(string line, Color color);
       public void AddLine(string line) {
-         TabId tId = new TabId(app.Connection);
-         BufferData dc = new BufferData(line);
+         BufferData data = new BufferData(line);
 
-         PreLine(ref dc);
-         if (app.InvokeRequired) Line(ref dc);
+         PreLine(ref data);
+         if (app.InvokeRequired) Line(ref data);
          else {
-            dc.Color = Color.DarkRed;
-            SelfLine(ref dc);
+            data.Color = Color.DarkRed;
+            SelfLine(ref data);
          }
 
-         tId.Channel = dc.Channel;
-         handleNewTab(ref tId, dc.NeedsNewTab);
-         LogBox l = logBoxes[tId];
+         TabId id = new TabId(app.Connection, data.Channel);
+
+         // *Line events allows clients to modify data.NeedsNewTab.
+         //  This allows them to signal to their mother ship, us.
+         handleNewTab(ref id, data.NeedsNewTab);
+         LogBox l = logBoxes[proust[id]];
          app.Invoke(new AddLineDel(l.AddLine), 
-            dc.Line, dc.Color);
+            data.Line, data.Color);
          PostLine();
       }
 
-      public delegate void NewChannelDel(string channel);
-      public static event NewChannelDel NewChannel
-         = delegate { };
-      void handleNewTab(ref TabId tId, bool needsNewTab) {
-         if (logBoxes.ContainsKey(tId)) return;
+      public static event
+         NewChannelDel NewChannel = delegate { };
+      void handleNewTab(ref TabId id, bool needsNewTab) {
+         if (proust.ContainsKey(id)) return;
          if (!needsNewTab) {
-            tId.Channel = app.CurrentChannel;
+            id.Channel = app.CurrentChannel;
          }
          else {
-            TabId tId2 = tId;
+            TabId id2 = id;
             app.Invoke((MethodInvoker)delegate {
-               AddTab(tId2.Channel);
-               NewChannel(tId2.Channel);
+               AddChannel(id2.Channel);
+               NewChannel(id2.Channel);
             });
          }
       }
 
-      public void AddTab(string channel) {
+      public void AddChannel(string channel) {
          app.CurrentChannel = channel;
-         TabId tId = new TabId(app.Connection, channel);
-         tabs[tId] = app.Tabber.Add(channel);
-         channelNames[app.Tabber.Current] = tId;
+         ITab newTab = app.Tabber.Add(channel);
+         TabId id = new TabId(app.Connection, channel);
+         proust[newTab] = id;
 
          LogBox l = new LogBox();
-         logBoxes[tId] = l;
-
+         logBoxes[newTab] = l;
          app.SwitchLogBox(l);
       }
 
       // If no key exists, `t` is a new tab.
       // AddChannelTab will handle instead.
-      void moveTab(ITab t) {
-         if (!channelNames.ContainsKey(t)) return;
+      public void MoveToTab(ITab t) {
+         if (!proust.ContainsKey(t)) return;
 
-         TabId tId = channelNames[t];
-         app.SwitchLogBox(logBoxes[tId]);
+         TabId tId = proust[t];
+         app.SwitchLogBox(logBoxes[t]);
+      }
+
+      public void Remove(ITab t) {
+         proust.Remove(t);
+         app.Tabber.Remove(t);
       }
 
       public event LineDel PreLine = delegate { };
@@ -122,4 +126,5 @@ namespace Theminds {
    }
 
    public delegate void LineDel(ref BufferData dc);
+   public delegate void NewChannelDel(string channel);
 }
