@@ -1,4 +1,6 @@
-#labels Featured
+#summary Whip it.
+#labels Featured,docs
+
 (x) means it's mandatory. {x} means it's not.
 
   * */me (message)*, for egotistical actions
