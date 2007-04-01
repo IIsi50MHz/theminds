@@ -80,7 +80,7 @@ namespace Aspirations {
          Moved(this.Current);
       }
 
-      public event IntDel Removed;
+      public event TabDel Removed;
       public void RemoveCurrent() { Remove(current); }
       public void Remove(int index) {
          if (tabs.Count < current + 1) {
@@ -88,17 +88,17 @@ namespace Aspirations {
                "Removing a tab that does not exist. Make sure to call Init.");
          }
          ITab x = tabs[index];
-         int hashCode = x.GetHashCode();
-
          int width = x.Width;
          this.realWidth -= x.TrueWidth;
 
          parent.SuspendLayout();
+         // Places to clean up:
+         // * Parent's collection
+         // * Our collection
          parent.RemoveTab((System.Windows.Forms.Control)x);
          tabs.Remove(x);
 
-         foreach(ITab t in tabs) { t.Left -= width; }
-
+         tabs.ForEach(delegate(ITab tab) { t.Left -= width; });
          // Stop when true:
          // * Close last, current one -> go to the new last tab.
          // * Close tab after current tab -> stay, no changes.
@@ -114,9 +114,11 @@ namespace Aspirations {
             Add(); current = 0;
          }
 
-         MoveTo(current);
-         resize();
-         Removed(hashCode);
+         MoveTo(current); resize();
+         // On the ITab's lifetime:
+         //  It should die out after this event call unless
+         //  an event help stores it, which is a Bad Idea.
+         Removed(x);
          parent.ResumeLayout();
       }
       public void Remove(ITab t) { Remove(tabs.IndexOf(t)); }
@@ -132,18 +134,18 @@ namespace Aspirations {
       void resize() {
          int maxWidth = parent.TabsWidth;
          int realTotalWidth = 0;
-         foreach (ITab tab in tabs) {
+         tabs.ForEach(delegate(ITab tab) {
             realTotalWidth += tab.TrueWidth;
-         }
+         });
 
          double sB = (double)maxWidth / realTotalWidth;
          this.right = 0;
          double shrinkBy = (sB < 1.0) ? sB : 1.0;
-         foreach (ITab tab in tabs) {
+         tabs.ForEach(delegate(ITab tab) {
             tab.Shrinkage = shrinkBy;
             tab.Left = right;
             right += tab.Width;
-         }
+         });
       }
 
       delegate void ChangeCurrentDel();
