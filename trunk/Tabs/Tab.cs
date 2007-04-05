@@ -24,6 +24,7 @@ namespace Aspirations {
       public Tab(KissWidthDel del)
          : base() {
          this.AutoSize = true;
+         this.TabStop = false;
          del(this);
          this.trueWidth = this.Width;
 

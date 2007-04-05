@@ -20,7 +20,6 @@ namespace Aspirations {
          this.WordWrap = true;
          this.SelectionHangingIndent = 30;
          this.ReadOnly = true;
-         this.TabStop = false;
          this.Dock = DockStyle.Fill;
       }
 
