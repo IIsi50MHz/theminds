@@ -86,6 +86,13 @@ namespace Theminds.Filters {
       }
 
       void newIntimateFriend(string line, string[] tokens) {
+         // |line| ~ "PRIVMSG <nick> <msg>"
+         // Edge case: what if I'm talking to myself?
+         if (line.StartsWith("PRIVMSG")) {
+            dc.Channel = app.Connection.Info.Nick;
+            dc.Line = line.Substring(line.IndexOf(' ', 8 + dc.Channel.Length) + 1);
+            return;
+         }
          string nick = nickFinder(tokens[0]);
          string msg = msgFinder(tokens[3]);
          dc.Channel = nick;
