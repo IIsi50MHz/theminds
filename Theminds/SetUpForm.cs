@@ -59,7 +59,7 @@ namespace Theminds {
 
          // Order is critical
          this.Controls.AddRange(new Control[] {
-				logBoxPanel, activePassiveOutputSplit, userPanel , inputOutputSplit,
+				logBoxPanel, activePassiveOutputSplit, userPanel, inputOutputSplit,
 				inputBox, tabsPanel});
          this.Padding = new Padding(5);
 
