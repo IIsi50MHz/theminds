@@ -110,8 +110,9 @@ namespace Theminds {
       public void MoveToTab(ITab t) {
          if (!proust.ContainsKey(t)) return;
 
-         TabId tId = proust[t];
+         TabId id = proust[t];
          app.SwitchLogBox(logBoxes[t]);
+         app.CurrentChannel = id.Channel;
       }
 
       public void Remove(ITab t) {

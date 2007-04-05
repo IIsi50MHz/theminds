@@ -23,7 +23,7 @@ namespace Theminds.Filters {
          actionAll = lion.Get("action.all");
       }
 
-      // Format: |PRIVMSG #channel msg| or |:nick!ip PRIVMSG #channel :msg|
+      // line ~ "PRIVMSG #channel msg" or ":nick!ip PRIVMSG #channel :msg"
       BufferData dc;
       string thisLock = "ants";
       void filter(ref BufferData bufferData) {
@@ -41,8 +41,6 @@ namespace Theminds.Filters {
                newIntimateFriend(line, tokens);
             else {
                newPrivmsg(line, tokens);
-               if (!dc.Channel.StartsWith("#"))
-                  dc.NeedsNewTab = false;
             }
             bufferData = dc;
          }
@@ -74,7 +72,7 @@ namespace Theminds.Filters {
       bool fromSelf;
       bool isValid(string line, string[] tokens) {
          fromSelf = line.StartsWith("PRIVMSG ");
-         // Prevents matching something like |NOTICE PRIVMSG ...|
+         // Prevents matching something like "NOTICE PRIVMSG ..."
          bool fromOther = ("PRIVMSG" == tokens[1] && line.StartsWith(":"));
          if (fromOther || fromSelf) return true;
          else return false;
@@ -88,15 +86,18 @@ namespace Theminds.Filters {
       void newIntimateFriend(string line, string[] tokens) {
          // |line| ~ "PRIVMSG <nick> <msg>"
          // Edge case: what if I'm talking to myself?
-         if (line.StartsWith("PRIVMSG")) {
+         if (line.StartsWith("PRIVMSG ")) {
             dc.Channel = app.Connection.Info.Nick;
-            dc.Line = line.Substring(line.IndexOf(' ', 8 + dc.Channel.Length) + 1);
+            string msg = line.Substring(line.IndexOf(' ', 8 + dc.Channel.Length) + 1);
+            dc.Line = S.Format(speechAll, dc.Channel, msg);
             return;
          }
-         string nick = nickFinder(tokens[0]);
-         string msg = msgFinder(tokens[3]);
-         dc.Channel = nick;
-         dc.Line = S.Format(speechAll, nick, msg);
+         else {
+            string nick = nickFinder(tokens[0]);
+            string msg = msgFinder(tokens[3]);
+            dc.Channel = nick;
+            dc.Line = S.Format(speechAll, nick, msg);
+         }
       }
 
       string nickFinder(string token) {
