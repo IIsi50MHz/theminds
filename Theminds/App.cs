@@ -73,11 +73,17 @@ namespace Theminds {
       public static void LoadAttributeLovers(Type attribute, 
          params object[] args) {
          Type[] types = Assembly.GetExecutingAssembly().GetTypes();
-         foreach (Type type in types) {
-            object[] oneNightStands = 
-               type.GetCustomAttributes(attribute, false);
-            if (oneNightStands.Length < 1) continue;
-            Activator.CreateInstance(type, args);
+         try {
+            foreach (Type type in types) {
+               object[] oneNightStands =
+                  type.GetCustomAttributes(attribute, false);
+               if (oneNightStands.Length < 1) continue;
+               Activator.CreateInstance(type, args);
+            }
+         }
+         catch (TargetInvocationException e) {
+            Exception x = e.InnerException;
+            throw new InvalidOperationException(x.Message + x.StackTrace);
          }
       }
    }

@@ -9,6 +9,10 @@ namespace Theminds {
       Dictionary<Me, You> MeToYou;
       Dictionary<You, Me> YouToMe;
 
+      public int Count {
+         get { return MeToYou.Count; }
+      }
+
       public TwoWayDictionary() {
          MeToYou = new Dictionary<Me, You>();
          YouToMe = new Dictionary<You, Me>();
