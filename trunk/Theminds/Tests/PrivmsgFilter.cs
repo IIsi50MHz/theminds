@@ -22,7 +22,7 @@ namespace Theminds.Tests {
             speechAll, channel, "maria", "Hello! #moto rola", "maria");
 
          // action, others
-         testFilter(":maria!ip PRIVMSG #spreadbutter :\u0001ACTION #dances !butterfly",
+         testFilter(":maria!ip PRIVMSG #spreadbutter :\u0001ACTION #dances !butterfly\u0001",
             actionAll, channel, "maria", "#dances !butterfly", "butterfly");
 
          // speech, self
@@ -30,12 +30,23 @@ namespace Theminds.Tests {
             speechAll, channel, info.Nick, "PEOPLE WANNA DANCE #spreadbutter", "dance");
 
          // action, self
-         testFilter("PRIVMSG #spreadbutter :\u0001ACTION #plucks !alfalfa!",
+         testFilter("PRIVMSG #spreadbutter :\u0001ACTION #plucks !alfalfa!\u0001",
             actionAll, channel, info.Nick, "#plucks !alfalfa!", "alfalfa");
+
+         // should ignore
+         testFilter("NOTICE PRIVMSG :ooober", "ooober");
+         testFilter("PRIVMSGCARD #s :m", "mute_monster");
+         testFilter(":n!p PRIVMSGZ #s :m", "mute_samone");
+      }
+
+      void testFilter(string line, string id) {
+         testFilter(line, null, null, null, null, id);
       }
 
       void testFilter(string line, string template,
          string channel, string nick, string msg, string id) {
+         if (null == template) template = line;
+
          BufferData data = new BufferData(line);
          filter(ref data);
          if (channel == data.Channel &&
