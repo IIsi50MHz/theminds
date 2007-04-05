@@ -44,9 +44,11 @@ namespace Theminds.Filters {
       }
 
       void PrivmsgCurrentChannel(string msg) {
-         if (app.CurrentChannel == null) return;
-         app.Connection.Message(
-            "PRIVMSG " + app.CurrentChannel + " " + msg);
+         if (app.CurrentChannel == null)
+            app.LogBox.AddLine(App.Lion.Get("error.cannot.privmsg"), Color.Purple);
+         else
+            app.Connection.Message(
+               "PRIVMSG " + app.CurrentChannel + " " + msg);
       }
    }
 }
