@@ -7,103 +7,84 @@ using S = System.String;
 namespace Theminds.Filters {
    [DesiresAppControls]
    class PrivmsgFilter {
-      IAppControls app;
-      Quirk quirk; Ideas lion = App.Lion;
+      IAppControls app; Quirk quirk;
       string speechAll, actionAll;
-
       public PrivmsgFilter(IAppControls app) {
          this.app = app;
          this.quirk = app.Connection;
          
-         Buffer buffer = app.Buffer;
-         buffer.Line += new LineDel(filter);
-         buffer.SelfLine += new LineDel(filter);
+         app.Buffer.Line += new LineDel(filter);
+         app.Buffer.SelfLine += new LineDel(filter);
 
-         speechAll = lion.Get("speech.all");
-         actionAll = lion.Get("action.all");
+         speechAll = App.Lion.Get("speech.all");
+         actionAll = App.Lion.Get("action.all");
       }
 
-      // line ~ "PRIVMSG #channel msg" or ":nick!ip PRIVMSG #channel :msg"
-      BufferData dc;
-      string thisLock = "ants";
-      protected void filter(ref BufferData bufferData) {
-         lock (thisLock) {
-            dc = bufferData;
-            string line = dc.Line;
+      // There are two separate functions. The code may seem
+      // the same, but the differences are subtle and prolific
+      // enough to preclude condensation.
+      protected void filter(ref BufferData data) {
+         string line = data.Line;
+         if (!line.Contains(" ")) return;
 
-            // Check to see if I can Split at all.
-            if (!line.Contains(" ")) return;
-            string[] tokens = line.Split(App.Space, 4);
-            if (!isValid(line, tokens)) return;
-
-            dc.Channel = fromSelf ? tokens[1] : tokens[2];
-            if (dc.Channel == quirk.Info.Nick)
-               newIntimateFriend(line, tokens);
-            else
-               newPrivmsg(line, tokens);
-            bufferData = dc;
-         }
+         seedSpaces(line);
+         if (line.StartsWith("PRIVMSG "))
+            filterSelf(ref data);
+         else if (line.StartsWith(":")
+            && line.Substring(spaces[0]).StartsWith("PRIVMSG "))
+            filterOthers(ref data);
+         return;
       }
 
-      void newPrivmsg(string line, string[] tokens) {
-         string nick, msg;
-         if (fromSelf) {
-            nick = quirk.Info.Nick;
-            msg = line.Split(App.Space, 3)[2];
-         }
-         else {
-            nick = nickFinder(tokens[0]);
-            msg = msgFinder(tokens[3]);
-         }
+      // line ~ "PRIVMSG #channel msg"
+      // line ~ "PRIVMSG #channel :\u0001ACTION <msg>\u0001"
+      void filterSelf(ref BufferData data) {
+         string line = data.Line;
+         data.Channel = StringExcerpt(line, spaces[0], spaces[1] - 1);
 
-         // ACTION uses a colon or not, depending on the source.
-         string y = fromSelf ? ":\u0001ACTION" : "\u0001ACTION";
-         if (!msg.StartsWith(y))
-            dc.Line = S.Format(speechAll, nick, msg);
-         else {
-            msg = tokens[2] + " " + tokens[3];
-            dc.Line = S.Format(actionAll, nick,
-               identifyActions(msg));
-            dc.Color = Color.Green;
-         }
-      }
-
-      bool fromSelf;
-      bool isValid(string line, string[] tokens) {
-         fromSelf = line.StartsWith("PRIVMSG ");
-         // Prevents matching something like "NOTICE PRIVMSG ..."
-         bool fromOther = ("PRIVMSG" == tokens[1] && line.StartsWith(":"));
-         if (fromOther || fromSelf) return true;
-         else return false;
-      }
-
-      // Not an event handler; a helper
-      string identifyActions(string line) {
-         return line.Trim().Split('\u0001')[1].Substring(7);
-      }
-
-      void newIntimateFriend(string line, string[] tokens) {
-         // |line| ~ "PRIVMSG <nick> <msg>"
-         // Edge case: what if I'm talking to myself?
-         if (line.StartsWith("PRIVMSG ")) {
-            dc.Channel = app.Connection.Info.Nick;
-            string msg = line.Substring(line.IndexOf(' ', 8 + dc.Channel.Length) + 1);
-            dc.Line = S.Format(speechAll, dc.Channel, msg);
+         string nick = quirk.Info.Nick;
+         string msg = line.Substring(spaces[1]);
+         // Notice the colon! Weird protocol.
+         if (msg.StartsWith(":\u0001ACTION")) {
+            msg = StringExcerpt(line, spaces[2], line.Length - 1);
+            data.Line = S.Format(actionAll, nick, msg);
             return;
          }
-         else {
-            string nick = nickFinder(tokens[0]);
-            string msg = msgFinder(tokens[3]);
-            dc.Channel = nick;
-            dc.Line = S.Format(speechAll, nick, msg);
+         data.Line = S.Format(speechAll, nick, msg);
+      }
+
+      // line ~ ":nick!ip PRIVMSG #channel :msg"
+      // line ~ ":nick!ip PRIVMSG #channel :\u0001ACTION <msg>\u0001"
+      void filterOthers(ref BufferData data) {
+         string line = data.Line;
+         data.Channel = StringExcerpt(line, spaces[1], spaces[2] - 1);
+
+         string nick = StringExcerpt(line, 1, line.IndexOf('!'));
+         string msg = line.Substring(spaces[2] + 1);
+         if (msg.StartsWith("\u0001ACTION")) {
+            msg = StringExcerpt(line, spaces[3], line.Length - 1);
+            data.Line = S.Format(actionAll, nick, msg);
+            return;
+         }
+         data.Line = S.Format(speechAll, nick, msg);
+      }
+
+      // `last` is one bigger than the actual indexOf
+      // because I'm going to use it for Substring.
+      int[] spaces = new int[4];
+      void seedSpaces(string line) {
+         int last = 0;
+         for (int i = 0; i <= 3; ++i) {
+            if (line.Length < last) return;
+            last = line.IndexOf(' ', last) + 1;
+            spaces[i] = last;
          }
       }
 
-      string nickFinder(string token) {
-         return token.Substring(1, token.IndexOf('!') - 1);
-      }
-      string msgFinder(string token) {
-         return token.Substring(1);
+      // "0123456789", 3, 7 => "3456" (`end`th character removed)
+      public static string
+         StringExcerpt(string haystack, int begin, int end) {
+         return haystack.Remove(end).Substring(begin);
       }
    }
 }
