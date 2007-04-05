@@ -62,6 +62,7 @@ namespace Theminds {
 				logBoxPanel, activePassiveOutputSplit, userPanel, inputOutputSplit,
 				inputBox, tabsPanel});
          this.Padding = new Padding(5);
+         InputBox.Select();
 
          inputBox.TabIndex = 0;
          userList.TabIndex = 1;
