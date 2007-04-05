@@ -116,6 +116,7 @@ namespace Theminds {
       }
 
       public void Remove(ITab t) {
+         if (proust.Count == 1) return;
          proust.Remove(t);
          app.Tabber.Remove(t);
       }

@@ -8,14 +8,14 @@ namespace Theminds.Filters {
    [DesiresAppControls]
    class PrivmsgFilter {
       IAppControls app;
-      Quirk quirk; Buffer buffer;
-      Ideas lion = App.Lion;
+      Quirk quirk; Ideas lion = App.Lion;
       string speechAll, actionAll;
+
       public PrivmsgFilter(IAppControls app) {
          this.app = app;
          this.quirk = app.Connection;
-         this.buffer = app.Buffer;
-
+         
+         Buffer buffer = app.Buffer;
          buffer.Line += new LineDel(filter);
          buffer.SelfLine += new LineDel(filter);
 
@@ -26,7 +26,7 @@ namespace Theminds.Filters {
       // line ~ "PRIVMSG #channel msg" or ":nick!ip PRIVMSG #channel :msg"
       BufferData dc;
       string thisLock = "ants";
-      void filter(ref BufferData bufferData) {
+      protected void filter(ref BufferData bufferData) {
          lock (thisLock) {
             dc = bufferData;
             string line = dc.Line;
@@ -39,9 +39,8 @@ namespace Theminds.Filters {
             dc.Channel = fromSelf ? tokens[1] : tokens[2];
             if (dc.Channel == quirk.Info.Nick)
                newIntimateFriend(line, tokens);
-            else {
+            else
                newPrivmsg(line, tokens);
-            }
             bufferData = dc;
          }
       }

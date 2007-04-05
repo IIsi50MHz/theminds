@@ -66,6 +66,10 @@
     <Compile Include="Tests\InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Tests\MockApp.cs">
+    </Compile>
+    <Compile Include="Tests\PrivmsgFilter.cs">
+    </Compile>
     <Compile Include="TwoWayDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
