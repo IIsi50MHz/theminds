@@ -5,5 +5,5 @@
   * [http://theminds.googlecode.com/files/Theminds-1.1.zip 1.1: Structural mostly.] Faster quits! Faster quits between two lovers!
   * 1.2: (r88, 89) Prettier layout with padding
     ** (r86) The [Commands // command]
-    ** (r75) The [Commands /query command]
-
+    ** (r75) The [Commands /query command] (try talking to yourself because it works)
+    ** (r93) Kind warning if you try talking to a server window
