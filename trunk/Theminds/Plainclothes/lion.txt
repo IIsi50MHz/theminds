@@ -21,3 +21,5 @@
 
 "all.server"		"[server] {0}"
 "all.server.test"	"[server] "
+
+"error.cannot.privmsg" "Sorry, I cannot send a message to non-interactive gizmos."
