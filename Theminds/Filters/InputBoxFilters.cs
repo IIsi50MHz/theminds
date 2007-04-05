@@ -34,9 +34,12 @@ namespace Theminds.Filters {
                // arg is a quit message.
                case "q": connection.Dispose(arg); break;
                case "w": Who(); break;
-               default: PrivmsgCurrentChannel(
-                  S.Format("{0} {1}", cmd, arg)); break;
             }
+         };
+         inputBox.Command += delegate(string cmd, string arg) {
+            if (!cmd.StartsWith("/")) return;
+            if (arg.Length != 0) arg = " " + arg;
+            PrivmsgCurrentChannel(S.Format("{0}{1}", cmd, arg));
          };
       }
 
