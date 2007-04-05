@@ -12,7 +12,7 @@ namespace Theminds.Filters {
       public PrivmsgFilter(IAppControls app) {
          this.app = app;
          this.quirk = app.Connection;
-         
+
          app.Buffer.Line += new LineDel(filter);
          app.Buffer.SelfLine += new LineDel(filter);
 
@@ -48,6 +48,7 @@ namespace Theminds.Filters {
          if (msg.StartsWith(":\u0001ACTION")) {
             msg = StringExcerpt(line, spaces[2], line.Length - 1);
             data.Line = S.Format(actionAll, nick, msg);
+            data.Color = Color.Green;
             return;
          }
          data.Line = S.Format(speechAll, nick, msg);
@@ -64,6 +65,7 @@ namespace Theminds.Filters {
          if (msg.StartsWith("\u0001ACTION")) {
             msg = StringExcerpt(line, spaces[3], line.Length - 1);
             data.Line = S.Format(actionAll, nick, msg);
+            data.Color = Color.Green;
             return;
          }
          data.Line = S.Format(speechAll, nick, msg);

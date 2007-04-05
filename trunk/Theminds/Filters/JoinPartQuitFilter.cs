@@ -13,6 +13,13 @@ namespace Theminds.Filters {
       }
 
       string serverTruckTest = App.Lion.Get("all.server.test");
+      // line ~ "|:nick!ip join :#chan|"
+      // line ~ "|:nick!ip part #chan :msg|"
+      // line ~ "|:nick!ip quit :msg|"
+      // I'm not looking at my own lines. BUT!
+      // But if the join message happens to be mine
+      // e.g. ":Tongue!ip join :#channel", I need to have a
+      // special, special way of handling that.
       void filter(ref BufferData dc) {
          // |LogBoxFilters.privmsg| eats this before me.
          // If it added a <, then I know this is not a JPQ.
