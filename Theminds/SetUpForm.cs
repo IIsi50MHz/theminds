@@ -5,16 +5,16 @@ using Aspirations;
 
 namespace Theminds {
    sealed partial class App : Form, IAppControls {
-      LogBox logBox;
-      InputBox inputBox;
-      UserList userList;
+      LogBox logBox = new LogBox();
+      InputBox inputBox = new InputBox();
+      UserList userList = new UserList();
 
-      RichTextBox userNotice;
-      Panel userPanel;
-      Panel tabsPanel;
-      Panel logBoxPanel;
-      Splitter consoleInputSplitter;
-      Splitter consoleUsersSplitter;
+      RichTextBox userNotice = new RichTextBox();
+      Panel userPanel = new Panel();
+      Panel tabsPanel = new Panel();
+      Panel logBoxPanel = new Panel();
+      Splitter inputOutputSplit = new Splitter();
+      Splitter activePassiveOutputSplit = new Splitter();
 
       Tabber tabber;
       void SetUpForm() {
@@ -22,25 +22,12 @@ namespace Theminds {
          this.KeyPreview = true;
          this.SuspendLayout();
 
-         logBox = new LogBox();
-         userList = new UserList();
-         inputBox = new InputBox();
-         userNotice = new RichTextBox();
-         userPanel = new Panel();
-         logBoxPanel = new Panel();
-         consoleInputSplitter = new Splitter();
-         consoleUsersSplitter = new Splitter();
-
          inputBox.Dock = DockStyle.Bottom;
          inputBox.Font = new System.Drawing.Font("Lucida Console", 10);
          inputBox.Multiline = false;
-         inputBox.BackColor = Color.White;
-         inputBox.Height = inputBox.PreferredHeight;
-         inputBox.TabIndex = 0;
 
          logBoxPanel.Controls.Add(logBox);
          logBoxPanel.Dock = DockStyle.Fill;
-         logBoxPanel.BorderStyle = BorderStyle.None;
          logBoxPanel.AutoSize = true;
 
          /* The users, the notices, the panel, the myth */
@@ -51,7 +38,6 @@ namespace Theminds {
          userList.IntegralHeight = false;
          userList.Dock = DockStyle.Fill;
          userList.Width = 200;
-         userList.TabIndex = 1;
          userList.Font = SystemFonts.MessageBoxFont;
 
          userPanel.Controls.Add(userList);
@@ -59,10 +45,11 @@ namespace Theminds {
          userPanel.Dock = DockStyle.Right;
 
          /* Splitters! */
-         consoleInputSplitter.Dock = DockStyle.Bottom;
-         consoleUsersSplitter.Dock = DockStyle.Right;
+         inputOutputSplit.Dock = DockStyle.Bottom;
+         inputOutputSplit.Height = 7;
+         activePassiveOutputSplit.Dock = DockStyle.Right;
+         activePassiveOutputSplit.Width = 7;
 
-         tabsPanel = new Panel();
          tabsPanel.Dock = DockStyle.Bottom;
          tabsPanel.AutoSize = true;
 
@@ -71,10 +58,16 @@ namespace Theminds {
          tabber.Init();
 
          // Order is critical
-         this.Controls.AddRange(new System.Windows.Forms.Control[] {
-				logBoxPanel, consoleUsersSplitter, userPanel , consoleInputSplitter,
+         this.Controls.AddRange(new Control[] {
+				logBoxPanel, activePassiveOutputSplit, userPanel , inputOutputSplit,
 				inputBox, tabsPanel});
-         this.ResumeLayout(); // this.suspendLayout() above
+         this.Padding = new Padding(5);
+
+         inputBox.TabIndex = 0;
+         userList.TabIndex = 1;
+         logBox.TabIndex = 2;
+         userNotice.TabIndex = 3;
+         this.ResumeLayout();
       }
    }
 }
