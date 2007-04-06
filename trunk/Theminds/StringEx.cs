@@ -1,6 +1,6 @@
 using System;
 namespace Theminds {
-   class StringEx {
+   public static class StringEx {
       public static int[] FindSpaces(string line, int times) {
          int[] spaces = new int[times];
          int last = 0;
