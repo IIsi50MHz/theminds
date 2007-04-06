@@ -9,4 +9,5 @@
   * */q {message}*, for quitting this train wreck
   * */w*, for seeing who's in a channel (Jesus, no?)
   * *(message)*, for typing something for everyone at which to laugh
-  * *//{message}*, lets you type a forward slash because UNC paths are totally rad
+  * *//{message}*, for totally rad UNC paths
+  * */query (person/channel)*, for people that like to stand real close
