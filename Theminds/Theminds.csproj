@@ -68,10 +68,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Tests\JoinPartQuitFilter.cs" />
-    <Compile Include="Tests\MockApp.cs">
-    </Compile>
-    <Compile Include="Tests\PrivmsgFilter.cs">
-    </Compile>
+    <Compile Include="Tests\MockApp.cs" />
+    <Compile Include="Tests\PrivmsgFilter.cs" />
     <Compile Include="TwoWayDictionary.cs" />
   </ItemGroup>
   <ItemGroup>

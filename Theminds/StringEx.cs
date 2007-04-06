@@ -22,5 +22,12 @@ namespace Theminds {
          else
             return haystack.Substring(begin);
       }
+
+      // http://www.irchelp.org/irchelp/rfc/chapter1.html#c1_3
+      public static bool IsChannel(string channel) {
+         if (channel.StartsWith("#")) return true;
+         if (channel.StartsWith("&")) return true;
+         return false;
+      }
    }
 }

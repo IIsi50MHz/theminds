@@ -13,8 +13,8 @@ namespace Theminds {
       }
 
       static RegexCompilationInfo Zap(string pat, string name) {
-         return new RegexCompilationInfo(
-      pat, RegexOptions.IgnoreCase, name, "Bowel", true);
+         return new RegexCompilationInfo(pat, 
+            RegexOptions.IgnoreCase, name, "Bowel", true);
       }
 
       static void Compile(RegexCompilationInfo[] rciList) {
