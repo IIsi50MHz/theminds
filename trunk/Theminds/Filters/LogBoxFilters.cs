@@ -24,6 +24,9 @@ namespace Theminds.Filters {
          
          buffer.Line += new LineDel(ping);
          buffer.SelfLine += new LineDel(selfJoin);
+         buffer.SelfLine += delegate(ref BufferData data) {
+            data.Color = Color.DarkRed;
+         };
          buffer.Line += delegate(ref BufferData dc) {
             // Strip mIRC colors.
             string line = dc.Line;
@@ -35,7 +38,6 @@ namespace Theminds.Filters {
       void serverPrefix(ref BufferData dc) {
          string line = dc.Line;
          string x = ":" + quirk.Info.HostName;
-
          if (false == line.StartsWith(x)) return;
 
          // Format: <server name> <command number> <optional. nick>
@@ -59,15 +61,15 @@ namespace Theminds.Filters {
          if (false == dc.Line.StartsWith("PING :")) return;
 
          pingMessage = dc.Line;
-         buffer.PostLine += new MethodInvoker(sendPong);
+         buffer.PostLine += new LineDel(sendPong);
          dc.Color = Color.Blue;
       }
 
       string pingMessage;
-      void sendPong() {
+      void sendPong(ref BufferData data) {
          buffer.Line += new LineDel(colorPong);
          // Remove before Message or else recursion
-         buffer.PostLine -= new MethodInvoker(sendPong);
+         buffer.PostLine -= new LineDel(sendPong);
 
          // PING : is six letters
          quirk.Message("PONG :" + pingMessage.Substring(6));

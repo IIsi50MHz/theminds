@@ -40,6 +40,7 @@ namespace Theminds {
       // These two are the inverses of each other. Sweet, I know.
       //  We need the inverse for AddLine.
       TwoWayDictionary<ITab, TabId> proust;
+      LineDel fforde;
       public Buffer(IAppControls app) {
          this.app = app;
          logBoxes = new Dictionary<ITab, LogBox>(5);
@@ -51,6 +52,7 @@ namespace Theminds {
 
          // Page.Buffering events.
          app.Tabber.Moved += new TabDel(MoveToTab);
+         fforde = new LineDel(suppressNewTabForPart);
       }
 
       // If it comes from a different thread, then the line is
@@ -61,30 +63,24 @@ namespace Theminds {
          BufferData data = new BufferData(line);
 
          PreLine(ref data);
-         if (app.InvokeRequired) Line(ref data);
-         else {
-            data.Color = Color.DarkRed;
-            SelfLine(ref data);
-         }
-
+            if (app.InvokeRequired) Line(ref data);
+            else SelfLine(ref data);
+         PostLine(ref data);
          TabId id = new TabId(app.Connection, data.Channel);
-
          // *Line events allows clients to modify data.NeedsNewTab.
          //  This allows them to signal to their mother ship, us.
          handleNewTab(ref id, data.NeedsNewTab);
+         
          LogBox l = logBoxes[proust[id]];
-         app.Invoke(new AddLineDel(l.AddLine), 
+         l.Invoke(new AddLineDel(l.AddLine), 
             data.Line, data.Color);
-         PostLine();
       }
 
       public static event
-         NewChannelDel NewChannel = delegate { };
+         StringDel NewChannel = delegate { };
       void handleNewTab(ref TabId id, bool needsNewTab) {
          if (proust.ContainsKey(id)) return;
-         if (!needsNewTab) {
-            id.Channel = app.CurrentChannel;
-         }
+         if (!needsNewTab) id.Channel = app.CurrentChannel;
          else {
             TabId id2 = id;
             app.Invoke((MethodInvoker)delegate {
@@ -117,16 +113,33 @@ namespace Theminds {
 
       public void Remove(ITab t) {
          if (proust.Count == 1) return;
+         string channel = proust[t].Channel;
          proust.Remove(t);
          app.Tabber.Remove(t);
+
+         // Make sure `channel` is not null or a user.
+         // Assumption: If we have a channel tab, all the
+         //   nitty-gritty server talking is done.
+         if (StringEx.IsChannel(channel)) {
+            app.Connection.Message("PART {0}", channel);
+            PostLine += fforde;
+         }
       }
+
+      void suppressNewTabForPart(ref BufferData data) {
+         if(String.Format(App.Lion.Get("part.self"), data.Channel)
+            != data.Line) return;
+         data.NeedsNewTab = false;
+         PostLine -= fforde;
+      }
+
 
       public event LineDel PreLine = delegate { };
       public event LineDel Line = delegate { };
       public event LineDel SelfLine = delegate { };
-      public event MethodInvoker PostLine = delegate { };
+      public event LineDel PostLine = delegate { };
    }
 
-   public delegate void LineDel(ref BufferData dc);
-   public delegate void NewChannelDel(string channel);
+   public delegate void LineDel(ref BufferData data);
+   public delegate void StringDel(string s);
 }
