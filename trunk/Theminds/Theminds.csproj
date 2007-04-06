@@ -60,12 +60,14 @@
     <Compile Include="SetUpForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="StringEx.cs" />
     <Compile Include="TabsParent.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Tests\InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Tests\JoinPartQuitFilter.cs" />
     <Compile Include="Tests\MockApp.cs">
     </Compile>
     <Compile Include="Tests\PrivmsgFilter.cs">

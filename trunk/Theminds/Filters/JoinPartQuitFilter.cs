@@ -1,6 +1,8 @@
 using System;
 using System.Drawing;
 using Aspirations;
+using S = System.String;
+using Sx = Theminds.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
@@ -12,62 +14,70 @@ namespace Theminds.Filters {
          app.Buffer.Line += new LineDel(filter);
       }
 
-      string serverTruckTest = App.Lion.Get("all.server.test");
       // line ~ "|:nick!ip join :#chan|"
       // line ~ "|:nick!ip part #chan :msg|"
       // line ~ "|:nick!ip quit :msg|"
-      // I'm not looking at my own lines. BUT!
-      // But if the join message happens to be mine
-      // e.g. ":Tongue!ip join :#channel", I need to have a
-      // special, special way of handling that.
-      void filter(ref BufferData dc) {
-         // |LogBoxFilters.privmsg| eats this before me.
-         // If it added a <, then I know this is not a JPQ.
-         string line = dc.Line;
-         if (line.StartsWith(serverTruckTest)) return;
-         if (line.StartsWith("<")) return;
+      // If the join message happens to be from self
+      // e.g. ":Tongue!ip join :#channel", we enter a special mode.
+      // This is NOT the same as handling SelfLine.
+      string nick, ip, line; int[] spaces;
+      protected void filter(ref BufferData data) {
+         line = data.Line;
+         if (!line.Contains(" ")) return;
+         if (!line.StartsWith(":")) return;
+         spaces = Sx.FindSpaces(line, 3);
          
-         string template = deduceTemplate(line);
-         if (null == template) return;         
-         dc.Color = Color.Gray;
+         findNickAndIp(out nick, out ip);
+         // Roots out e.g. ":Tongue MODE +x"
+         if ("" == nick) return;
+         bool isSelf = (nick == quirk.Info.Nick);
 
-         string[] tokens = line.Split(App.Space, 5);
-         findNickAndIp(tokens[0]);
-
-         dc.Channel = tokens[2];
-         dc.Line = formLine(template, findReason(line));
-         if ("join" == template)
-            dc.Channel = dc.Channel.Substring(1);
-         if ("quit" == template) dc.Channel = "";
-      }
-
-      string nick, ip;
-      void findNickAndIp(string token) {
-         string[] nickTokens = token.Split('!');
-         nick = nickTokens[0].Substring(1);
-         ip = nickTokens[1];
-      }
-
-      string formLine(string template, string reason) {
-         if ("join" == template) reason = "";
-         if (nick == quirk.Info.Nick) {
-            return String.Format(lion.Get(template, "you"),
-               app.CurrentChannel, reason);
+         string mode = Sx.Tween(line, spaces[0], spaces[1] - 1).ToLowerInvariant();
+         int reasonIndex = 0;
+         switch (mode) {
+            case "join":
+               data.Channel = line.Substring(spaces[1] + 1);
+               data.Color = Color.Gray;
+               break;
+            case "part":
+               data.Channel = Sx.Tween(line, spaces[1], spaces[2] - 1);
+               reasonIndex = spaces[2] + 1;
+               data.Color = Color.Gray;
+               break;
+            case "quit":
+               reasonIndex = spaces[1] + 1;
+               data.Color = Color.Gray;
+               break;
+            default: return;
          }
-         return String.Format(lion.Get(template, "others"),
-             nick, ip, app.CurrentChannel, reason);
+         findMessage(ref data, isSelf, mode);
+         findReason(ref data, mode, reasonIndex);
       }
 
-      string findReason(string line) {
-         int omegaPos = line.IndexOf(':', 1);
-         string argonaut = line.Substring(omegaPos + 1);
-         //	No parentheses for empty part/quit messages.
-         return (omegaPos != -1) ? " (" + argonaut + ")" : "";
+      // index: index of the start of the message for us to parse
+      void findReason(ref BufferData data, string mode, int index) {
+         if (0 == index || line.Length <= index) return;
+         string reason = lion.Get(mode, "reason");
+         reason = S.Format(reason, line.Substring(index));
+         data.Line = S.Format(lion.Get(mode, "total"),
+            data.Line, reason);
       }
 
-      string deduceTemplate(string line) {
-         return lion.TestContains(line,
-             new string[] { "join", "part", "quit" });
+      void findMessage(ref BufferData data, bool isSelf, string mode) {
+         if (isSelf) {
+            data.Line = S.Format(lion.Get(mode, "self"),
+               data.Channel);
+            return;
+         }
+         data.Line = S.Format(lion.Get(mode, "others"),
+            nick, ip, data.Channel);
+      }
+
+      void findNickAndIp(out string nick, out string ip) {
+         string user = Sx.Tween(line, 0, spaces[0] - 1);
+         if (!user.Contains("!")) { nick = ip = ""; return; }
+         nick = Sx.Tween(user, 1, user.IndexOf('!'));
+         ip = user.Substring(user.IndexOf('!') + 1);
       }
    }
 }
