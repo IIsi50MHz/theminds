@@ -81,7 +81,7 @@ namespace Theminds.Filters {
 
       void selfJoin(ref BufferData dc) {
          string x = "JOIN "; string line = dc.Line;
-         if (false == line.StartsWith("JOIN ")) return;
+         if (false == line.StartsWith(x)) return;
          dc.Color = Color.Blue;
 
          // Format: |JOIN #channel,#channel,#channel|
