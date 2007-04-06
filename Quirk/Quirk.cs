@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
-[assembly: System.Reflection.AssemblyVersionAttribute("1.1")]
+[assembly: System.Reflection.AssemblyVersionAttribute("1.3")]
 [assembly: System.CLSCompliant(true)]
 [assembly: System.Security.Permissions.SecurityPermission(
   System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
@@ -113,6 +113,15 @@ namespace Aspirations {
       void handleException(Exception e) {
          NewLine(e.ToString());
          this.Dispose();
+      }
+
+      public override int GetHashCode() {
+         return Info.GetHashCode();
+      }
+
+      public override bool Equals(object obj) {
+         Quirk q = (Quirk)obj;
+         return (this.Info.Equals(q.Info));
       }
    }
 }
