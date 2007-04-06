@@ -7,7 +7,7 @@
 "part.total"	"{0}{1}"
 
 "quit.others"	"<-- {0} ({1}) has quit"
-"quit.self"		"<-- You have quit {0}"
+"quit.self"		"<-- You have quit"
 "quit.reason"	" ({0})"
 "quit.total"	"{0}{1}"
 

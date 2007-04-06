@@ -21,7 +21,7 @@ namespace Theminds.Filters {
       // e.g. ":Tongue!ip join :#channel", we enter a special mode.
       // This is NOT the same as handling SelfLine.
       string nick, ip, line, mode; int[] spaces;
-      int reasonIndex = 0; bool isSelf;
+      int reasonIndex = 0; bool isSelf = false;
       protected void filter(ref BufferData data) {
          line = data.Line;
          if (!line.Contains(" ")) return;

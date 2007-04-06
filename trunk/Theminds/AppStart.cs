@@ -24,6 +24,7 @@ namespace Theminds {
       static void Test() {
          Debug.Indent();
          App.LoadAttributeLovers(typeof(DesiresTestingAttribute));
+         App.LoadAttributeLovers(typeof(DesiresTestingWithMockAppAttribute), new MockApp());
       }
    }
 }

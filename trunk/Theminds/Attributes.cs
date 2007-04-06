@@ -6,4 +6,7 @@ namespace Theminds {
 
    public class DesiresTestingAttribute : Attribute {
    }
+
+   public class DesiresTestingWithMockAppAttribute : Attribute {
+   }
 }
