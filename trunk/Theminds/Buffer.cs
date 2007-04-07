@@ -40,7 +40,6 @@ namespace Theminds {
       // These two are the inverses of each other. Sweet, I know.
       //  We need the inverse for AddLine.
       TwoWayDictionary<ITab, TabId> proust;
-      LineDel fforde;
       public Buffer(IAppControls app) {
          this.app = app;
          logBoxes = new Dictionary<ITab, LogBox>(5);
@@ -52,7 +51,6 @@ namespace Theminds {
 
          // Page.Buffering events.
          app.Tabber.Moved += new TabDel(MoveToTab);
-         fforde = new LineDel(suppressNewTabForPart);
       }
 
       // If it comes from a different thread, then the line is
@@ -113,26 +111,13 @@ namespace Theminds {
 
       public void Remove(ITab t) {
          if (proust.Count == 1) return;
+         if (!proust.ContainsKey(t)) return;
+
          string channel = proust[t].Channel;
          proust.Remove(t);
          app.Tabber.Remove(t);
-
-         // Make sure `channel` is not null or a user.
-         // Assumption: If we have a channel tab, all the
-         //   nitty-gritty server talking is done.
-         if (StringEx.IsChannel(channel)) {
-            app.Connection.Message("PART {0}", channel);
-            PostLine += fforde;
-         }
+         app.Connection.Message("PART {0}", channel);
       }
-
-      void suppressNewTabForPart(ref BufferData data) {
-         if(String.Format(App.Lion.Get("part.self"), data.Channel)
-            != data.Line) return;
-         data.NeedsNewTab = false;
-         PostLine -= fforde;
-      }
-
 
       public event LineDel PreLine = delegate { };
       public event LineDel Line = delegate { };

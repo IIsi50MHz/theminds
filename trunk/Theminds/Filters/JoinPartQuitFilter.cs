@@ -2,16 +2,17 @@ using System;
 using System.Drawing;
 using Aspirations;
 using S = System.String;
-using Sx = Theminds.StringEx;
+using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
    class JoinPartQuitFilter {
       Quirk quirk; IAppControls app;
-      Ideas lion = App.Lion;
+      Ideas lion = App.Lion; LineDel fforde;
       public JoinPartQuitFilter(IAppControls app) {
          this.app = app; quirk = app.Connection;
          app.Buffer.Line += new LineDel(filter);
+         fforde = new LineDel(suppressNewTab);
       }
 
       // line ~ "|:nick!ip join :#chan|"
@@ -21,7 +22,7 @@ namespace Theminds.Filters {
       // e.g. ":Tongue!ip join :#channel", we enter a special mode.
       // This is NOT the same as handling SelfLine.
       string nick, ip, line, mode; int[] spaces;
-      int reasonIndex = 0; bool isSelf = false;
+      int reasonIndex = 0; bool fromMe = false;
       protected void filter(ref BufferData data) {
          line = data.Line;
          if (!line.Contains(" ")) return;
@@ -30,7 +31,7 @@ namespace Theminds.Filters {
          
          findNickAndIp();
          if (null == nick) return;
-         isSelf = (nick == quirk.Info.Nick);
+         fromMe = (nick == quirk.Info.Nick);
 
          mode = Sx.Tween(line, spaces[0], spaces[1] - 1).ToLowerInvariant();
          switch (mode) {
@@ -40,13 +41,18 @@ namespace Theminds.Filters {
             case "part":
                data.Channel = Sx.Tween(line, spaces[1], spaces[2] - 1);
                reasonIndex = spaces[2] + 1;
-               data.Color = Color.Gray; break;
+               data.Color = Color.Gray;
+               break;
             case "quit":
                reasonIndex = spaces[1] + 1;
                data.Color = Color.Gray; break;
             default: return;
          }
          findMessage(ref data); findReason(ref data);
+         if ("part" == mode && fromMe) {
+            messageToSuppress = data.Line;
+            app.Buffer.PostLine += fforde;
+         }
       }
 
       // index: index of the start of the message for us to parse
@@ -60,10 +66,9 @@ namespace Theminds.Filters {
       }
 
       void findMessage(ref BufferData data) {
-         if (isSelf) {
+         if (fromMe) {
             data.Line = S.Format(lion.Get(mode, "self"),
-               data.Channel);
-            return;
+               data.Channel); return;
          }
          data.Line = S.Format(lion.Get(mode, "others"),
             nick, ip, data.Channel);
@@ -75,6 +80,13 @@ namespace Theminds.Filters {
          if (!user.Contains("!")) return;
          nick = Sx.Tween(user, 1, user.IndexOf('!'));
          ip = user.Substring(user.IndexOf('!') + 1);
+      }
+
+      string messageToSuppress;
+      void suppressNewTab(ref BufferData data) {
+         if (messageToSuppress != data.Line) return;
+         data.NeedsNewTab = false;
+         app.Buffer.PostLine -= fforde;
       }
    }
 }

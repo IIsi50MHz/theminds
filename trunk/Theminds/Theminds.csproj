@@ -54,13 +54,9 @@
     <Compile Include="Filters\PrivmsgFilter.cs" />
     <Compile Include="Filters\QueryFilter.cs" />
     <Compile Include="Filters\WhoFilter.cs" />
-    <Compile Include="Ideas.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SetUpForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="StringEx.cs" />
     <Compile Include="TabsParent.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -70,7 +66,6 @@
     <Compile Include="Tests\JoinPartQuitFilter.cs" />
     <Compile Include="Tests\MockApp.cs" />
     <Compile Include="Tests\PrivmsgFilter.cs" />
-    <Compile Include="TwoWayDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Plainclothes\lion.txt" />
@@ -95,6 +90,10 @@
     <ProjectReference Include="..\Quirk\Quirk.csproj">
       <Project>{38B595B3-1466-4D51-9EB2-CD2A095A6ACE}</Project>
       <Name>Quirk</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Structures\Structures.csproj">
+      <Project>{33D6C14F-9C5C-4B5D-8D4C-0B1F75215A9E}</Project>
+      <Name>Structures</Name>
     </ProjectReference>
     <ProjectReference Include="..\Tabs\Tabs.csproj">
       <Project>{783532EE-FF4C-412A-A1CA-FF8B6A7F958F}</Project>
