@@ -14,17 +14,13 @@ namespace Theminds {
       [System.STAThread]
       static void Main() {
 #if ENABLE_TEST
-         Test();
+         Debug.Indent();
+         App.LoadAttributeLovers(typeof(DesiresTestingAttribute));
+         App.LoadAttributeLovers(typeof(DesiresTestingWithMockAppAttribute), new MockApp());
 #else
          Application.EnableVisualStyles();
          Application.Run(new App());
 #endif
-      }
-
-      static void Test() {
-         Debug.Indent();
-         App.LoadAttributeLovers(typeof(DesiresTestingAttribute));
-         App.LoadAttributeLovers(typeof(DesiresTestingWithMockAppAttribute), new MockApp());
       }
    }
 }

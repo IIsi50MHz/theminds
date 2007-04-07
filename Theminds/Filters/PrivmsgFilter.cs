@@ -3,7 +3,7 @@ using System.Drawing;
 using Aspirations;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
 using S = System.String;
-using Sx = Theminds.StringEx;
+using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
