@@ -55,9 +55,8 @@ namespace Aspirations {
       }
 
       public void Message(string line) {
-         string unlined = line;
          NewLine(line);
-         writer.WriteLine(unlined);
+         writer.WriteLine(line);
       }
 
       public void Message(string line, params object[] args) {
@@ -70,13 +69,16 @@ namespace Aspirations {
       public void Dispose(string quitMsg) {
          if (disposed) return;
          if (null == connectThread) return;
+         disposed = true;
 
-         if (null != writer) {
+         if (null == writer) return;
+         try {
             if (null == quitMsg) Message("QUIT");
             else Message("QUIT " + quitMsg);
          }
-
-         disposed = true;
+         catch (IOException e) {
+            NewLine(e.ToString());
+         }
       }
 
       /**** Private members ****/
@@ -84,12 +86,11 @@ namespace Aspirations {
       StreamReader reader;
       void connect() {
          Stream stream;
-         try {
-            stream = new TcpClient(Info.Server, Info.Port).GetStream();
-         }
+         try { stream = new TcpClient(Info.Server,
+            Info.Port).GetStream(); }
          catch (SocketException) {
-            NewLine("Could not connect to \"" + Info.Server + "\".");
-            return;
+            NewLine(String.Format("Could not connect to \"{0}\".",
+               Info.Server)); return;
          }
          reader = new StreamReader(stream);
          writer = new StreamWriter(stream);
@@ -104,7 +105,8 @@ namespace Aspirations {
          string line = null;
          try { line = reader.ReadLine(); }
          catch (IOException e) { handleException(e); }
-         catch (OutOfMemoryException e) { handleException(e); }
+         catch (OutOfMemoryException e) {
+            handleException(e); }
 
          if (line == null) return;
          NewLine(line);
