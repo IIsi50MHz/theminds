@@ -2,20 +2,19 @@ using System;
 using System.Drawing;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using Aspirations;
+using Bowel;
+using Ants = Bowel.ServerPrefixNumberRegex;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
 using S = System.String;
-using Bowel;
+using Quirk = Aspirations.Quirk;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
    class LogBoxFilters {
       MircRegex mircRegex = new MircRegex();
-      ServerPrefixNumberRegex serverPrefixNumberRegex
-         = new ServerPrefixNumberRegex();
+      Ants ants = new Ants();
 
-      Quirk quirk;
-      Buffer buffer;
+      Quirk quirk; Buffer buffer;
       public LogBoxFilters(IAppControls app) {
          buffer = app.Buffer; quirk = app.Connection;
 
@@ -34,20 +33,25 @@ namespace Theminds.Filters {
          };
       }
 
-      string serverTruck = App.Lion.Get("all.server");
-      void serverPrefix(ref BufferData dc) {
-         string line = dc.Line;
-         string x = ":" + quirk.Info.HostName;
-         if (false == line.StartsWith(x)) return;
+      string trucks = App.Lion.Get("server.prefix");
+      // Format: <host> <reply number> <nick (optional)>
+      void serverPrefix(ref BufferData data) {
+         // Ignore commands from self
+         string line = data.Line;
+         if (!line.StartsWith(":")) return;
+         
+         // Check for <host>
+         line = line.Substring(1);
+         string host = quirk.Info.HostName;
+         if (!line.StartsWith(host)) return;
 
-         // Format: <server name> <command number> <optional. nick>
-         line = line.Substring(x.Length + 1);
-         line = serverPrefixNumberRegex.Replace(line, "");
-         if (line.StartsWith(quirk.Info.Nick)) {
-            line = line.Substring(quirk.Info.Nick.Length + 1);
-         }
-         line = S.Format(serverTruck, line);
-         dc.Line = line;
+         // Strip reply number and possibly nick.
+         line = ants.Replace(line.Substring(host.Length + 1), "");
+         string nick = quirk.Info.Nick;
+         if (line.StartsWith(nick))
+            line = line.Substring(nick.Length + 1);
+
+         data.Line = trucks + " " + line;
       }
 
       void hostName(ref BufferData dc) {

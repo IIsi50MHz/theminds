@@ -46,6 +46,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="AppStart.cs" />
+    <Compile Include="Assembly.cs" />
     <Compile Include="Attributes.cs" />
     <Compile Include="Buffer.cs" />
     <Compile Include="Filters\InputBoxFilters.cs" />

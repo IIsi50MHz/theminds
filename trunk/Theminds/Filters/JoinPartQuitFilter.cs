@@ -36,18 +36,15 @@ namespace Theminds.Filters {
          mode = Sx.Tween(line, spaces[0], spaces[1] - 1).ToLowerInvariant();
          switch (mode) {
             case "join":
-               data.Channel = line.Substring(spaces[1] + 1);
-               data.Color = Color.Gray; break;
+               data.Channel = line.Substring(spaces[1] + 1); break;
             case "part":
                data.Channel = Sx.Tween(line, spaces[1], spaces[2] - 1);
-               reasonIndex = spaces[2] + 1;
-               data.Color = Color.Gray;
-               break;
+               reasonIndex = spaces[2] + 1; break;
             case "quit":
-               reasonIndex = spaces[1] + 1;
-               data.Color = Color.Gray; break;
+               reasonIndex = spaces[1] + 1; break;
             default: return;
          }
+         data.Color = Color.Gray;
          findMessage(ref data); findReason(ref data);
          if ("part" == mode && fromMe) {
             messageToSuppress = data.Line;

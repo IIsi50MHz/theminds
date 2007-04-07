@@ -39,6 +39,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="Assembly.cs" />
     <Compile Include="Ideas.cs" />
     <Compile Include="StringEx.cs" />
     <Compile Include="TwoWayDictionary.cs" />

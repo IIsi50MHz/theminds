@@ -8,7 +8,6 @@ using S = System.String;
 namespace Theminds.Filters {
    [DesiresAppControls]
    class InputBoxFilters {
-      public static event MethodInvoker Who = delegate { };
       IAppControls app;
       public InputBoxFilters(IAppControls app) {
          this.app = app;
@@ -33,7 +32,6 @@ namespace Theminds.Filters {
                case "raw": connection.Message(arg); break;
                // arg is a quit message.
                case "q": connection.Dispose(arg); break;
-               case "w": Who(); break;
             }
          };
          inputBox.Command += delegate(string cmd, string arg) {

@@ -26,6 +26,7 @@ namespace Aspirations {
 
       // http://www.irchelp.org/irchelp/rfc/chapter1.html#c1_3
       public static bool IsChannel(string channel) {
+         if (channel == null) return false;
          if (channel.StartsWith("#")) return true;
          if (channel.StartsWith("&")) return true;
          return false;
