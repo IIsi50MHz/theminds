@@ -116,7 +116,8 @@ namespace Theminds {
          string channel = proust[t].Channel;
          proust.Remove(t);
          app.Tabber.Remove(t);
-         app.Connection.Message("PART {0}", channel);
+         if (StringEx.IsChannel(channel))
+            app.Connection.Message("PART {0}", channel);
       }
 
       public event LineDel PreLine = delegate { };

@@ -17,7 +17,6 @@
 "query.intro"		"{1}Welcome to a new conversation, a new world with {0}."
 "query.intro.nonce"	"[queryFilterConjunction]"
 
-"all.server"		"[server] {0}"
-"all.server.test"	"[server] "
+"server.prefix"		"[server]"
 
 "error.cannot.privmsg" "Sorry, I cannot send a message to non-interactive gizmos."

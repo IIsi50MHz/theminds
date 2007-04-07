@@ -2,13 +2,7 @@
 
 using System.Diagnostics;
 using System.Windows.Forms;
-using Theminds.Tests;
 
-[assembly: System.Reflection.AssemblyVersionAttribute("1.3")]
-[assembly: System.Runtime.InteropServices.ComVisible(false)]
-[assembly: System.Security.Permissions.SecurityPermission(
-  System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
-[assembly: System.CLSCompliant(true)]
 namespace Theminds {
    static class AppStart {
       [System.STAThread]
@@ -16,7 +10,8 @@ namespace Theminds {
 #if ENABLE_TEST
          Debug.Indent();
          App.LoadAttributeLovers(typeof(DesiresTestingAttribute));
-         App.LoadAttributeLovers(typeof(DesiresTestingWithMockAppAttribute), new MockApp());
+         App.LoadAttributeLovers(typeof(DesiresTestingWithMockAppAttribute),
+            new Theminds.Tests.MockApp());
 #else
          Application.EnableVisualStyles();
          Application.Run(new App());

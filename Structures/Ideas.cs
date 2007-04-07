@@ -10,22 +10,6 @@ namespace Aspirations {
          return Get(id + "." + id2);
       }
 
-      public delegate bool TestDel(string s);
-      public bool Test(string id, TestDel d) {
-         id += ".test";
-         return d(Get(id));
-      }
-      public string Test(string[] ids, TestDel d) {
-         foreach (string id in ids) {
-            if (Test(id, d)) return id;
-         }
-         return null;
-      }
-
-      public string TestContains(string haystack, string[] ids) {
-         return Test(ids, new TestDel(haystack.Contains));
-      }
-
       public Ideas(string file) {
          dict = new StringDictionary();
          using (TextReader t = new StreamReader(file)) {
