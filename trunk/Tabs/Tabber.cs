@@ -37,6 +37,7 @@ namespace Aspirations {
       int right, current, realWidth;
       public event TabDel NewTab;
       public ITab Add(string label) {
+         if (null == label) label = defaultLabel;
          if (tabs.Count > 0) tabs[current].BecomeOld();
 
          // Math trick. This is before we add it, so it's
