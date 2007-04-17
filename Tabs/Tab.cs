@@ -49,7 +49,7 @@ namespace Aspirations {
 
       protected override void OnPaint(PaintEventArgs pevent) {
          base.OnPaint(pevent);
-         if(!depressed) return;
+         if (!depressed) return;
          ButtonRenderer.DrawButton(pevent.Graphics, this.ClientRectangle,
             this.Text, this.Font, false, PushButtonState.Pressed);
       }
