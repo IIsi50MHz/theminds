@@ -65,7 +65,7 @@ namespace Theminds.Tests {
          throw new Exception("The method or operation is not implemented.");
       }
 
-      public void SwitchLogBox(Control c) {
+      public void SwitchLogBox(LogBox c) {
          throw new Exception("The method or operation is not implemented.");
       }
 

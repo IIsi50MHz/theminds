@@ -48,6 +48,7 @@
     <Compile Include="AppStart.cs" />
     <Compile Include="Assembly.cs" />
     <Compile Include="Attributes.cs" />
+    <Compile Include="Buffer interfaces.cs" />
     <Compile Include="Buffer.cs" />
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />

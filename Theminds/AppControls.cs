@@ -16,7 +16,7 @@ namespace Theminds {
 
       IAsyncResult BeginInvoke(Delegate d, params object[] args);
       object Invoke(Delegate d, params object[] args);
-      void SwitchLogBox(Control c);
+      void SwitchLogBox(LogBox c);
    }
 
    public partial class App : Form, IAppControls {
@@ -44,12 +44,14 @@ namespace Theminds {
          get { return buffer; }
       }
 
-      public void SwitchLogBox(Control c) {
-         if (c == logBoxPanel.Controls[0]) return;
+      public void SwitchLogBox(LogBox l) {
+         if (l == logBoxPanel.Controls[0]) return;
          this.SuspendLayout();
          logBoxPanel.Controls.RemoveAt(0);
-         logBoxPanel.Controls.Add(c);
+         logBoxPanel.Controls.Add(l);
          this.ResumeLayout();
+
+         this.logBox = l;
       }
    }
 }
