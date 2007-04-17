@@ -50,7 +50,7 @@ namespace Theminds {
          switch (e.KeyCode) {
             case Keys.PageUp: tabber.MoveToPrev(); break;
             case Keys.PageDown: tabber.MoveToNext(); break;
-            case Keys.T: buffer.AddChannel("(new)"); break;
+            case Keys.T: buffer.AddChannel(); break;
             case Keys.W: buffer.Remove(tabber.Current); break;
             case Keys.Q: this.Close(); break;
             default: e.SuppressKeyPress = false; break;

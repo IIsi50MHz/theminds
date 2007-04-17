@@ -10,44 +10,21 @@ using System.Collections.Generic;
 using Aspirations;
 
 namespace Theminds {
-   public struct TabId {
-      public Quirk Connection;
-      public string Channel;
-
-      public TabId(Quirk c, string channel) {
-         this.Connection = c;
-         this.Channel = channel;
-      }
-   }
-
-   public struct BufferData {
-      public Color Color;
-      public string Channel;
-      public string Line;
-      public bool NeedsNewTab;
-      public BufferData(string line) {
-         this.Line = line;
-         this.Color = Color.Black;
-         this.Channel = null;
-         this.NeedsNewTab = true;
-      }
-   }
-
    public class Buffer {
       IAppControls app;
-      Dictionary<ITab, LogBox> logBoxes;
 
       // These two are the inverses of each other. Sweet, I know.
       //  We need the inverse for AddLine.
       TwoWayDictionary<ITab, TabId> proust;
+      Dictionary<TabIdShell, LogBox> logBoxes;
       public Buffer(IAppControls app) {
          this.app = app;
-         logBoxes = new Dictionary<ITab, LogBox>(5);
          proust = new TwoWayDictionary<ITab, TabId>(5);
+         logBoxes = new Dictionary<TabIdShell, LogBox>(5);
 
-         TabId tId = new TabId(app.Connection, null);
-         logBoxes[app.Tabber.Current] = app.LogBox;
-         proust[app.Tabber.Current] = tId;
+         TabId id = new TabId(app.Connection, null, app.LogBox);
+         proust[app.Tabber.Current] = id;
+         logBoxes[new TabIdShell(id)] = app.LogBox;
 
          // Page.Buffering events.
          app.Tabber.Moved += new TabDel(MoveToTab);
@@ -60,43 +37,43 @@ namespace Theminds {
       public void AddLine(string line) {
          BufferData data = new BufferData(line);
 
+         // The hub
          PreLine(ref data);
-            if (app.InvokeRequired) Line(ref data);
-            else SelfLine(ref data);
+         if (app.InvokeRequired) Line(ref data);
+         else SelfLine(ref data);
          PostLine(ref data);
-         TabId id = new TabId(app.Connection, data.Channel);
+
+         TabIdShell shell = new TabIdShell(app.Connection, data.Channel);
          // *Line events allows clients to modify data.NeedsNewTab.
          //  This allows them to signal to their mother ship, us.
-         handleNewTab(ref id, data.NeedsNewTab);
-         
-         LogBox l = logBoxes[proust[id]];
-         l.Invoke(new AddLineDel(l.AddLine), 
+         handleNewTab(ref shell, data.NeedsNewTab);
+
+         LogBox l = logBoxes[shell];
+         l.Invoke(new AddLineDel(l.AddLine),
             data.Line, data.Color);
       }
 
-      public static event
-         StringDel NewChannel = delegate { };
-      void handleNewTab(ref TabId id, bool needsNewTab) {
-         if (proust.ContainsKey(id)) return;
-         if (!needsNewTab) id.Channel = app.CurrentChannel;
+      void handleNewTab(ref TabIdShell shell, bool needsNewTab) {
+         if (logBoxes.ContainsKey(shell)) return;
+         if (!needsNewTab) shell.Channel = app.CurrentChannel;
          else {
-            TabId id2 = id;
+            TabId id = new TabId(shell, null);
             app.Invoke((MethodInvoker)delegate {
-               AddChannel(id2.Channel);
-               NewChannel(id2.Channel);
+               AddChannel(id.Channel);
             });
          }
       }
 
+      public void AddChannel() { AddChannel(null); }
+
       public void AddChannel(string channel) {
          app.CurrentChannel = channel;
          ITab newTab = app.Tabber.Add(channel);
-         TabId id = new TabId(app.Connection, channel);
-         proust[newTab] = id;
+         TabId id = new TabId(app.Connection, channel, new LogBox());
+         app.SwitchLogBox(id.LogBox);
 
-         LogBox l = new LogBox();
-         logBoxes[newTab] = l;
-         app.SwitchLogBox(l);
+         proust[newTab] = id;
+         logBoxes[new TabIdShell(id)] = id.LogBox;
       }
 
       // If no key exists, `t` is a new tab.
@@ -105,7 +82,7 @@ namespace Theminds {
          if (!proust.ContainsKey(t)) return;
 
          TabId id = proust[t];
-         app.SwitchLogBox(logBoxes[t]);
+         app.SwitchLogBox(id.LogBox);
          app.CurrentChannel = id.Channel;
       }
 
@@ -114,6 +91,7 @@ namespace Theminds {
          if (!proust.ContainsKey(t)) return;
 
          string channel = proust[t].Channel;
+         logBoxes.Remove(new TabIdShell(proust[t]));
          proust.Remove(t);
          app.Tabber.Remove(t);
          if (StringEx.IsChannel(channel))
