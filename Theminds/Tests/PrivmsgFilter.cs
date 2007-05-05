@@ -8,9 +8,10 @@ namespace Theminds.Tests {
    [DesiresTestingWithMockAppAttribute]
    class PrivmsgFilter : Filters.PrivmsgFilter {
       string channel = "#spreadbutter";
+      IAppControls app;
       public PrivmsgFilter(IAppControls app)
          : base(app) {
-
+         this.app = app;
          string speechAll = App.Lion.Get("speech.all");
          string actionAll = App.Lion.Get("action.all");
          QuirkStart info = app.Connection.Info;
@@ -42,12 +43,11 @@ namespace Theminds.Tests {
       void test(string line, string template,
          string nick, string msg, string id) {
          if (null == template) template = line;
-
-         BufferData data = new BufferData(line);
-         filter(ref data);
-         if (channel == data.Channel &&
-            S.Format(template, nick, msg) == data.Line) return;
-         throw new InvalidOperationException("PrimvsgFilter failure in filter() " + id);
+         MockApp.PokeBuffer(app, line, delegate(ref BufferData data) {
+            if (channel == data.Channel &&
+               S.Format(template, nick, msg) == data.Line) return;
+            throw new InvalidOperationException("PrimvsgFilter failure in filter() " + id);
+         });
       }
    }
 }

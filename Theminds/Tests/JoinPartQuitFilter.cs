@@ -5,12 +5,13 @@ using Aspirations;
 using S = System.String;
 
 namespace Theminds.Tests {
-   [DesiresTestingWithMockAppAttribute]
+   [DesiresTestingWithMockApp]
    class JoinPartQuitFilter : Filters.JoinPartQuitFilter {
       string channel = "#spreadbutter";
+      IAppControls app;
       public JoinPartQuitFilter(IAppControls app)
          : base(app) {
-
+         this.app = app;
          string joinOthers = App.Lion.Get("join.others");
          string joinSelf = App.Lion.Get("join.self");
          string partSelf = App.Lion.Get("part.self");
@@ -78,10 +79,10 @@ namespace Theminds.Tests {
       void test(string line, string msg, string id) {
          if (null == msg) msg = line;
 
-         BufferData data = new BufferData(line);
-         filter(ref data);
-         if (channel == data.Channel && msg == data.Line) return;
-         throw new InvalidOperationException("JoinPartQuit failure in filter() " + id);
+         MockApp.PokeBuffer(app, line, delegate(ref BufferData data) {
+            if (channel == data.Channel && msg == data.Line) return;
+            throw new InvalidOperationException("JoinPartQuit failure in filter() " + id);
+         });
       }
    }
 }
