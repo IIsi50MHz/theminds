@@ -8,3 +8,4 @@
     ** (r75) The [Commands /query command] (try talking to yourself because it works)
     ** (r93) Kind warning if you try talking to a server window
     ** (r100) Awesome revision number
+ * 1.3: (r113, r114, 115, 116, 117) Automatically seeds user list now; even more fertile code [gotta justify 4 revisions and over 200 line changes somehow, matey]
