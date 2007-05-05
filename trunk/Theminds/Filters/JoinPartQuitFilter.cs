@@ -13,28 +13,28 @@ namespace Theminds.Filters {
          this.app = app; quirk = app.Connection;
          app.Buffer.Line += new LineDel(filter);
          fforde = new LineDel(suppressNewTab);
+
+         App.LoadAttributeLovers(
+            typeof(DesiresJoinPartQuitFilterAttribute), this, app);
       }
 
-      // line ~ "|:nick!ip join :#chan|"
-      // line ~ "|:nick!ip part #chan :msg|"
-      // line ~ "|:nick!ip quit :msg|"
-      // If the join message happens to be from self
-      // e.g. ":Tongue!ip join :#channel", we enter a special mode.
-      // This is NOT the same as handling SelfLine.
-      string nick, ip, line, mode; int[] spaces;
-      int reasonIndex = 0; bool fromMe = false;
+      // line ~ ":nick!ip join :#chan"
+      // line ~ ":nick!ip part #chan :msg"
+      // line ~ ":nick!ip quit :msg"
       protected void filter(ref BufferData data) {
-         line = data.Line;
-         if (!line.Contains(" ")) return;
-         if (!line.StartsWith(":")) return;
-         spaces = Sx.FindSpaces(line, 3);
+         string line = data.Line;
+         JazzNotes notes = new JazzNotes(line);
+         if (!(line.Contains(" ") && line.StartsWith(":"))) return;
+         int[] spaces = Sx.FindSpaces(line, 3);
+         notes.Spaces = spaces;
          
-         findNickAndIp();
-         if (null == nick) return;
-         fromMe = (nick == quirk.Info.Nick);
-
-         mode = Sx.Tween(line, spaces[0], spaces[1] - 1).ToLowerInvariant();
-         switch (mode) {
+         findNickAndIp(ref notes);
+         if (null == notes.Nick) return;
+         notes.FromMe = (notes.Nick == quirk.Info.Nick);
+         notes.Mode = Sx.Tween(line, spaces[0], spaces[1] - 1).ToLowerInvariant();
+         
+         int reasonIndex = 0;
+         switch (notes.Mode) {
             case "join":
                data.Channel = line.Substring(spaces[1] + 1); break;
             case "part":
@@ -44,39 +44,46 @@ namespace Theminds.Filters {
                reasonIndex = spaces[1] + 1; break;
             default: return;
          }
+         notes.ReasonIndex = reasonIndex;
          data.Color = Color.Gray;
-         findMessage(ref data); findReason(ref data);
-         if ("part" == mode && fromMe) {
+         findMessage(ref data, ref notes);
+         findReason(ref data, ref notes);
+         
+         // Regarding `fforde` and `suppressNewTabs`:
+         // When I part, I output the part message
+         // from the server to the (server) tab, not to
+         // the already-closed tab.
+         if ("part" == notes.Mode && notes.FromMe) {
             messageToSuppress = data.Line;
             app.Buffer.PostLine += fforde;
          }
       }
 
       // index: index of the start of the message for us to parse
-      void findReason(ref BufferData data) {
-         int index = reasonIndex;
-         if (0 == index || line.Length <= index) return;
-         string reason = lion.Get(mode, "reason");
-         reason = S.Format(reason, line.Substring(index));
-         data.Line = S.Format(lion.Get(mode, "total"),
+      void findReason(ref BufferData data, ref JazzNotes notes) {
+         int index = notes.ReasonIndex;
+         if (0 == index || notes.Line.Length <= index) return;
+         string reason = lion.Get(notes.Mode, "reason");
+         reason = S.Format(reason, notes.Line.Substring(index));
+         data.Line = S.Format(lion.Get(notes.Mode, "total"),
             data.Line, reason);
       }
 
-      void findMessage(ref BufferData data) {
-         if (fromMe) {
-            data.Line = S.Format(lion.Get(mode, "self"),
+      void findMessage(ref BufferData data, ref JazzNotes notes) {
+         if (notes.FromMe) {
+            data.Line = S.Format(lion.Get(notes.Mode, "self"),
                data.Channel); return;
          }
-         data.Line = S.Format(lion.Get(mode, "others"),
-            nick, ip, data.Channel);
+         data.Line = S.Format(lion.Get(notes.Mode, "others"),
+            notes.Nick, notes.Ip, data.Channel);
       }
 
-      void findNickAndIp() {
-         string user = Sx.Tween(line, 0, spaces[0] - 1);
+      void findNickAndIp(ref JazzNotes notes) {
+         string user = Sx.Tween(notes.Line, 0, notes.Spaces[0] - 1);
          // Roots out junk like ":<nick> MODE +x"
          if (!user.Contains("!")) return;
-         nick = Sx.Tween(user, 1, user.IndexOf('!'));
-         ip = user.Substring(user.IndexOf('!') + 1);
+         notes.Nick = Sx.Tween(user, 1, user.IndexOf('!'));
+         notes.Ip = user.Substring(user.IndexOf('!') + 1);
       }
 
       string messageToSuppress;
@@ -84,6 +91,18 @@ namespace Theminds.Filters {
          if (messageToSuppress != data.Line) return;
          data.NeedsNewTab = false;
          app.Buffer.PostLine -= fforde;
+      }
+   }
+
+   struct JazzNotes {
+      public string Nick, Ip, Line, Mode;
+      public int[] Spaces;
+      public int ReasonIndex; public bool FromMe;
+      public JazzNotes(string line) {
+         Line = line; Spaces = null;
+         Nick = Ip = Mode = null;
+         ReasonIndex = 0;
+         FromMe = false;
       }
    }
 }
