@@ -35,11 +35,13 @@ namespace Theminds {
       public string Channel;
       public string Line;
       public bool NeedsNewTab;
+      public bool Ignore;
       public BufferData(string line) {
          this.Line = line;
          this.Color = Color.Black;
          this.Channel = null;
          this.NeedsNewTab = true;
+         this.Ignore = false;
       }
    }
 }

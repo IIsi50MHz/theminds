@@ -55,7 +55,7 @@ namespace Theminds {
 
          tabber = new Tabber(this, "(new)");
          tabber.NewTab += new TabDel(tabber.MoveTo);
-         tabber.Init();
+         tabber.Add("(server)");
 
          // Order is critical
          this.Controls.AddRange(new Control[] {
