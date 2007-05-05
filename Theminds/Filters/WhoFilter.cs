@@ -29,8 +29,7 @@ namespace Theminds.Filters {
       // [0:server] [1:channel] [2:user] [3:host] [4:server] [5:nick]...
       readonly string serverPrefix = App.Lion.Get("server.prefix");
       void filter(ref BufferData data) {
-         string[] tokens = data.Line.Split(App.Space, 7);
-         if (serverPrefix != tokens[0]) return;
+         string[] tokens = data.Line.Split(' ');
          if (!Sx.IsChannel(tokens[1])) return;
 
          data.Channel = tokens[1];
