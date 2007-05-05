@@ -7,8 +7,6 @@ using Aspirations;
 
 namespace Theminds {
    public sealed partial class App : Form {
-      public static char[] Space = new char[] { ' ' };
-
       string currentChannel;
       public string CurrentChannel {
          get { return currentChannel; }
@@ -17,8 +15,7 @@ namespace Theminds {
 
       public static Ideas Lion = new Ideas(@"lion.txt");
 
-      Buffer buffer;
-      Quirk quirk;
+      Buffer buffer; Quirk quirk;
       public App() {
          this.SetUpForm(); // MainForm.SetUpForm.cs
 
@@ -35,7 +32,6 @@ namespace Theminds {
 
          quirk.Start();
       }
-
 
       /**** Event handlers ****/
       protected override void OnClosing(

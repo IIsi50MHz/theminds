@@ -53,6 +53,7 @@
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuitFilter.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
+    <Compile Include="Filters\NamesFilter.cs" />
     <Compile Include="Filters\PrivmsgFilter.cs" />
     <Compile Include="Filters\QueryFilter.cs" />
     <Compile Include="Filters\WhoFilter.cs" />
@@ -67,6 +68,7 @@
     </Compile>
     <Compile Include="Tests\JoinPartQuitFilter.cs" />
     <Compile Include="Tests\MockApp.cs" />
+    <Compile Include="Tests\NamesFilter.cs" />
     <Compile Include="Tests\PrivmsgFilter.cs" />
   </ItemGroup>
   <ItemGroup>

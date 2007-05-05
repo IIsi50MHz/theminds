@@ -13,9 +13,9 @@ namespace Theminds {
    public class Buffer {
       IAppControls app;
 
-      // These two are the inverses of each other. Sweet, I know.
-      //  We need the inverse for AddLine.
+      // I need the two-way-osity for AddLine.
       TwoWayDictionary<ITab, TabId> proust;
+      // I needed this to handle new tabs (hack hackety hack).
       Dictionary<TabIdShell, LogBox> logBoxes;
       public Buffer(IAppControls app) {
          this.app = app;
@@ -42,7 +42,8 @@ namespace Theminds {
          if (app.InvokeRequired) Line(ref data);
          else SelfLine(ref data);
          PostLine(ref data);
-
+         if (data.Ignore) return;
+         
          TabIdShell shell = new TabIdShell(app.Connection, data.Channel);
          // *Line events allows clients to modify data.NeedsNewTab.
          //  This allows them to signal to their mother ship, us.
@@ -65,7 +66,6 @@ namespace Theminds {
       }
 
       public void AddChannel() { AddChannel(null); }
-
       public void AddChannel(string channel) {
          app.CurrentChannel = channel;
          ITab newTab = app.Tabber.Add(channel);
@@ -74,6 +74,7 @@ namespace Theminds {
 
          proust[newTab] = id;
          logBoxes[new TabIdShell(id)] = id.LogBox;
+         NewChannel(channel);
       }
 
       // If no key exists, `t` is a new tab.
@@ -102,6 +103,7 @@ namespace Theminds {
       public event LineDel Line = delegate { };
       public event LineDel SelfLine = delegate { };
       public event LineDel PostLine = delegate { };
+      public event StringDel NewChannel = delegate { };
    }
 
    public delegate void LineDel(ref BufferData data);
