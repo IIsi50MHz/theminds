@@ -25,8 +25,6 @@ namespace Aspirations {
          tabs = new List<ITab>();
       }
 
-      public void Init() { Add(this.defaultLabel); }
-
       public ITab Current {
          get { return tabs[this.current]; }
       }
