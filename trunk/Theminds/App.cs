@@ -17,7 +17,7 @@ namespace Theminds {
 
       Buffer buffer; Quirk quirk;
       public App() {
-         this.SetUpForm(); // MainForm.SetUpForm.cs
+         this.SetUpForm(); // SetUpForm.cs
 
          QuirkStart mozNet = new QuirkStart();
          mozNet.Nick = "Tongue"; mozNet.Port = 6667;
