@@ -23,7 +23,6 @@ namespace Theminds.Filters {
       // line ~ "[server] <channel> :End of /NAMES list"
       readonly string serverPrefix = App.Lion.Get("server.prefix");
       protected void filter(ref BufferData data) {
-         //System.Diagnostics.Debug.WriteLine("Stop calling me");
          if (S.Format("{0} {1} :End of /NAMES list.",
             serverPrefix, channel) == data.Line) {
             data.Ignore = true;
