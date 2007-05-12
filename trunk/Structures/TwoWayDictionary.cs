@@ -62,5 +62,13 @@ namespace Aspirations {
          MeToYou.Remove(id);
          return true;
       }
+
+      public List<You> Values{
+         get { return new List<You>(YouToMe.Keys); }
+      }
+
+      public List<Me> Keys {
+         get { return new List<Me>(MeToYou.Keys); }
+      }
    }
 }
