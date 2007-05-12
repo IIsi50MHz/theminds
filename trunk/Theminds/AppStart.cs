@@ -1,4 +1,4 @@
-//#define ENABLE_TEST
+#define ENABLE_TEST
 
 using System.Diagnostics;
 using System.Windows.Forms;
