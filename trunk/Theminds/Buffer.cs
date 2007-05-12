@@ -8,23 +8,19 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Collections.Generic;
 using Aspirations;
+using M = System.Windows.Forms.MethodInvoker;
 
 namespace Theminds {
    public class Buffer {
       IAppControls app;
 
       // I need the two-way-osity for AddLine.
-      TwoWayDictionary<ITab, TabId> proust;
-      // I needed this to handle new tabs (hack hackety hack).
-      Dictionary<TabIdShell, LogBox> logBoxes;
+      TwoWayDictionary<ITab, TabId> proust = new TwoWayDictionary<ITab, TabId>(5);
       public Buffer(IAppControls app) {
          this.app = app;
-         proust = new TwoWayDictionary<ITab, TabId>(5);
-         logBoxes = new Dictionary<TabIdShell, LogBox>(5);
 
          TabId id = new TabId(app.Connection, null, app.LogBox);
          proust[app.Tabber.Current] = id;
-         logBoxes[new TabIdShell(id)] = app.LogBox;
 
          // Page.Buffering events.
          app.Tabber.Moved += new TabDel(MoveToTab);
@@ -42,39 +38,43 @@ namespace Theminds {
          if (app.InvokeRequired) Line(ref data);
          else SelfLine(ref data);
          PostLine(ref data);
-         if (data.Ignore) return;
          
-         TabIdShell shell = new TabIdShell(app.Connection, data.Channel);
-         // *Line events allows clients to modify data.NeedsNewTab.
-         //  This allows them to signal to their mother ship, us.
-         handleNewTab(ref shell, data.NeedsNewTab);
-
-         LogBox l = logBoxes[shell];
-         l.Invoke(new AddLineDel(l.AddLine),
-            data.Line, data.Color);
-      }
-
-      void handleNewTab(ref TabIdShell shell, bool needsNewTab) {
-         if (logBoxes.ContainsKey(shell)) return;
-         if (!needsNewTab) shell.Channel = app.CurrentChannel;
+         if (data.Ignore) return;
+         if (data.Broadcast)
+            broadcast(data.Line, data.Color);
          else {
-            TabId id = new TabId(shell, null);
-            app.Invoke((MethodInvoker)delegate {
-               AddChannel(id.Channel);
-            });
+            TabId tab = new TabId(app.Connection, data.Channel, null);
+            if (!proust.ContainsKey(tab))
+               app.Invoke((M)delegate { AddChannel(tab); });
+            
+            // AddChannel now guarantees `tab` is inside
+            // `proust`, ripe for picking. Forward & reverse
+            // ensures that tab.LogBox is not null.
+            tab = proust[proust[tab]];
+            app.Invoke(new AddLineDel(tab.LogBox.AddLine),
+                  data.Line, data.Color);
          }
       }
 
-      public void AddChannel() { AddChannel(null); }
-      public void AddChannel(string channel) {
-         app.CurrentChannel = channel;
-         ITab newTab = app.Tabber.Add(channel);
-         TabId id = new TabId(app.Connection, channel, new LogBox());
-         app.SwitchLogBox(id.LogBox);
+      private void broadcast(string line, Color color) {
+         app.BeginInvoke((M)delegate {
+            proust.Values.ForEach((Action<TabId>)delegate(TabId tab) {
+               tab.LogBox.AddLine(line, color);
+            });
+         });
+      }
 
-         proust[newTab] = id;
-         logBoxes[new TabIdShell(id)] = id.LogBox;
-         NewChannel(channel);
+      public void AddChannel() { 
+         AddChannel(new TabId(app.Connection, null, null)); 
+      }
+      public void AddChannel(TabId tab) {
+         app.CurrentChannel = tab.Channel;
+         ITab newTab = app.Tabber.Add(tab.Channel);
+         tab.LogBox = new LogBox();
+         app.SwitchLogBox(tab.LogBox);
+
+         proust[newTab] = tab;
+         NewChannel(tab.Channel);
       }
 
       // If no key exists, `t` is a new tab.
@@ -92,7 +92,6 @@ namespace Theminds {
          if (!proust.ContainsKey(t)) return;
 
          string channel = proust[t].Channel;
-         logBoxes.Remove(new TabIdShell(proust[t]));
          proust.Remove(t);
          app.Tabber.Remove(t);
          if (StringEx.IsChannel(channel))

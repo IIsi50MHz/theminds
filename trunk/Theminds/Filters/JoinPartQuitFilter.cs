@@ -8,11 +8,10 @@ namespace Theminds.Filters {
    [DesiresAppControls]
    class JoinPartQuitFilter {
       Quirk quirk; IAppControls app;
-      Ideas lion = App.Lion; LineDel fforde;
+      Ideas lion = App.Lion;
       public JoinPartQuitFilter(IAppControls app) {
          this.app = app; quirk = app.Connection;
          app.Buffer.Line += new LineDel(filter);
-         fforde = new LineDel(suppressNewTab);
       }
 
       // line ~ ":nick!ip join :#chan"
@@ -38,7 +37,8 @@ namespace Theminds.Filters {
                data.Channel = Sx.Tween(line, spaces[1], spaces[2] - 1);
                reasonIndex = spaces[2] + 1; break;
             case "quit":
-               reasonIndex = spaces[1] + 1; break;
+               reasonIndex = spaces[1] + 1;
+               data.Broadcast = true; break;
             default: return;
          }
          notes.ReasonIndex = reasonIndex;
@@ -46,13 +46,11 @@ namespace Theminds.Filters {
          findMessage(ref data, ref notes);
          findReason(ref data, ref notes);
          
-         // Regarding `fforde` and `suppressNewTabs`:
-         // When I part, I output the part message
-         // from the server to the (server) tab, not to
-         // the already-closed tab.
+         // Output part messages caused by me to the (server)
+         // tab now that the find* twins are finished.
          if ("part" == notes.Mode && notes.FromMe) {
-            messageToSuppress = data.Line;
-            app.Buffer.PostLine += fforde;
+            data.Channel = null;
+            data.Broadcast = true;
          }
       }
 
@@ -81,13 +79,6 @@ namespace Theminds.Filters {
          if (!user.Contains("!")) return;
          notes.Nick = Sx.Tween(user, 1, user.IndexOf('!'));
          notes.Ip = user.Substring(user.IndexOf('!') + 1);
-      }
-
-      string messageToSuppress;
-      void suppressNewTab(ref BufferData data) {
-         if (messageToSuppress != data.Line) return;
-         data.NeedsNewTab = false;
-         app.Buffer.PostLine -= fforde;
       }
    }
 

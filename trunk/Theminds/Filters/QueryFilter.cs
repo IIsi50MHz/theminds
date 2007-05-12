@@ -32,7 +32,6 @@ namespace Theminds.Filters {
          dc.Channel = arg;
          dc.Color = Color.DarkSlateBlue;
          dc.Line = dc.Line.Substring(nonce.Length);
-         dc.NeedsNewTab = true;
          app.Buffer.SelfLine -= introFilterDel;
       }
    }
