@@ -46,7 +46,7 @@ namespace Theminds.Tests {
       }
 
       public IAsyncResult BeginInvoke(Delegate d, params object[] args) {
-         throw new Exception("The method or operation is not implemented.");
+         Invoke(d, args); return null;
       }
 
       public object Invoke(Delegate d, params object[] args) {

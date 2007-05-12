@@ -31,15 +31,6 @@ namespace Theminds.Tests {
          // join, self
          test(":Tongue!ip JOIN :#spreadbutter",
             S.Format(joinSelf, channel), "tips");
-         // part, self, no reason
-         test(":Tongue!ip PART #spreadbutter",
-            S.Format(partSelf, "#spreadbutter"), "soulz");
-         // part, self, a reason
-         test(":Tongue!ip PART #spreadbutter :Too verklempt",
-            S.Format(partTotal,
-               S.Format(partSelf, "#spreadbutter"),
-               S.Format(partReason, "Too verklempt")),
-            "verklempt");
          // part, others, no reason
          test(":Tongues!ip PART #spreadbutter",
             S.Format(partOthers, "Tongues", "ip", channel),
@@ -52,6 +43,15 @@ namespace Theminds.Tests {
 
          // And now those that do not need no stinking channel.
          this.channel = null;
+         // part, self, no reason
+         test(":Tongue!ip PART #spreadbutter",
+            S.Format(partSelf, "#spreadbutter"), "soulz");
+         // part, self, a reason
+         test(":Tongue!ip PART #spreadbutter :Too verklempt",
+            S.Format(partTotal,
+               S.Format(partSelf, "#spreadbutter"),
+               S.Format(partReason, "Too verklempt")),
+            "verklempt");
          // quit, others, a reason
          test(":t!ip QUIT :Goodbye cruelle world",
             S.Format(quitTotal, S.Format(quitOthers, "t", "ip"),

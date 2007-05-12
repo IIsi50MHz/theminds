@@ -20,7 +20,7 @@ namespace Theminds {
 
       public override bool Equals(object obj) {
          if (obj == null) return false;
-         if (typeof(TabKey) != obj.GetType()) return false;
+         if (!(obj is TabKey)) return false;
          TabKey o = (TabKey)obj;
          return (o.Connection == this.Connection) &&
             (o.Channel == this.Channel);

@@ -36,7 +36,7 @@ namespace Theminds.Filters {
          data.Color = Color.DarkBlue;
          data.Ignore = true;
          if (data.Line.Contains("End of /WHO"))
-            app.Invoke(new MethodInvoker(stop));
+            app.BeginInvoke(new MethodInvoker(stop));
          else
             app.UserList.Push(tokens[5]);
       }
