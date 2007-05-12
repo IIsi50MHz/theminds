@@ -2,12 +2,12 @@ using Aspirations;
 using Color = System.Drawing.Color;
 
 namespace Theminds {
-   public struct TabId {
+   public struct TabKey {
       public Quirk Connection;
       public string Channel;
       public LogBox LogBox;
 
-      public TabId(Quirk c, string channel, LogBox l) {
+      public TabKey(Quirk c, string channel, LogBox l) {
          this.Connection = c;
          this.Channel = channel;
          this.LogBox = l;
@@ -20,8 +20,8 @@ namespace Theminds {
 
       public override bool Equals(object obj) {
          if (obj == null) return false;
-         if (typeof(TabId) != obj.GetType()) return false;
-         TabId o = (TabId)obj;
+         if (typeof(TabKey) != obj.GetType()) return false;
+         TabKey o = (TabKey)obj;
          return (o.Connection == this.Connection) &&
             (o.Channel == this.Channel);
       }

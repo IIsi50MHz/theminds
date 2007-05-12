@@ -15,11 +15,11 @@ namespace Theminds {
       IAppControls app;
 
       // I need the two-way-osity for AddLine.
-      TwoWayDictionary<ITab, TabId> proust = new TwoWayDictionary<ITab, TabId>(5);
+      TwoWayDictionary<ITab, TabKey> proust = new TwoWayDictionary<ITab, TabKey>(5);
       public Buffer(IAppControls app) {
          this.app = app;
 
-         TabId id = new TabId(app.Connection, null, app.LogBox);
+         TabKey id = new TabKey(app.Connection, null, app.LogBox);
          proust[app.Tabber.Current] = id;
 
          // Page.Buffering events.
@@ -43,7 +43,7 @@ namespace Theminds {
          if (data.Broadcast)
             broadcast(data.Line, data.Color);
          else {
-            TabId tab = new TabId(app.Connection, data.Channel, null);
+            TabKey tab = new TabKey(app.Connection, data.Channel, null);
             if (!proust.ContainsKey(tab))
                app.Invoke((M)delegate { AddChannel(tab); });
             
@@ -58,16 +58,16 @@ namespace Theminds {
 
       private void broadcast(string line, Color color) {
          app.BeginInvoke((M)delegate {
-            proust.Values.ForEach((Action<TabId>)delegate(TabId tab) {
+            proust.Values.ForEach((Action<TabKey>)delegate(TabKey tab) {
                tab.LogBox.AddLine(line, color);
             });
          });
       }
 
       public void AddChannel() { 
-         AddChannel(new TabId(app.Connection, null, null)); 
+         AddChannel(new TabKey(app.Connection, null, null)); 
       }
-      public void AddChannel(TabId tab) {
+      public void AddChannel(TabKey tab) {
          app.CurrentChannel = tab.Channel;
          ITab newTab = app.Tabber.Add(tab.Channel);
          tab.LogBox = new LogBox();
@@ -82,7 +82,7 @@ namespace Theminds {
       public void MoveToTab(ITab t) {
          if (!proust.ContainsKey(t)) return;
 
-         TabId id = proust[t];
+         TabKey id = proust[t];
          app.SwitchLogBox(id.LogBox);
          app.CurrentChannel = id.Channel;
       }
