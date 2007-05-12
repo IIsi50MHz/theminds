@@ -13,35 +13,32 @@ namespace Theminds {
          this.LogBox = l;
       }
 
-      public TabId(TabIdShell shell, LogBox l)
-         : this(shell.Connection, shell.Channel, l) { }
-   }
-
-   public struct TabIdShell {
-      public Quirk Connection;
-      public string Channel;
-
-      public TabIdShell(Quirk c, string channel) {
-         this.Connection = c;
-         this.Channel = channel;
+      public override int GetHashCode() {
+         if (Channel == null) return 42;
+         else return Channel.GetHashCode();
       }
 
-      public TabIdShell(TabId id)
-         : this(id.Connection, id.Channel) { }
+      public override bool Equals(object obj) {
+         if (obj == null) return false;
+         if (typeof(TabId) != obj.GetType()) return false;
+         TabId o = (TabId)obj;
+         return (o.Connection == this.Connection) &&
+            (o.Channel == this.Channel);
+      }
    }
 
    public struct BufferData {
       public Color Color;
       public string Channel;
       public string Line;
-      public bool NeedsNewTab;
       public bool Ignore;
+      public bool Broadcast;
       public BufferData(string line) {
          this.Line = line;
          this.Color = Color.Black;
          this.Channel = null;
-         this.NeedsNewTab = true;
          this.Ignore = false;
+         this.Broadcast = false;
       }
    }
 }
