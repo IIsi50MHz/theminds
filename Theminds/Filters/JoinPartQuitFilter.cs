@@ -13,9 +13,6 @@ namespace Theminds.Filters {
          this.app = app; quirk = app.Connection;
          app.Buffer.Line += new LineDel(filter);
          fforde = new LineDel(suppressNewTab);
-
-         App.LoadAttributeLovers(
-            typeof(DesiresJoinPartQuitFilterAttribute), this, app);
       }
 
       // line ~ ":nick!ip join :#chan"
