@@ -1,5 +1,5 @@
 #summary Whip it.
-#labels Featured,Documentation-User
+#labels Featured,Documentation-User,input
 
 (x) means it's mandatory. {x} means it's not.
 
