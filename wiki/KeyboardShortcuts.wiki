@@ -1,5 +1,5 @@
 #summary For people with fingers
-#labels Featured,Documentation-User
+#labels Featured,Documentation-User,input
 
   * *Ctrl-W*: Close tab
   * *Ctrl-Q*: Quit a.k.a. "Easter Egg"
