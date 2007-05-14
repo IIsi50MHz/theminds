@@ -1,5 +1,5 @@
 #summary Insanity, explained.
-#labels docs,filters
+#labels Documentation-Developer,filters
 
 Given a string and a number _x_, `StringEx.FindSpaces` returns the first _x_ number of space characters. Why not Split? Because
 
