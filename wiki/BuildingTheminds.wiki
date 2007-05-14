@@ -1,0 +1,9 @@
+#summary A 1 GB `make install`.
+#labels docs,building,sexy
+
+  * Download and install [http://msdn.microsoft.com/vstudio/express/visualcsharp/ Visual C# Express.] This should take care of .NET Framework, which pads your download size considerably.
+  * Open the solution file. [http://theminds.googlecode.com/svn/trunk/Theminds.sln For example, this.]
+  * Build and run.
+
+Ah, simplicity's costs.
+
