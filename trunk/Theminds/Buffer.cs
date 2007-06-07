@@ -40,13 +40,13 @@ namespace Theminds {
          PostLine(ref data);
          
          if (data.Ignore) return;
-         if (data.Broadcast)
-            broadcast(data.Line, data.Color);
+         if (data.BroadcastId != null)
+            broadcastHelper(data.Line, data.Color);
          else {
             TabKey tab = new TabKey(app.Connection, data.Channel, null);
             if (!proust.ContainsKey(tab))
                app.Invoke((M)delegate { AddChannel(tab); });
-            
+
             // AddChannel now guarantees `tab` is inside
             // `proust`, ripe for picking. Forward & reverse
             // ensures that tab.LogBox is not null.
@@ -56,9 +56,11 @@ namespace Theminds {
          }
       }
 
-      private void broadcast(string line, Color color) {
+      private void broadcastHelper(string line, Color color) {
+         List<TabKey> tabs = proust.Values;
+         Broadcast(ref tabs);
          app.BeginInvoke((M)delegate {
-            proust.Values.ForEach((Action<TabKey>)delegate(TabKey tab) {
+            tabs.ForEach((Action<TabKey>)delegate(TabKey tab) {
                tab.LogBox.AddLine(line, color);
             });
          });
@@ -102,9 +104,10 @@ namespace Theminds {
       public event LineDel Line = delegate { };
       public event LineDel SelfLine = delegate { };
       public event LineDel PostLine = delegate { };
-      public event StringDel NewChannel = delegate { };
+      public event Action<String> NewChannel = delegate { };
+      public event BroadcastDel Broadcast = delegate { };
    }
 
    public delegate void LineDel(ref BufferData data);
-   public delegate void StringDel(string s);
+   public delegate void BroadcastDel(ref List<TabKey> tabs);
 }

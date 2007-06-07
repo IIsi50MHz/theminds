@@ -92,5 +92,7 @@ namespace Theminds.Tests {
          app.Buffer.AddLine(line);
          app.Buffer.PostLine -= girls;
       }
+
+      public event MethodInvoker PostOffice;
    }
 }

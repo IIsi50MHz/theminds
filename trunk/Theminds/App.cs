@@ -29,6 +29,7 @@ namespace Theminds {
          quirk.NewLine += new Quirk.NewLineDel(Buffer.AddLine);
          App.LoadAttributeLovers(
             typeof(DesiresAppControlsAttribute), this);
+         PostOffice();
 
          quirk.Start();
       }
@@ -82,5 +83,7 @@ namespace Theminds {
             throw new InvalidOperationException(x.Message + x.StackTrace);
          }
       }
+
+      public event MethodInvoker PostOffice = delegate { };
    }
 }
