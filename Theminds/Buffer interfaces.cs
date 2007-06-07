@@ -32,13 +32,13 @@ namespace Theminds {
       public string Channel;
       public string Line;
       public bool Ignore;
-      public bool Broadcast;
+      public string BroadcastId;
       public BufferData(string line) {
          this.Line = line;
          this.Color = Color.Black;
          this.Channel = null;
          this.Ignore = false;
-         this.Broadcast = false;
+         this.BroadcastId = null;
       }
    }
 }

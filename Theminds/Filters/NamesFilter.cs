@@ -3,19 +3,20 @@
 // and RPL_ENDOFNAMES in the IRC RFC).
 
 using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using System.Diagnostics;
 using S = System.String;
 using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
    class NamesFilter {
-      LineDel del; string channel; IAppControls app;
+      IAppControls app;
       public NamesFilter(IAppControls app) {
          this.app = app;
-         del = new LineDel(filter);
-         app.Buffer.NewChannel += delegate(string channel) {
-            this.channel = channel;
-            app.Buffer.Line += del;
+         app.Buffer.Line += new LineDel(filter);
+         app.Buffer.Broadcast += delegate(ref List<TabKey> tabs) {
          };
       }
 
@@ -23,21 +24,21 @@ namespace Theminds.Filters {
       // line ~ "[server] <channel> :End of /NAMES list"
       readonly string serverPrefix = App.Lion.Get("server.prefix");
       protected void filter(ref BufferData data) {
-         if (S.Format("{0} {1} :End of /NAMES list.",
-            serverPrefix, channel) == data.Line) {
+         if (data.Line.EndsWith(":End of /NAMES list.")) {
             data.Ignore = true;
-            app.Buffer.Line -= del;
             app.UserList.Flush();
             return;
          }
 
-         string test = S.Format("{0} = {1} :", serverPrefix, channel);
+         string test = S.Format("{0} = ", serverPrefix);
          if (!data.Line.StartsWith(test)) return;
          
          int[] spaces = Sx.FindSpaces(data.Line, 4);
          // Remember the colon! Remember the weird tacked space!
          string[] nicks = data.Line.Substring(spaces[2] + 1).Trim().Split(' ');
-         foreach (string nick in nicks) app.UserList.Push(nick);
+         foreach (string nick in nicks) {
+            app.UserList.Push(nick);
+         }
          data.Ignore = true;
       }
    }

@@ -9,9 +9,11 @@ namespace Theminds.Filters {
    class JoinPartQuitFilter {
       Quirk quirk; IAppControls app;
       Ideas lion = App.Lion;
+      public static JoinPartQuitFilter Instance;
       public JoinPartQuitFilter(IAppControls app) {
          this.app = app; quirk = app.Connection;
          app.Buffer.Line += new LineDel(filter);
+         Instance = this;
       }
 
       // line ~ ":nick!ip join :#chan"
@@ -38,7 +40,7 @@ namespace Theminds.Filters {
                reasonIndex = spaces[2] + 1; break;
             case "quit":
                reasonIndex = spaces[1] + 1;
-               data.Broadcast = true; break;
+               data.BroadcastId = "quit"; break;
             default: return;
          }
          notes.ReasonIndex = reasonIndex;
@@ -50,7 +52,7 @@ namespace Theminds.Filters {
          // tab now that the find* twins are finished.
          if ("part" == notes.Mode && notes.FromMe) {
             data.Channel = null;
-            data.Broadcast = true;
+            data.BroadcastId = "part";
          }
       }
 

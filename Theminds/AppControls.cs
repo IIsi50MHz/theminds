@@ -17,6 +17,8 @@ namespace Theminds {
       IAsyncResult BeginInvoke(Delegate d, params object[] args);
       object Invoke(Delegate d, params object[] args);
       void SwitchLogBox(LogBox c);
+
+      event MethodInvoker PostOffice;
    }
 
    public partial class App : Form, IAppControls {
