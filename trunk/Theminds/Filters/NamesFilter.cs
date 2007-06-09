@@ -16,7 +16,7 @@ namespace Theminds.Filters {
       public NamesFilter(IAppControls app) {
          this.app = app;
          app.Buffer.Line += new LineDel(filter);
-         app.Buffer.Broadcast += delegate(ref List<TabKey> tabs) {
+         app.Buffer.Broadcast += delegate(ref List<Room> tabs) {
          };
       }
 

@@ -2,12 +2,15 @@ using Aspirations;
 using Color = System.Drawing.Color;
 
 namespace Theminds {
-   public struct TabKey {
+   // Essentially captures the necessary information
+   // to pinpoint a single channel, in preparation
+   // for multiserver days.
+   public struct Room {
       public Quirk Connection;
       public string Channel;
       public LogBox LogBox;
 
-      public TabKey(Quirk c, string channel, LogBox l) {
+      public Room(Quirk c, string channel, LogBox l) {
          this.Connection = c;
          this.Channel = channel;
          this.LogBox = l;
@@ -20,8 +23,8 @@ namespace Theminds {
 
       public override bool Equals(object obj) {
          if (obj == null) return false;
-         if (!(obj is TabKey)) return false;
-         TabKey o = (TabKey)obj;
+         if (!(obj is Room)) return false;
+         Room o = (Room)obj;
          return (o.Connection == this.Connection) &&
             (o.Channel == this.Channel);
       }
