@@ -9,6 +9,7 @@ namespace Theminds {
       Tabber Tabber { get; }
       Quirk Connection { get;}
       Buffer Buffer { get;}
+      Users Users { get;}
       UserList UserList { get;}
       InputBox InputBox { get;}
       string CurrentChannel { get; set;}
@@ -44,6 +45,10 @@ namespace Theminds {
 
       public Buffer Buffer {
          get { return buffer; }
+      }
+
+      public Users Users {
+         get { return users; }
       }
 
       public void SwitchLogBox(LogBox l) {

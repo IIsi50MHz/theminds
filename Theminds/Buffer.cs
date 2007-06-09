@@ -15,11 +15,11 @@ namespace Theminds {
       IAppControls app;
 
       // I need the two-way-osity for AddLine.
-      TwoWayDictionary<ITab, TabKey> proust = new TwoWayDictionary<ITab, TabKey>(5);
+      TwoWayDictionary<ITab, Room> proust = new TwoWayDictionary<ITab, Room>(5);
       public Buffer(IAppControls app) {
          this.app = app;
 
-         TabKey id = new TabKey(app.Connection, null, app.LogBox);
+         Room id = new Room(app.Connection, null, app.LogBox);
          proust[app.Tabber.Current] = id;
 
          // Page.Buffering events.
@@ -43,7 +43,7 @@ namespace Theminds {
          if (data.BroadcastId != null)
             broadcastHelper(data.Line, data.Color);
          else {
-            TabKey tab = new TabKey(app.Connection, data.Channel, null);
+            Room tab = new Room(app.Connection, data.Channel, null);
             if (!proust.ContainsKey(tab))
                app.Invoke((M)delegate { AddChannel(tab); });
 
@@ -57,19 +57,19 @@ namespace Theminds {
       }
 
       private void broadcastHelper(string line, Color color) {
-         List<TabKey> tabs = proust.Values;
+         List<Room> tabs = proust.Values;
          Broadcast(ref tabs);
          app.BeginInvoke((M)delegate {
-            tabs.ForEach((Action<TabKey>)delegate(TabKey tab) {
+            tabs.ForEach((Action<Room>)delegate(Room tab) {
                tab.LogBox.AddLine(line, color);
             });
          });
       }
 
       public void AddChannel() { 
-         AddChannel(new TabKey(app.Connection, null, null)); 
+         AddChannel(new Room(app.Connection, null, null)); 
       }
-      public void AddChannel(TabKey tab) {
+      public void AddChannel(Room tab) {
          app.CurrentChannel = tab.Channel;
          ITab newTab = app.Tabber.Add(tab.Channel);
          tab.LogBox = new LogBox();
@@ -84,7 +84,7 @@ namespace Theminds {
       public void MoveToTab(ITab t) {
          if (!proust.ContainsKey(t)) return;
 
-         TabKey id = proust[t];
+         Room id = proust[t];
          app.SwitchLogBox(id.LogBox);
          app.CurrentChannel = id.Channel;
       }
@@ -109,5 +109,5 @@ namespace Theminds {
    }
 
    public delegate void LineDel(ref BufferData data);
-   public delegate void BroadcastDel(ref List<TabKey> tabs);
+   public delegate void BroadcastDel(ref List<Room> tabs);
 }

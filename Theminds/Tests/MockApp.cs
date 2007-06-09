@@ -35,6 +35,7 @@ namespace Theminds.Tests {
       public Tabber Tabber { get { return tabber; } }
       public Quirk Connection { get { return quirk; } }
       public Buffer Buffer { get { return buffer; } }
+      public Users Users { get { return null; } }
       public UserList UserList { get { return userList; } }
       public bool InvokeRequired { get { return true; } }
       public void SwitchLogBox(LogBox c) { }
