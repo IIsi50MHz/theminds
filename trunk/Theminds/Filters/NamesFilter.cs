@@ -16,8 +16,6 @@ namespace Theminds.Filters {
       public NamesFilter(IAppControls app) {
          this.app = app;
          app.Buffer.Line += new LineDel(filter);
-         app.Buffer.Broadcast += delegate(ref List<Room> tabs) {
-         };
       }
 
       // line ~ "[server] = <channel> :[[@|+]<nick> [[@|+]<nick> [...]]]"
@@ -32,11 +30,14 @@ namespace Theminds.Filters {
 
          string test = S.Format("{0} = ", serverPrefix);
          if (!data.Line.StartsWith(test)) return;
-         
+
+         // Remember the colon! Rememebr the weird tacked space!
          int[] spaces = Sx.FindSpaces(data.Line, 4);
-         // Remember the colon! Remember the weird tacked space!
+         data.Channel = Sx.Tween(data.Line, spaces[1], spaces[2] - 1);
          string[] nicks = data.Line.Substring(spaces[2] + 1).Trim().Split(' ');
+         Users.Instance.Clear(data);
          foreach (string nick in nicks) {
+            Users.Instance[data] = nick;
             app.UserList.Push(nick);
          }
          data.Ignore = true;

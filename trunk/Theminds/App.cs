@@ -15,7 +15,7 @@ namespace Theminds {
 
       public static Ideas Lion = new Ideas(@"lion.txt");
 
-      Buffer buffer; Quirk quirk; Users users;
+      Buffer buffer; Quirk quirk;
       public App() {
          this.SetUpForm(); // SetUpForm.cs
 
@@ -25,8 +25,7 @@ namespace Theminds {
          mozNet.User = "USER cryptoliter2 8 * :Hi";
          quirk = new Quirk(mozNet);
 
-         this.buffer = new Buffer(this);
-         this.users = new Users();
+         this.buffer = new Buffer(this, quirk);
          quirk.NewLine += new Quirk.NewLineDel(Buffer.AddLine);
          App.LoadAttributeLovers(
             typeof(DesiresAppControlsAttribute), this);

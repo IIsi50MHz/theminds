@@ -40,7 +40,7 @@ namespace Theminds.Filters {
                reasonIndex = spaces[2] + 1; break;
             case "quit":
                reasonIndex = spaces[1] + 1;
-               data.BroadcastId = "quit"; break;
+               data.BroadcastId = "quit." + notes.Nick; break;
             default: return;
          }
          notes.ReasonIndex = reasonIndex;
