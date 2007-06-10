@@ -23,10 +23,9 @@ namespace Theminds.Tests {
          quirk = new Quirk(mozNet);
 
          this.tabber = new Tabber(this, "(new)");
-         tabber.NewTab += delegate {
-         };
+         tabber.NewTab += delegate { };
          tabber.Add("(server)");
-         this.buffer = new Buffer(this);
+         this.buffer = new Buffer(this, quirk);
          this.userList = new UserList();
       }
 

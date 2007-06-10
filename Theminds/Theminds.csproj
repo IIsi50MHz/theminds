@@ -70,7 +70,7 @@
     <Compile Include="Tests\MockApp.cs" />
     <Compile Include="Tests\NamesFilter.cs" />
     <Compile Include="Tests\PrivmsgFilter.cs" />
-    <Compile Include="Users.cs" />
+    <Compile Include="Filters\Users.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Plainclothes\lion.txt" />

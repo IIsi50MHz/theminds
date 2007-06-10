@@ -16,10 +16,12 @@ namespace Theminds {
 
       // I need the two-way-osity for AddLine.
       TwoWayDictionary<ITab, Room> proust = new TwoWayDictionary<ITab, Room>(5);
-      public Buffer(IAppControls app) {
+      Quirk connection;
+      public Buffer(IAppControls app, Quirk quirk) {
          this.app = app;
+         this.connection = quirk;
 
-         Room id = new Room(app.Connection, null, app.LogBox);
+         Room id = new Room(quirk, null, app.LogBox);
          proust[app.Tabber.Current] = id;
 
          // Page.Buffering events.
@@ -41,9 +43,9 @@ namespace Theminds {
          
          if (data.Ignore) return;
          if (data.BroadcastId != null)
-            broadcastHelper(data.Line, data.Color);
+            broadcastHelper(data);
          else {
-            Room tab = new Room(app.Connection, data.Channel, null);
+            Room tab = new Room(this.connection, data.Channel, null);
             if (!proust.ContainsKey(tab))
                app.Invoke((M)delegate { AddChannel(tab); });
 
@@ -56,18 +58,18 @@ namespace Theminds {
          }
       }
 
-      private void broadcastHelper(string line, Color color) {
+      private void broadcastHelper(BufferData data) {
          List<Room> tabs = proust.Values;
-         Broadcast(ref tabs);
+         Broadcast(ref tabs, data.BroadcastId);
          app.BeginInvoke((M)delegate {
             tabs.ForEach((Action<Room>)delegate(Room tab) {
-               tab.LogBox.AddLine(line, color);
+               tab.LogBox.AddLine(data.Line, data.Color);
             });
          });
       }
 
       public void AddChannel() { 
-         AddChannel(new Room(app.Connection, null, null)); 
+         AddChannel(new Room(this.connection, null, null)); 
       }
       public void AddChannel(Room tab) {
          app.CurrentChannel = tab.Channel;
@@ -100,6 +102,10 @@ namespace Theminds {
             app.Connection.Message("PART {0}", channel);
       }
 
+      public Room GetRoom(BufferData data) {
+         return new Room(this.connection, data.Channel, null);
+      }
+
       public event LineDel PreLine = delegate { };
       public event LineDel Line = delegate { };
       public event LineDel SelfLine = delegate { };
@@ -109,5 +115,5 @@ namespace Theminds {
    }
 
    public delegate void LineDel(ref BufferData data);
-   public delegate void BroadcastDel(ref List<Room> tabs);
+   public delegate void BroadcastDel(ref List<Room> tabs, string id);
 }
