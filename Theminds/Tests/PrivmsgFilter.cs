@@ -6,10 +6,10 @@ using S = System.String;
 
 namespace Theminds.Tests {
    [DesiresTestingWithMockAppAttribute]
-   class PrivmsgFilter : Filters.PrivmsgFilter {
+   class Privmsg : Filters.Privmsg {
       string channel = "#spreadbutter";
       IAppControls app;
-      public PrivmsgFilter(IAppControls app)
+      public Privmsg(IAppControls app)
          : base(app) {
          this.app = app;
          string speechAll = App.Lion.Get("speech.all");
