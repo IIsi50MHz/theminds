@@ -1,9 +1,9 @@
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Reflection;
 using Aspirations;
+using CancelEventArgs = System.ComponentModel.CancelEventArgs;
 
 namespace Theminds {
    public sealed partial class App : Form {
@@ -13,7 +13,7 @@ namespace Theminds {
          set { currentChannel = value; }
       }
 
-      public static Ideas Lion = new Ideas(@"lion.txt");
+      public static Ideas Lion = new Ideas(@"lion.txt", true);
 
       Buffer buffer; Quirk quirk;
       public App() {
@@ -29,31 +29,31 @@ namespace Theminds {
          quirk.NewLine += new Quirk.NewLineDel(Buffer.AddLine);
          App.LoadAttributeLovers(
             typeof(DesiresAppControlsAttribute), this);
+         
          PostOffice();
-
          quirk.Start();
       }
 
       /**** Event handlers ****/
-      protected override void OnClosing(
-         System.ComponentModel.CancelEventArgs e) {
+      protected override void OnClosing(CancelEventArgs e) {
          quirk.Dispose();
+         Lion.Dispose();
          base.OnClosing(e);
       }
 
       protected override void OnKeyDown(KeyEventArgs e) {
-         if (false == e.Control) goto noControl;
-         e.SuppressKeyPress = true;
-         switch (e.KeyCode) {
-            case Keys.PageUp: tabber.MoveToPrev(); break;
-            case Keys.PageDown: tabber.MoveToNext(); break;
-            case Keys.T: buffer.AddChannel(); break;
-            case Keys.W: buffer.Remove(tabber.Current); break;
-            case Keys.Q: this.Close(); break;
-            default: e.SuppressKeyPress = false; break;
+         if (e.Control) {
+            e.SuppressKeyPress = true;
+            switch (e.KeyCode) {
+               case Keys.PageUp: tabber.MoveToPrev(); break;
+               case Keys.PageDown: tabber.MoveToNext(); break;
+               case Keys.T: buffer.AddChannel(); break;
+               case Keys.W: buffer.Remove(tabber.Current); break;
+               case Keys.Q: this.Close(); break;
+               default: e.SuppressKeyPress = false; break;
+            }
          }
 
-      noControl:
          base.OnKeyDown(e);
       }
 
@@ -84,6 +84,9 @@ namespace Theminds {
          }
       }
 
+      // Called after I construct all DesireAppControls filters
+      // so those filters may start mingling among each other,
+      // swapping body fluids and pirate stories.
       public event MethodInvoker PostOffice = delegate { };
    }
 }
