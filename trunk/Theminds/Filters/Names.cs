@@ -1,7 +1,10 @@
-// Automatically seeds UserList with members of a channel
-// upon joins via the /NAMES message (see RPL_NAMEREPLY
-// and RPL_ENDOFNAMES in the IRC RFC).
-
+// I intercept NAMES messages sent upon a
+// channel join and also manually by the user.
+// It works with the Users class to seed
+// a per-channel list of users. See RPL_NAMEREPLY
+// and RPL_ENDOFNAMES in the RFC. In addition,
+// I serve the dual purpose of seeding the
+// UserList control.
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -11,9 +14,9 @@ using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
-   class NamesFilter {
+   class Names {
       IAppControls app;
-      public NamesFilter(IAppControls app) {
+      public Names(IAppControls app) {
          this.app = app;
          app.Buffer.Line += new LineDel(filter);
       }
@@ -31,7 +34,7 @@ namespace Theminds.Filters {
          string test = S.Format("{0} = ", serverPrefix);
          if (!data.Line.StartsWith(test)) return;
 
-         // Remember the colon! Rememebr the weird tacked space!
+         // Remember the colon! Rememeber the weird tacked space!
          int[] spaces = Sx.FindSpaces(data.Line, 4);
          data.Channel = Sx.Tween(data.Line, spaces[1], spaces[2] - 1);
          string[] nicks = data.Line.Substring(spaces[2] + 1).Trim().Split(' ');
