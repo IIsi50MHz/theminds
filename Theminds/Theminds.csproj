@@ -51,12 +51,12 @@
     <Compile Include="Buffer interfaces.cs" />
     <Compile Include="Buffer.cs" />
     <Compile Include="Filters\InputBoxFilters.cs" />
-    <Compile Include="Filters\JoinPartQuitFilter.cs" />
+    <Compile Include="Filters\JoinPartQuit.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
-    <Compile Include="Filters\NamesFilter.cs" />
-    <Compile Include="Filters\PrivmsgFilter.cs" />
-    <Compile Include="Filters\QueryFilter.cs" />
-    <Compile Include="Filters\WhoFilter.cs" />
+    <Compile Include="Filters\Names.cs" />
+    <Compile Include="Filters\Privmsg.cs" />
+    <Compile Include="Filters\Query.cs" />
+    <Compile Include="Filters\Who.cs" />
     <Compile Include="SetUpForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,11 +66,13 @@
     <Compile Include="Tests\InputBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tests\JoinPartQuitFilter.cs" />
+    <Compile Include="Tests\JoinPartQuit.cs" />
     <Compile Include="Tests\MockApp.cs" />
-    <Compile Include="Tests\NamesFilter.cs" />
-    <Compile Include="Tests\PrivmsgFilter.cs" />
     <Compile Include="Filters\Users.cs" />
+    <Compile Include="Tests\Names.cs" />
+    <Compile Include="Tests\PrivmsgFilter.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Plainclothes\lion.txt" />
