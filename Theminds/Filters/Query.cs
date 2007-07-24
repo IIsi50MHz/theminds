@@ -7,10 +7,10 @@ using S = System.String;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
-   class QueryFilter {
+   class Query {
       IAppControls app;
       LineDel introFilterDel;
-      public QueryFilter(IAppControls app) {
+      public Query(IAppControls app) {
          this.app = app;
          this.introFilterDel = new LineDel(introFilter);
          app.InputBox.Command += new InputBox.CommandDel(filter);

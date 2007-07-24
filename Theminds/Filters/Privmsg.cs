@@ -7,10 +7,10 @@ using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
-   class PrivmsgFilter {
+   class Privmsg {
       IAppControls app; Quirk quirk;
       string speechAll, actionAll;
-      public PrivmsgFilter(IAppControls app) {
+      public Privmsg(IAppControls app) {
          this.app = app;
          this.quirk = app.Connection;
 

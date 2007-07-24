@@ -6,11 +6,11 @@ using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
-   class JoinPartQuitFilter {
+   class JoinPartQuit {
       Quirk quirk; IAppControls app;
       Ideas lion = App.Lion;
-      public static JoinPartQuitFilter Instance;
-      public JoinPartQuitFilter(IAppControls app) {
+      public static JoinPartQuit Instance;
+      public JoinPartQuit(IAppControls app) {
          this.app = app; quirk = app.Connection;
          app.Buffer.Line += new LineDel(filter);
          Instance = this;

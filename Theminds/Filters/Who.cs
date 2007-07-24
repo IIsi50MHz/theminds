@@ -5,10 +5,12 @@ using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
-   class WhoFilter {
+   class Who {
       IAppControls app;
       LineDel filterDel;
-      public WhoFilter(IAppControls app) {
+      public Who(IAppControls app) {
+         // Hook me up to the command /w in addition to filtering
+         // WHO commands; thus, Who serves as a dual purpose class.
          app.InputBox.Command += delegate(string cmd, string arg) {
             if ("w" != cmd) return;
             if (!Sx.IsChannel(app.CurrentChannel)) return;
