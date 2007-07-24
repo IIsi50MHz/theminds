@@ -6,10 +6,10 @@ using S = System.String;
 
 namespace Theminds.Tests {
    [DesiresTestingWithMockApp]
-   class JoinPartQuitFilter : Filters.JoinPartQuitFilter {
+   class JoinPartQuit : Filters.JoinPartQuit {
       string channel = "#spreadbutter";
       IAppControls app;
-      public JoinPartQuitFilter(IAppControls app)
+      public JoinPartQuit(IAppControls app)
          : base(app) {
          this.app = app;
          string joinOthers = App.Lion.Get("join.others");

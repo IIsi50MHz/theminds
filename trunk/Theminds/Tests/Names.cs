@@ -4,11 +4,18 @@ using Uganda = Aspirations.UserList;
 
 namespace Theminds.Tests {
    [DesiresTestingWithMockApp]
-   class NamesFilter : Filters.NamesFilter {
+   class Names : Filters.Names {
       IAppControls app; Uganda uganda;
-      public NamesFilter(IAppControls app)
+      
+      // Filters.Names has a hiddene dependency on the
+      // Filter.Users.Instance static memeber, which we
+      // seed here with anonymous construction in lieu
+      // of DesiresAppControls.
+      public Names(IAppControls app)
          : base(app) {
+         new Users(app);
          this.app = app; this.uganda = app.UserList;
+
          test("{0} = #spreadbutterNamesFilter :@Sam maria jark ", "fresh",
             new string[] { "@Sam", "maria", "jark" });
       }
