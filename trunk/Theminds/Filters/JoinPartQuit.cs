@@ -1,8 +1,6 @@
-using System;
 using System.Drawing;
 using Aspirations;
 using S = System.String;
-using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
@@ -23,20 +21,20 @@ namespace Theminds.Filters {
          string line = data.Line;
          JazzNotes notes = new JazzNotes(line);
          if (!(line.Contains(" ") && line.StartsWith(":"))) return;
-         int[] spaces = Sx.FindSpaces(line, 3);
+         int[] spaces = line.FindSpaces(3);
          notes.Spaces = spaces;
          
          findNickAndIp(ref notes);
          if (null == notes.Nick) return;
          notes.FromMe = (notes.Nick == quirk.Info.Nick);
-         notes.Mode = Sx.Tween(line, spaces[0], spaces[1] - 1).ToLowerInvariant();
+         notes.Mode = line.Tween(spaces[0], spaces[1] - 1).ToLowerInvariant();
          
          int reasonIndex = 0;
          switch (notes.Mode) {
             case "join":
                data.Channel = line.Substring(spaces[1] + 1); break;
             case "part":
-               data.Channel = Sx.Tween(line, spaces[1], spaces[2] - 1);
+               data.Channel = line.Tween(spaces[1], spaces[2] - 1);
                reasonIndex = spaces[2] + 1; break;
             case "quit":
                reasonIndex = spaces[1] + 1;
@@ -76,10 +74,10 @@ namespace Theminds.Filters {
       }
 
       void findNickAndIp(ref JazzNotes notes) {
-         string user = Sx.Tween(notes.Line, 0, notes.Spaces[0] - 1);
+         string user = notes.Line.Tween(0, notes.Spaces[0] - 1);
          // Roots out junk like ":<nick> MODE +x"
          if (!user.Contains("!")) return;
-         notes.Nick = Sx.Tween(user, 1, user.IndexOf('!'));
+         notes.Nick = user.Tween(1, user.IndexOf('!'));
          notes.Ip = user.Substring(user.IndexOf('!') + 1);
       }
    }

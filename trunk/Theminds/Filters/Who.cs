@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Sx = Aspirations.StringEx;
+using Aspirations;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
@@ -13,7 +13,7 @@ namespace Theminds.Filters {
          // WHO commands; thus, Who serves as a dual purpose class.
          app.InputBox.Command += (cmd, arg) => {
             if ("w" != cmd) return;
-            if (!Sx.IsChannel(app.CurrentChannel)) return;
+            if (!app.CurrentChannel.IsChannel()) return;
             app.Buffer.Line += filterDel;
             app.Connection.Message("WHO " + app.CurrentChannel);
          };
@@ -32,7 +32,7 @@ namespace Theminds.Filters {
       readonly string serverPrefix = App.Lion.Get("server.prefix");
       void filter(ref BufferData data) {
          string[] tokens = data.Line.Split(' ');
-         if (!Sx.IsChannel(tokens[1])) return;
+         if (!tokens[1].IsChannel()) return;
 
          data.Channel = tokens[1];
          data.Color = Color.DarkBlue;

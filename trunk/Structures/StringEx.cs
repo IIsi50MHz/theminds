@@ -2,7 +2,7 @@ using System;
 
 namespace Aspirations {
    public static class StringEx {
-      public static int[] FindSpaces(string line, int times) {
+      public static int[] FindSpaces(this string line, int times) {
          int[] spaces = new int[times];
          int last = 0;
          for (int i = 0; i < times; ++i) {
@@ -16,8 +16,7 @@ namespace Aspirations {
       }
 
       // "0123456789", 3, 7 => "3456" (`end`th character removed)
-      public static string
-         Tween(string haystack, int begin, int end) {
+      public static string Tween(this string haystack, int begin, int end) {
          if (end < haystack.Length)
             return haystack.Remove(end).Substring(begin);
          else
@@ -25,7 +24,7 @@ namespace Aspirations {
       }
 
       // http://www.irchelp.org/irchelp/rfc/chapter1.html#c1_3
-      public static bool IsChannel(string channel) {
+      public static bool IsChannel(this string channel) {
          if (channel == null) return false;
          if (channel.StartsWith("#")) return true;
          if (channel.StartsWith("&")) return true;
