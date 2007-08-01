@@ -12,15 +12,12 @@ namespace Theminds {
 
          // Only broadcast quit messages to the channels
          // that actually contain the quitting user.
-         // The `id` is "quit.[user]". See JPQF.cs.
-         app.Buffer.Broadcast += delegate(ref List<Room> tabs, string id) {
+         // The `id` is "quit.[user]". See JPQ.cs.
+         app.Buffer.Broadcast += (ref List<Room> tabs, string id) => {
             if (!id.StartsWith("quit.")) return;
             string quitter = id.Split('.')[1];
-            // Todo: Handle @+% fun.
-            tabs = tabs.FindAll(delegate(Room room) {
-               List<string> nicks = Users.Instance[room];
-               return nicks.Contains(quitter);
-            });
+            // Todo: Handle @+% fun via custom Contains method
+            tabs = tabs.FindAll(t => Users.Instance[t].Contains(quitter));
          };
       }
       

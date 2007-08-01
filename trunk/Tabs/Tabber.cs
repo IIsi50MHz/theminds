@@ -62,19 +62,19 @@ namespace Aspirations {
       public event TabDel Moved;
       public void MoveTo(ITab tab) {
          int index = tabs.IndexOf(tab);
-         c(delegate { current = index; parent.GrabFocus(); });
+         c(() => { current = index; parent.GrabFocus(); });
          this.Moved(tab);
       }
       public void MoveTo(int index) { MoveTo(tabs[index]); }
 
       public void MoveToNext() {
-         c(delegate { current = (current + 1) % tabs.Count; });
+         c(() => current = (current + 1) % tabs.Count);
          Moved(this.Current);
       }
 
       public void MoveToPrev() {
          // Adding tabs.Count prevents negative numbers.
-         c(delegate { current = (current - 1 + tabs.Count) % tabs.Count; });
+         c(() => current = (current - 1 + tabs.Count) % tabs.Count);
          Moved(this.Current);
       }
 
@@ -89,19 +89,20 @@ namespace Aspirations {
          int width = x.Width;
          this.realWidth -= x.TrueWidth;
 
-         parent.SuspendLayout();
          // Places to clean up:
          // * Parent's collection
          // * Our collection
+         parent.SuspendLayout();
          parent.RemoveTab((System.Windows.Forms.Control)x);
          tabs.Remove(x);
-         tabs.ForEach(delegate(ITab t) { t.Left -= width; });
+         tabs.ForEach(t => t.Left -= width);
          
          removeHelperForCounters(index, width);
          MoveTo(current); resize();
-         // On the ITab's lifetime:
-         //  It should die out after this event call unless
-         //  an event help stores it, which is a Bad Idea.
+         
+         // ITab's lifetime:
+         // It should die out after this event call unless
+         // an event help stores it, which is a Bad Idea.
          Removed(x);
          parent.ResumeLayout();
       }
@@ -118,14 +119,12 @@ namespace Aspirations {
       void resize() {
          int maxWidth = parent.TabsWidth;
          int realTotalWidth = 0;
-         tabs.ForEach(delegate(ITab tab) {
-            realTotalWidth += tab.TrueWidth;
-         });
+         tabs.ForEach(tab => realTotalWidth += tab.TrueWidth);
 
          double sB = (double)maxWidth / realTotalWidth;
          this.right = 0;
          double shrinkBy = (sB < 1.0) ? sB : 1.0;
-         tabs.ForEach(delegate(ITab tab) {
+         tabs.ForEach(tab => {
             tab.Shrinkage = shrinkBy;
             tab.Left = right;
             right += tab.Width;
