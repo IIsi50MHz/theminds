@@ -23,12 +23,10 @@ namespace Theminds.Filters {
          
          buffer.Line += new LineDel(ping);
          buffer.SelfLine += new LineDel(selfJoin);
-         buffer.SelfLine += delegate(ref BufferData data) {
-            data.Color = Color.DarkRed;
-         };
-         buffer.Line += delegate(ref BufferData dc) {
+         buffer.SelfLine += (ref BufferData data) => data.Color = Color.DarkRed;
+         buffer.Line += (ref BufferData data) => {
             // Strip mIRC colors.
-            string line = dc.Line;
+            string line = data.Line;
             if (line.Contains("\u0003")) line = mircRegex.Replace(line, "");
          };
       }

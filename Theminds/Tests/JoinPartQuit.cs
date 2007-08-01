@@ -79,7 +79,7 @@ namespace Theminds.Tests {
       void test(string line, string msg, string id) {
          if (null == msg) msg = line;
 
-         MockApp.PokeBuffer(app, line, delegate(ref BufferData data) {
+         MockApp.PokeBuffer(app, line, (ref BufferData data) => {
             if (channel == data.Channel && msg == data.Line) return;
             throw new InvalidOperationException("JoinPartQuit failure in filter() " + id);
          });

@@ -11,7 +11,7 @@ namespace Theminds.Filters {
       public Who(IAppControls app) {
          // Hook me up to the command /w in addition to filtering
          // WHO commands; thus, Who serves as a dual purpose class.
-         app.InputBox.Command += delegate(string cmd, string arg) {
+         app.InputBox.Command += (cmd, arg) => {
             if ("w" != cmd) return;
             if (!Sx.IsChannel(app.CurrentChannel)) return;
             app.Buffer.Line += filterDel;

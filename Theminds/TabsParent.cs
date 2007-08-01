@@ -8,7 +8,7 @@ namespace Theminds {
    sealed partial class App : Form, ITabsParent {
       public void AddTab(Control c) {
          if (InvokeRequired) {
-            BeginInvoke((MethodInvoker) delegate { AddTab(c); });
+            BeginInvoke((MethodInvoker) (() => AddTab(c)));
             return;
          }
          tabsPanel.Controls.Add(c);

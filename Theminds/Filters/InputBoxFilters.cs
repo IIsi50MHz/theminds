@@ -14,18 +14,18 @@ namespace Theminds.Filters {
          InputBox inputBox = app.InputBox;
          Quirk connection = app.Connection;
 
-         inputBox.StopPresses += delegate(ref bool shouldStop) {
+         inputBox.StopPresses += (ref bool shouldStop) => {
             if (!connection.Started) shouldStop = true;
          };
 
-         inputBox.Command += delegate(string cmd, string msg) {
+         inputBox.Command += (cmd, msg) => {
             if ("me" != cmd) return;
             connection.Message("PRIVMSG {0} :\u0001ACTION {1}\u0001",
                app.CurrentChannel, msg);
          };
 
          inputBox.Message += new InputBox.MessageDel(PrivmsgCurrentChannel);
-         inputBox.Command += delegate(string cmd, string arg) {
+         inputBox.Command += (cmd, arg) => {
             switch (cmd) {
                // arg is a channel.
                case "j": connection.Message("JOIN " + arg); break;
@@ -34,7 +34,7 @@ namespace Theminds.Filters {
                case "q": connection.Dispose(arg); break;
             }
          };
-         inputBox.Command += delegate(string cmd, string arg) {
+         inputBox.Command += (cmd, arg) => {
             if (!cmd.StartsWith("/")) return;
             if (arg.Length != 0) arg = " " + arg;
             PrivmsgCurrentChannel(S.Format("{0}{1}", cmd, arg));
@@ -45,8 +45,7 @@ namespace Theminds.Filters {
          if (app.CurrentChannel == null)
             app.LogBox.AddLine(App.Lion.Get("error.cannot.privmsg"), Color.Purple);
          else
-            app.Connection.Message(
-               "PRIVMSG " + app.CurrentChannel + " " + msg);
+            app.Connection.Message("PRIVMSG " + app.CurrentChannel + " " + msg);
       }
    }
 }

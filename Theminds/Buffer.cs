@@ -46,8 +46,7 @@ namespace Theminds {
             broadcastHelper(data);
          else {
             Room tab = new Room(this.connection, data.Channel, null);
-            if (!proust.ContainsKey(tab))
-               app.Invoke((M)delegate { AddChannel(tab); });
+            if (!proust.ContainsKey(tab)) app.Invoke((M)(() => AddChannel(tab)));
 
             // AddChannel now guarantees `tab` is inside
             // `proust`, ripe for picking. Forward & reverse
@@ -61,11 +60,9 @@ namespace Theminds {
       private void broadcastHelper(BufferData data) {
          List<Room> tabs = proust.Values;
          Broadcast(ref tabs, data.BroadcastId);
-         app.BeginInvoke((M)delegate {
-            tabs.ForEach((Action<Room>)delegate(Room tab) {
-               tab.LogBox.AddLine(data.Line, data.Color);
-            });
-         });
+         app.BeginInvoke((M)(
+            () => tabs.ForEach(t => t.LogBox.AddLine(data.Line, data.Color))
+         ));
       }
 
       public void AddChannel() { 

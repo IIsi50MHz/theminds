@@ -43,7 +43,7 @@ namespace Theminds.Tests {
       void test(string line, string template,
          string nick, string msg, string id) {
          if (null == template) template = line;
-         MockApp.PokeBuffer(app, line, delegate(ref BufferData data) {
+         MockApp.PokeBuffer(app, line, (ref BufferData data) => {
             if (channel == data.Channel &&
                S.Format(template, nick, msg) == data.Line) return;
             throw new InvalidOperationException("PrimvsgFilter failure in filter() " + id);
