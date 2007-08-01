@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,6 +12,13 @@
     <AssemblyName>Theminds</AssemblyName>
     <StartupObject>
     </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,8 +55,8 @@
     <Compile Include="AppStart.cs" />
     <Compile Include="Assembly.cs" />
     <Compile Include="Attributes.cs" />
-    <Compile Include="Buffer interfaces.cs" />
     <Compile Include="Buffer.cs" />
+    <Compile Include="Bufferlings.cs" />
     <Compile Include="Filters\InputBoxFilters.cs" />
     <Compile Include="Filters\JoinPartQuit.cs" />
     <Compile Include="Filters\LogBoxFilters.cs" />
