@@ -3,7 +3,6 @@ using System.Drawing;
 using Aspirations;
 using MethodInvoker = System.Windows.Forms.MethodInvoker;
 using S = System.String;
-using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
@@ -28,7 +27,7 @@ namespace Theminds.Filters {
          string line = data.Line;
          if (!line.Contains(" ")) return;
 
-         int[] spaces = Sx.FindSpaces(line, 4);
+         int[] spaces = line.FindSpaces(4);
          if (line.StartsWith("PRIVMSG "))
             filterSelf(ref data, spaces);
          else if (line.StartsWith(":")
@@ -41,13 +40,13 @@ namespace Theminds.Filters {
       // line ~ "PRIVMSG #channel :\u0001ACTION <msg>\u0001"
       void filterSelf(ref BufferData data, int[] spaces) {
          string line = data.Line;
-         data.Channel = Sx.Tween(line, spaces[0], spaces[1] - 1);
+         data.Channel = line.Tween(spaces[0], spaces[1] - 1);
 
          string nick = quirk.Info.Nick;
          string msg = line.Substring(spaces[1]);
          // Notice the colon! Weird protocol.
          if (msg.StartsWith(":\u0001ACTION")) {
-            msg = Sx.Tween(line, spaces[2], line.Length - 1);
+            msg = line.Tween(spaces[2], line.Length - 1);
             data.Line = S.Format(actionAll, nick, msg);
             data.Color = Color.Green;
             return;
@@ -59,12 +58,12 @@ namespace Theminds.Filters {
       // line ~ ":nick!ip PRIVMSG #channel :\u0001ACTION <msg>\u0001"
       void filterOthers(ref BufferData data, int[] spaces) {
          string line = data.Line;
-         data.Channel = Sx.Tween(line, spaces[1], spaces[2] - 1);
+         data.Channel = line.Tween(spaces[1], spaces[2] - 1);
 
-         string nick = Sx.Tween(line, 1, line.IndexOf('!'));
+         string nick = line.Tween(1, line.IndexOf('!'));
          string msg = line.Substring(spaces[2] + 1);
          if (msg.StartsWith("\u0001ACTION")) {
-            msg = Sx.Tween(line, spaces[3], line.Length - 1);
+            msg = line.Tween(spaces[3], line.Length - 1);
             data.Line = S.Format(actionAll, nick, msg);
             data.Color = Color.Green;
             return;

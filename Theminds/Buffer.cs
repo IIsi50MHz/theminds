@@ -3,10 +3,8 @@
 // tab (different log view for each tab).
 
 using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Drawing;
 using Aspirations;
 using M = System.Windows.Forms.MethodInvoker;
 
@@ -95,7 +93,7 @@ namespace Theminds {
          string channel = proust[t].Channel;
          proust.Remove(t);
          app.Tabber.Remove(t);
-         if (StringEx.IsChannel(channel))
+         if (channel.IsChannel())
             app.Connection.Message("PART {0}", channel);
       }
 

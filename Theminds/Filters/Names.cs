@@ -5,12 +5,8 @@
 // and RPL_ENDOFNAMES in the RFC. In addition,
 // I serve the dual purpose of seeding the
 // UserList control.
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
-using System.Diagnostics;
+using Aspirations;
 using S = System.String;
-using Sx = Aspirations.StringEx;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
@@ -35,8 +31,8 @@ namespace Theminds.Filters {
          if (!data.Line.StartsWith(test)) return;
 
          // Remember the colon! Rememeber the weird tacked space!
-         int[] spaces = Sx.FindSpaces(data.Line, 4);
-         data.Channel = Sx.Tween(data.Line, spaces[1], spaces[2] - 1);
+         int[] spaces = data.Line.FindSpaces(4);
+         data.Channel = data.Line.Tween(spaces[1], spaces[2] - 1);
          string[] nicks = data.Line.Substring(spaces[2] + 1).Trim().Split(' ');
          Users.Instance.Clear(data);
          foreach (string nick in nicks) {

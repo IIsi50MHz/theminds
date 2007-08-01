@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using System.Diagnostics;
 using System.Reflection;
 using Aspirations;
 using CancelEventArgs = System.ComponentModel.CancelEventArgs;
@@ -65,6 +64,10 @@ namespace Theminds {
       /**** Static members ****/
       public static void Alert(object alert) {
          MessageBox.Show(alert.ToString());
+      }
+
+      public static void Debug(object o) {
+         System.Diagnostics.Debug.WriteLine(o);
       }
 
       public static void LoadAttributeLovers(Type attribute, 
