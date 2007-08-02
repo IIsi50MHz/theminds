@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Diagnostics;
 
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.1")]

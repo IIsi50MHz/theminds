@@ -1,8 +1,5 @@
 // Duck typing. Yeah.
-
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Aspirations {
    public class TwoWayDictionary<Me, You> {
