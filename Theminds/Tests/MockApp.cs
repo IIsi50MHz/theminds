@@ -16,10 +16,10 @@ namespace Theminds.Tests {
       Buffer buffer; Quirk quirk;
       Tabber tabber;
       public MockApp() {
-         QuirkStart mozNet = new QuirkStart();
-         mozNet.Nick = "Tongue"; mozNet.Port = 6667;
-         mozNet.Server = "irc.mozilla.org";
-         mozNet.User = "USER cryptoliter2 8 * :Hi";
+         QuirkStart mozNet = new QuirkStart() {
+            Nick = "Tongue", Port = 6667,
+            Server = "irc.mozilla.org", User = "USER cryptoliter2 8 * :Hi",
+         };
          quirk = new Quirk(mozNet);
 
          this.tabber = new Tabber(this, "(new)");
@@ -93,6 +93,6 @@ namespace Theminds.Tests {
          app.Buffer.PostLine -= girls;
       }
 
-      public event MethodInvoker PostOffice;
+      public event MethodInvoker PostOffice = delegate { };
    }
 }

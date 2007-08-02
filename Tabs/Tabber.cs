@@ -42,30 +42,30 @@ namespace Aspirations {
          // lastIndex + 1, or Count.
          current = tabs.Count;
 
-         ITab x = this.parent.CreateTab(label);
-         this.NewTab(x);
+         ITab tab = this.parent.CreateTab(label);
+         this.NewTab(tab);
 
-         this.right += x.Width;
-         this.realWidth += x.TrueWidth;
+         this.right += tab.Width;
+         this.realWidth += tab.TrueWidth;
 
          parent.GrabFocus();
          resize();
 
-         return x;
+         return tab;
       }
 
+      public void Add() { Add(this.defaultLabel); }
       public void Add(string[] labels) {
          foreach (string label in labels) Add(label);
       }
-      public void Add() { Add(this.defaultLabel); }
 
       public event TabDel Moved;
+      public void MoveTo(int index) { MoveTo(tabs[index]); }
       public void MoveTo(ITab tab) {
          int index = tabs.IndexOf(tab);
          c(() => { current = index; parent.GrabFocus(); });
          this.Moved(tab);
       }
-      public void MoveTo(int index) { MoveTo(tabs[index]); }
 
       public void MoveToNext() {
          c(() => current = (current + 1) % tabs.Count);
@@ -79,19 +79,18 @@ namespace Aspirations {
       }
 
       public event TabDel Removed;
+      static string outOfBoundsRemove =
+         "I am removing a tab that does not exist. Make sure to call Init.";
       public void RemoveCurrent() { Remove(current); }
       public void Remove(int index) {
          if (tabs.Count < current + 1) {
-            throw new InvalidOperationException(
-               "I am removing a tab that does not exist. Make sure to call Init.");
+            throw new InvalidOperationException(outOfBoundsRemove);
          }
          ITab x = tabs[index];
          int width = x.Width;
          this.realWidth -= x.TrueWidth;
 
-         // Places to clean up:
-         // * Parent's collection
-         // * Our collection
+         // Clean up parent's collection and our collection
          parent.SuspendLayout();
          parent.RemoveTab((System.Windows.Forms.Control)x);
          tabs.Remove(x);
@@ -140,11 +139,11 @@ namespace Aspirations {
          parent.ResumeLayout();
       }
 
+      // Stop when true:
+      // * Close last, current one -> go to the new last tab.
+      // * Close tab after current tab -> stay, no changes.
+      // * Close tab before current tab -> update number.
       void removeHelperForCounters(int index, int width) {
-         // Stop when true:
-         // * Close last, current one -> go to the new last tab.
-         // * Close tab after current tab -> stay, no changes.
-         // * Close tab before current tab -> update number.
          if (tabs.Count > 0) {
             if (index < current || current >= tabs.Count) {
                current -= 1;
@@ -156,5 +155,5 @@ namespace Aspirations {
             Add(); current = 0;
          }
       }
-   } // class TabsController
-} // namespace
+   } // class Tabber
+}

@@ -44,8 +44,7 @@ namespace Theminds.Tests {
          string nick, string msg, string id) {
          if (null == template) template = line;
          MockApp.PokeBuffer(app, line, (ref BufferData data) => {
-            if (channel == data.Channel &&
-               S.Format(template, nick, msg) == data.Line) return;
+            if (channel == data.Channel && template.Fill(nick, msg) == data.Line) return;
             throw new InvalidOperationException("PrimvsgFilter failure in filter() " + id);
          });
       }

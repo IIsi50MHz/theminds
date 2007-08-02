@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.20706</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{38B595B3-1466-4D51-9EB2-CD2A095A6ACE}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -50,5 +50,11 @@
   <ItemGroup>
     <Compile Include="Quirk.cs" />
     <Compile Include="QuirkStart.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Structures\Structures.csproj">
+      <Project>{33D6C14F-9C5C-4B5D-8D4C-0B1F75215A9E}</Project>
+      <Name>Structures</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

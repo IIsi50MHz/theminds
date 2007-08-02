@@ -1,5 +1,5 @@
-// Core server logic for Theminds. She takes a QuirkStart for input
-// and outputs via the Line event. Very self-contained.
+// Core server logic for Theminds and IRC client.
+// She takes a QuirkStart for input and outputs via the Line event.
 
 using System;
 using System.Net;
@@ -8,39 +8,33 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
-
 [assembly: System.Runtime.InteropServices.ComVisible(false)]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.3")]
 [assembly: System.CLSCompliant(true)]
 [assembly: System.Security.Permissions.SecurityPermission(
   System.Security.Permissions.SecurityAction.RequestMinimum, Execution = true)]
 namespace Aspirations {
-   // An IRC client class
    public sealed partial class Quirk : IDisposable {
       public QuirkStart Info;
+      static Random rnd = new Random();
 
       // Everytime Connection has a new line, we send it to this event.
-      // NOT LogBox's NewLine. This merely glues Connection and LogBox.
+      // NOT Buffer's NewLine. This merely glues Connection and LogBox.
       public delegate void NewLineDel(string line);
       public event NewLineDel NewLine;
-
-      static Random rndAddressIndex = new Random();
 
       bool dnsResolved;
       public Quirk(QuirkStart connectionInfo) {
          this.Info = connectionInfo;
+         dnsResolved = false;
 
          try {
-            IPAddress[] x = Dns.
-               GetHostEntry(Info.Server).AddressList;
-            this.Info.Server = 
-               x[rndAddressIndex.Next(x.Length)].ToString();
+            var x = Dns.GetHostEntry(Info.Server).AddressList;
+            this.Info.Server = x[rnd.Next(x.Length)].ToString();
             dnsResolved = true;
          }
          catch (SocketException) {
-            NewLine(String.Format(
-               "Could not resolve {0}.", Info.Server));
-            dnsResolved = false;
+            NewLine("Could not resolve {0}.".Fill(Info.Server));
          }
       }
 
@@ -48,8 +42,9 @@ namespace Aspirations {
       public bool Started = false;
       public void Start() {
          if (this.Started || !dnsResolved) return;
-         connectThread = new Thread(new ThreadStart(connect));
-         connectThread.IsBackground = true;
+
+         var x = new ThreadStart(connect);
+         connectThread = new Thread(x) { IsBackground = true };
          connectThread.Start();
          this.Started = true;
       }
@@ -63,15 +58,15 @@ namespace Aspirations {
          Message(String.Format(line, args));
       }
 
-      // IDisposable
+      // IDisposable with the twist in that it takes an
+      // IRC quit message. I live on the edge.
       bool disposed = false;
       public void Dispose() { Dispose(null); }
       public void Dispose(string quitMsg) {
-         if (disposed) return;
-         if (null == connectThread) return;
+         if (disposed || null == connectThread) return;
          disposed = true;
-
          if (null == writer) return;
+
          try {
             if (null == quitMsg) Message("QUIT");
             else Message("QUIT " + quitMsg);
@@ -86,35 +81,40 @@ namespace Aspirations {
       StreamReader reader;
       void connect() {
          Stream stream;
-         try { stream = new TcpClient(Info.Server,
-            Info.Port).GetStream(); }
-         catch (SocketException) {
-            NewLine(String.Format("Could not connect to \"{0}\".",
-               Info.Server)); return;
+         try {
+            var x = new TcpClient(Info.Server, Info.Port);
+            stream = x.GetStream();
          }
+         catch (SocketException) {
+            var msg = "Could not connect to \"{0}\".".Fill(Info.Server);
+            NewLine(msg); return;
+         }
+
          reader = new StreamReader(stream);
          writer = new StreamWriter(stream);
          writer.AutoFlush = true;
 
          Message("NICK {0}\n{1}", Info.Nick, Info.User);
+
+         // Start the event pump and keep it running until we have
+         // to Dispose() at the end of the application runtime, at
+         // which point end _very, very carefully_ and quickly.
          while (!disposed) pump();
          writer.Dispose(); reader.Dispose();
       }
 
       void pump() {
          string line = null;
+         Action<Exception> h = e => {
+            NewLine(e.ToString());
+            this.Dispose();
+         };
+         
          try { line = reader.ReadLine(); }
-         catch (IOException e) { handleException(e); }
-         catch (OutOfMemoryException e) {
-            handleException(e); }
+         catch (IOException e) { h(e); }
+         catch (OutOfMemoryException e) { h(e); }
 
-         if (line == null) return;
-         NewLine(line);
-      }
-
-      void handleException(Exception e) {
-         NewLine(e.ToString());
-         this.Dispose();
+         if (line != null) NewLine(line);
       }
 
       public override int GetHashCode() {
@@ -122,7 +122,7 @@ namespace Aspirations {
       }
 
       public override bool Equals(object obj) {
-         Quirk q = (Quirk)obj;
+         var q = (Quirk)obj;
          return (this.Info.Equals(q.Info));
       }
    }
