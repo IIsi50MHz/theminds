@@ -1,0 +1,12 @@
+#summary The macro-structure of the IRC client backend
+#labels docs,quirk,buffering,overview
+
+Let the football be the metaphor for a new IRC message.
+
+  * [http://theminds.googlecode.com/svn/trunk/Quirk/Quirk.cs Quirk] gets the football and passes it off to an assigned [http://theminds.googlecode.com/svn/trunk/Theminds/Buffer.cs Buffer instance] via the `NewLine` event
+  * Buffer passes the football to its `NewLine` event, which many classes with the `DesiresAppControls` attribute have filled
+  * Each class does what it wants and changes the line on each pass via `ref` keyword magic
+  * At least one class also assigns the line to the right LogBox [http://theminds.googlecode.com/svn/trunk/Theminds/Bufferlings.cs via `BufferData`,] which maps to `Room` via the Dictionary `proust`, via knowing the right server and channel
+  * A class may also assign the text a color or, hopefully in the future, colors
+  * [http://theminds.googlecode.com/svn/trunk/Theminds/Buffer.cs `Buffer` adds it to the LogBox]
+  * Recurse forever, holding hands and lips
