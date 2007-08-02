@@ -1,6 +1,5 @@
 using System.Drawing;
 using Aspirations;
-using S = System.String;
 
 namespace Theminds.Filters {
    [DesiresAppControls]
@@ -59,18 +58,16 @@ namespace Theminds.Filters {
          int index = notes.ReasonIndex;
          if (0 == index || notes.Line.Length <= index) return;
          string reason = lion.Get(notes.Mode, "reason");
-         reason = S.Format(reason, notes.Line.Substring(index));
-         data.Line = S.Format(lion.Get(notes.Mode, "total"),
-            data.Line, reason);
+         reason = reason.Fill(notes.Line.Substring(index));
+         data.Line = lion.Get(notes.Mode, "total").Fill(data.Line, reason);
       }
 
       void findMessage(ref BufferData data, ref JazzNotes notes) {
          if (notes.FromMe) {
-            data.Line = S.Format(lion.Get(notes.Mode, "self"),
-               data.Channel); return;
+            data.Line = lion.Get(notes.Mode, "self").Fill(data.Channel); return;
          }
-         data.Line = S.Format(lion.Get(notes.Mode, "others"),
-            notes.Nick, notes.Ip, data.Channel);
+         data.Line = lion.Get(notes.Mode, "others").
+            Fill(notes.Nick, notes.Ip, data.Channel);
       }
 
       void findNickAndIp(ref JazzNotes notes) {

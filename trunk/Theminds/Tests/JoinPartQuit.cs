@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using Theminds;
 using Aspirations;
-using S = System.String;
 
 namespace Theminds.Tests {
    [DesiresTestingWithMockApp]
@@ -27,47 +26,41 @@ namespace Theminds.Tests {
 
          // join, others
          test(":maria!ip JOIN :#spreadbutter",
-            S.Format(joinOthers, "maria", "ip", channel), "maria");
+            joinOthers.Fill("maria", "ip", channel), "maria");
          // join, self
          test(":Tongue!ip JOIN :#spreadbutter",
-            S.Format(joinSelf, channel), "tips");
+            joinSelf.Fill(channel), "tips");
          // part, others, no reason
          test(":Tongues!ip PART #spreadbutter",
-            S.Format(partOthers, "Tongues", "ip", channel),
+            partOthers.Fill("Tongues", "ip", channel),
             "roses");
          // part, others, a reason
          test(":Tongues!ip PART #spreadbutter :Too angsty",
-            S.Format(partTotal,
-               S.Format(partOthers, "Tongues", "ip", channel),
-               S.Format(partReason, "Too angsty")), "angst");
+            partTotal.Fill(partOthers.Fill("Tongues", "ip", channel),
+            partReason.Fill("Too angsty")), "angst");
 
          // And now those that do not need no stinking channel.
          this.channel = null;
          // part, self, no reason
          test(":Tongue!ip PART #spreadbutter",
-            S.Format(partSelf, "#spreadbutter"), "soulz");
+            partSelf.Fill("#spreadbutter"), "soulz");
          // part, self, a reason
          test(":Tongue!ip PART #spreadbutter :Too verklempt",
-            S.Format(partTotal,
-               S.Format(partSelf, "#spreadbutter"),
-               S.Format(partReason, "Too verklempt")),
+            partTotal.Fill(partSelf.Fill("#spreadbutter"), partReason.Fill("Too verklempt")),
             "verklempt");
          // quit, others, a reason
          test(":t!ip QUIT :Goodbye cruelle world",
-            S.Format(quitTotal, S.Format(quitOthers, "t", "ip"),
-               S.Format(quitReason, "Goodbye cruelle world")),
+            quitTotal.Fill(quitOthers.Fill("t", "ip"), quitReason.Fill("Goodbye cruelle world")),
             "poverty");
          // quit, others, no reason
-         test(":Tongues!ip QUIT", S.Format(quitOthers, "Tongues", "ip"),
+         test(":Tongues!ip QUIT", quitOthers.Fill("Tongues", "ip"),
             "slip");
          // quit, self, a reason
          test(":Tongue!ip QUIT :Goodbye cruelle monkey",
-            S.Format(quitTotal, S.Format(quitSelf),
-               S.Format(quitReason, "Goodbye cruelle monkey")),
+            quitTotal.Fill(quitSelf, quitReason.Fill("Goodbye cruelle monkey")),
             "jane");
          // quit, self, no reason
-         test(":Tongue!ip QUIT",
-            S.Format(quitSelf), "short");
+         test(":Tongue!ip QUIT", quitSelf, "short");
          // should ignore
          test(":Tongue!ip MODE :+x", "estar en moda");
       }

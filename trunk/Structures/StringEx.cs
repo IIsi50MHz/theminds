@@ -30,5 +30,9 @@ namespace Aspirations {
          if (channel.StartsWith("&")) return true;
          return false;
       }
+
+      public static string Fill(this string template, params object[] args) {
+         return String.Format(template, args);
+      }
    }
 }

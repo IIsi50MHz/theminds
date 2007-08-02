@@ -46,6 +46,8 @@ namespace Theminds {
          get { return buffer; }
       }
 
+      public string CurrentChannel { get; set; }
+
       public void SwitchLogBox(LogBox l) {
          if (l == logBoxPanel.Controls[0]) return;
          this.SuspendLayout();
